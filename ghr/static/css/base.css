@@ -9,7 +9,7 @@
   --green:       #3cb648;
   --green-dark:  #2a9136;
   --green-light: #edf8f0;
-  --navy:        #071a34;
+  --navy:        #0d1b2e;
   --navy-light:  #162840;
   --white:       #ffffff;
   --light-gray:  #f7f8fa;
@@ -74,8 +74,8 @@ ul { list-style: none; }
   align-items: center;
   justify-content: center;
   position: relative;
-  /* font-size: 18px; */
-  /* color: white; */
+  font-size: 18px;
+  color: white;
   flex-shrink: 0;
 }
 
@@ -200,9 +200,66 @@ footer {
   padding-bottom: 48px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
+
+/* ── Footer brand / logo area ── */
 .footer-brand { }
-.footer-logo-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.footer-brand p { font-size: 12.5px; color: #7a8fa8; line-height: 1.65; margin-bottom: 20px; }
+
+.footer-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+/* The image logo — no background, no border-radius box */
+.footer-logo-wrap .nav-logo {
+  background: none;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer-logo-wrap .nav-logo img {
+  width: 80px;        /* matches screenshot width of the chevron logo */
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Brand text stack beside logo */
+.footer-logo-wrap .nav-brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.footer-logo-wrap .brand-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: .3px;
+  line-height: 1.2;
+}
+
+.footer-logo-wrap .brand-tagline {
+  font-size: 10px;
+  color: #5a7a9a;
+  font-weight: 400;
+  line-height: 1.4;
+  max-width: 140px;
+}
+
+.footer-brand p {
+  font-size: 12.5px;
+  color: #7a8fa8;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
 .social-links { display: flex; gap: 10px; }
 .social-link {
   width: 34px; height: 34px; border-radius: 50%;
@@ -212,15 +269,18 @@ footer {
 }
 .social-link:hover { border-color: var(--green); color: var(--green); }
 
+/* ── Footer columns ── */
 .footer-col h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 18px; }
 .footer-col ul li { margin-bottom: 10px; }
 .footer-col ul li a { font-size: 12.5px; color: #7a8fa8; transition: color .2s; }
 .footer-col ul li a:hover { color: var(--green); }
+
 .footer-contact-item {
   display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;
 }
 .footer-contact-item i { color: var(--green); font-size: 13px; margin-top: 3px; flex-shrink: 0; }
 .footer-contact-item span { font-size: 12.5px; color: #7a8fa8; line-height: 1.5; }
+
 .footer-bottom {
   text-align: center; padding: 18px 0;
   font-size: 12px; color: #4a5f78;
