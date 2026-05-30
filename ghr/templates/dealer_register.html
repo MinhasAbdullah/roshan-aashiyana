@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Become a Dealer | Roshan Aashiyana{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dealer_register.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<!-- ═══════ HERO STRIP ═══════ -->
+<div class="dr-hero">
+  <div class="dr-hero-bg"></div>
+  <div class="dr-hero-overlay"></div>
+  <div class="container dr-hero-content">
+    <div class="drh-icon"><i class="fa-solid fa-handshake"></i></div>
+    <div>
+      <p class="drh-label"><i class="fa-solid fa-circle-check"></i> Verified Dealer Program</p>
+      <h1>Become a Verified <span>Dealer</span></h1>
+      <p class="drh-sub">List properties, manage leads & connect with thousands of buyers across Pakistan.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MAIN SECTION ═══════ -->
+<section class="dr-section">
+  <div class="container">
+    <div class="dr-wrapper">
+
+      <!-- ══ LEFT PANEL ══ -->
+      <div class="dr-left">
+
+        <div class="dr-left-inner">
+          <h2>Why Join as a Dealer?</h2>
+          <p>Unlock powerful tools to grow your real estate business across Pakistan.</p>
+
+          <ul class="benefit-list">
+            <li>
+              <div class="ben-icon"><i class="fa-solid fa-building"></i></div>
+              <div>
+                <strong>Post Unlimited Properties</strong>
+                <span>List houses, plots, apartments & more with no limits.</span>
+              </div>
+            </li>
+            <li>
+              <div class="ben-icon"><i class="fa-solid fa-chart-line"></i></div>
+              <div>
+                <strong>Dealer Dashboard Access</strong>
+                <span>Manage all your listings from one powerful dashboard.</span>
+              </div>
+            </li>
+            <li>
+              <div class="ben-icon"><i class="fa-solid fa-users"></i></div>
+              <div>
+                <strong>Receive Buyer Leads</strong>
+                <span>Get direct inquiries from serious buyers and tenants.</span>
+              </div>
+            </li>
+            <li>
+              <div class="ben-icon"><i class="fa-solid fa-shield-halved"></i></div>
+              <div>
+                <strong>Verified Badge</strong>
+                <span>Build trust with a verified dealer profile on all listings.</span>
+              </div>
+            </li>
+            <li>
+              <div class="ben-icon"><i class="fa-solid fa-bolt"></i></div>
+              <div>
+                <strong>Priority Listing Visibility</strong>
+                <span>Your properties get featured to thousands of active buyers.</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="dr-stats-row">
+            <div class="dr-stat">
+              <span class="ds-num">1500+</span>
+              <span class="ds-lbl">Active Listings</span>
+            </div>
+            <div class="dr-stat-div"></div>
+            <div class="dr-stat">
+              <span class="ds-num">2500+</span>
+              <span class="ds-lbl">Happy Clients</span>
+            </div>
+            <div class="dr-stat-div"></div>
+            <div class="dr-stat">
+              <span class="ds-num">25+</span>
+              <span class="ds-lbl">Cities</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══ RIGHT FORM ══ -->
+      <div class="dr-right">
+        <div class="dr-form-card">
+
+          <div class="dr-form-header">
+            <div class="dr-form-icon"><i class="fa-solid fa-user-tie"></i></div>
+            <div>
+              <h2>Dealer Registration</h2>
+              <p>Fill in your details to get started</p>
+            </div>
+          </div>
+
+          <form method="POST" enctype="multipart/form-data" class="dealer-form">
+            {% csrf_token %}
+
+            <!-- Full Name -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-user"></i> Full Name</label>
+              <div class="input-wrap">
+                <input type="text" name="name" placeholder="Enter your full name" required>
+              </div>
+            </div>
+
+            <!-- CNIC -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-id-card"></i> CNIC</label>
+              <div class="input-wrap">
+                <input type="text" name="cnic" placeholder="35202-1234567-1" required>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+              <div class="input-wrap">
+                <input type="text" name="phone" placeholder="+92 300 0000000" required>
+              </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-venus-mars"></i> Gender</label>
+              <div class="input-wrap select-wrap">
+                <select name="gender">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                  <option value="prefer not to say">Prefer not to say</option>
+                </select>
+                <i class="fa-solid fa-chevron-down sel-arrow"></i>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-location-dot"></i> Address</label>
+              <div class="input-wrap textarea-wrap">
+                <textarea name="address" rows="3" placeholder="Your full address..." required></textarea>
+              </div>
+            </div>
+
+            <!-- Profile Picture -->
+            <div class="form-group">
+              <label><i class="fa-solid fa-camera"></i> Profile Picture</label>
+              <div class="file-drop" id="fileDrop">
+                <input type="file" name="picture" id="pictureInput" accept="image/*" required>
+                <div class="file-drop-inner" id="fileDropInner">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <p>Click or drag & drop your photo here</p>
+                  <span>JPG, PNG up to 5MB</span>
+                </div>
+                <img id="filePreview" class="file-preview" src="" alt="Preview">
+              </div>
+            </div>
+
+            <!-- Terms note -->
+            <p class="terms-note">
+              <i class="fa-solid fa-lock"></i>
+              By registering, you agree to our <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>.
+            </p>
+
+            <button type="submit" class="dealer-submit-btn">
+              <i class="fa-solid fa-circle-check"></i> Create Dealer Account
+            </button>
+
+          </form>
+        </div>
+      </div>
+      <!-- /.dr-right -->
+
+    </div>
+  </div>
+</section>
+
+<script>
+  // Image preview on file select
+  const pictureInput = document.getElementById('pictureInput');
+  const filePreview  = document.getElementById('filePreview');
+  const fileDropInner = document.getElementById('fileDropInner');
+
+  pictureInput.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        filePreview.src = e.target.result;
+        filePreview.style.display = 'block';
+        fileDropInner.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Drag & drop styling
+  const fileDrop = document.getElementById('fileDrop');
+  fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('drag-over'); });
+  fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('drag-over'));
+  fileDrop.addEventListener('drop', e => {
+    e.preventDefault();
+    fileDrop.classList.remove('drag-over');
+    pictureInput.files = e.dataTransfer.files;
+    pictureInput.dispatchEvent(new Event('change'));
+  });
+</script>
+
+{% endblock %}

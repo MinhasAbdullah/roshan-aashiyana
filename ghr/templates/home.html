@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Roshan Aashiyana — Sapno ka ghar, ab hoga haqeeqat{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <!-- Right-side background image with diagonal clip -->
+  <div class="hero-bg"></div>
+
+  <div class="container hero-content">
+
+    <!-- TEXT AREA -->
+    <div class="text-area">
+      <h2 class="welcome">Welcome to</h2>
+      <h1 class="title">Roshan <br><span>Aashiyana</span></h1>
+      <p class="subtitle">
+        Find your dream home with comfort,<br>
+        security and a <span class="green-text">brighter tomorrow.</span>
+      </p>
+      <div class="hero-buttons">
+        <a href="{% url 'listings' %}" class="btn-hero-primary">
+          <i class="fa-solid fa-magnifying-glass"></i> Explore Homes
+        </a>
+        {% if user.is_authenticated %}
+          {% if user.dealer %}
+            <a href="{% url 'add_property' %}" class="btn-hero-secondary">Post Property</a>
+          {% else %}
+            <a href="{% url 'dealer_register' %}" class="btn-hero-secondary">Post Property</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SEARCH BOX -->
+    <form action="{% url 'listings' %}" method="GET">
+      <div class="search-box">
+
+        <div class="search-field">
+          <i class="fa-solid fa-location-dot"></i>
+          <div class="field-content">
+            <label>Search Location</label>
+            <input type="text" name="keyword" placeholder="Enter city or locality">
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="search-field">
+          <i class="fa-solid fa-house-chimney"></i>
+          <div class="field-content">
+            <label>Property Type</label>
+            <select name="property_type">
+              <option value="">Select type</option>
+              <option value="House">House</option>
+              <option value="Apartment">Apartment</option>
+              <option value="Plot">Plot</option>
+              <option value="Commercial">Commercial</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="search-field">
+          <i class="fa-solid fa-tag"></i>
+          <div class="field-content">
+            <label>Purpose</label>
+            <select name="purpose">
+              <option value="">Buy or Rent</option>
+              <option value="rent">Rent</option>
+              <option value="sale">Sale</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="search-field">
+          <i class="fa-solid fa-arrow-down-wide-short"></i>
+          <div class="field-content">
+            <label>Sort By</label>
+            <select name="sort">
+              <option value="">Sort By</option>
+              <option value="latest">Latest</option>
+              <option value="low">Low Price</option>
+              <option value="high">High Price</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-search">
+          <i class="fa-solid fa-magnifying-glass"></i> Search
+        </button>
+
+      </div>
+    </form>
+
+    <!-- TRUST BADGES -->
+    <ul class="trust-badges">
+      <li><i class="fa-solid fa-circle-check"></i> Verified Properties</li>
+      <li><i class="fa-solid fa-circle-check"></i> Best Price Guarantee</li>
+      <li><i class="fa-solid fa-circle-check"></i> Easy &amp; Secure Booking</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="features-section">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa fa-shield-alt"></i></div>
+        <h3>Trusted & Secure</h3>
+        <p>All properties are verified for your peace of mind.</p>
+        <div class="feature-line"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa fa-tag"></i></div>
+        <h3>Affordable Prices</h3>
+        <p>Best homes at the best prices for every family.</p>
+        <div class="feature-line"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa fa-handshake"></i></div>
+        <h3>Easy Process</h3>
+        <p>Simple and transparent booking in easy steps.</p>
+        <div class="feature-line"></div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fa fa-headset"></i></div>
+        <h3>24/7 Support</h3>
+        <p>We are here to help you anytime, anywhere.</p>
+        <div class="feature-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<!-- <section class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fa fa-home"></i></div>
+        <div>
+          <div class="stat-num" data-target="1500">0+</div>
+          <div class="stat-label">Properties</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fa fa-users"></i></div>
+        <div>
+          <div class="stat-num" data-target="2500">0+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fa fa-map-marker-alt"></i></div>
+        <div>
+          <div class="stat-num" data-target="25">0+</div>
+          <div class="stat-label">Cities</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><i class="fa fa-check-circle"></i></div>
+        <div>
+          <div class="stat-num" data-target="100" data-suffix="%">0%</div>
+          <div class="stat-label">Trusted</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- ═══════════════ CATEGORIES ═══════════════ -->
+<section class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>Browse Categories</h2>
+      <p>Find properties by type across Pakistan</p>
+    </div>
+    <div class="categories-grid">
+      <a href="{% url 'listings' %}?property_type=House" class="category-card">
+        <span class="cat-emoji">🏠</span>
+        <h3>Houses</h3>
+      </a>
+      <a href="{% url 'listings' %}?property_type=Apartment" class="category-card">
+        <span class="cat-emoji">🏢</span>
+        <h3>Apartments</h3>
+      </a>
+      <a href="{% url 'listings' %}?property_type=Room" class="category-card">
+        <span class="cat-emoji">🛏️</span>
+        <h3>Rooms</h3>
+      </a>
+      <a href="{% url 'listings' %}?property_type=Plot" class="category-card">
+        <span class="cat-emoji">🌳</span>
+        <h3>Plots</h3>
+      </a>
+      <a href="{% url 'listings' %}?property_type=Shop" class="category-card">
+        <span class="cat-emoji">🏬</span>
+        <h3>Shops</h3>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURED PROPERTIES ═══════════════ -->
+<section class="properties-section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2>Featured Properties</h2>
+        <p>Discover our premium handpicked properties</p>
+      </div>
+      <a href="{% url 'listings' %}" class="btn-view-all">View All</a>
+    </div>
+
+    <div class="property-grid">
+      {% for item in prop %}
+      <a href="{% url 'property_detail' item.slug %}" class="prop-card-link">
+        <div class="prop-card">
+          <div class="prop-img-wrap">
+            <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+            <div class="prop-badge {% if item.purpose == 'rent' %}badge-rent{% else %}badge-sale{% endif %}">
+              For {{ item.purpose|title }}
+            </div>
+          </div>
+          <div class="prop-info">
+            <h3>{{ item.title }}</h3>
+            <div class="prop-location">
+              <i class="fa fa-map-marker-alt"></i> {{ item.area }}, {{ item.city }}
+            </div>
+            <div class="prop-specs">
+              {% if item.bedrooms %}
+              <span class="prop-spec"><i class="fa fa-bed"></i> {{ item.bedrooms }} Beds</span>
+              {% endif %}
+              {% if item.bathrooms %}
+              <span class="prop-spec"><i class="fa fa-bath"></i> {{ item.bathrooms }} Baths</span>
+              {% endif %}
+              {% if item.property_size %}
+              <span class="prop-spec"><i class="fa fa-expand-arrows-alt"></i> {{ item.property_size }}</span>
+              {% endif %}
+            </div>
+            <div class="prop-footer">
+              <span class="prop-price">PKR {{ item.price }}</span>
+              <span class="btn-details">View Details</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      {% empty %}
+      <div class="no-props">
+        <i class="fa fa-home"></i>
+        <h3>No Featured Properties Found</h3>
+        <p>Check back soon for new listings.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA BANNER ═══════════════ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-banner">
+      <div class="cta-icon-wrap"><i class="fa fa-plus-circle"></i></div>
+      <div class="cta-text">
+        <h3>Want to Sell or Rent Your Property?</h3>
+        <p>Post your property for free and reach thousands of potential buyers and tenants.</p>
+      </div>
+      {% if user.is_authenticated %}
+        {% if user.dealer %}
+          <a href="{% url 'add_property' %}" class="btn-post">Post Property <i class="fa fa-arrow-right"></i></a>
+        {% else %}
+          <a href="{% url 'dealer_register' %}" class="btn-post">Post Property <i class="fa fa-arrow-right"></i></a>
+        {% endif %}
+      {% else %}
+        <a href="javascript:void(0)" id="ctaPostBtn" class="btn-post">Post Property <i class="fa fa-arrow-right"></i></a>
+      {% endif %}
+      <div class="cta-art">🏙️</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Stat counter animation
+  const statNums = document.querySelectorAll('.stat-num');
+  let statsAnimated = false;
+  function animateStats() {
+    if (statsAnimated) return;
+    const section = document.querySelector('.stats-section');
+    if (!section) return;
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 60) {
+      statsAnimated = true;
+      statNums.forEach(el => {
+        const target = parseInt(el.dataset.target);
+        const suffix = el.dataset.suffix || '+';
+        let current = 0;
+        const step = target / 60;
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = Math.floor(current) + suffix;
+          if (current >= target) clearInterval(timer);
+        }, 25);
+      });
+    }
+  }
+  window.addEventListener('scroll', animateStats);
+  animateStats();
+
+  // CTA post btn opens modal
+  const ctaPostBtn = document.getElementById('ctaPostBtn');
+  if (ctaPostBtn) {
+    ctaPostBtn.addEventListener('click', () => {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('authBox').classList.remove('signup-mode');
+    });
+  }
+</script>
+
+{% endblock content %}

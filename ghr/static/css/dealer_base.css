@@ -1,0 +1,172 @@
+/* ═══════════════════════════════════════
+   ROSHAN AASHIYANA — dealer_base.css
+   Dealer shell: topbar + sidebar layout
+═══════════════════════════════════════ */
+
+/* Reset main nav/footer inherited from base */
+.dealer-shell { min-height: 100vh; background: #f0f2f5; display: flex; flex-direction: column; }
+
+/* ══════ TOP BAR ══════ */
+.dealer-topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  height: 64px; background: var(--navy);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+}
+
+.dtb-left { display: flex; align-items: center; gap: 16px; }
+
+.sidebar-toggle {
+  background: rgba(255,255,255,0.08); border: none; border-radius: 8px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px; cursor: pointer;
+  transition: background .2s;
+}
+.sidebar-toggle:hover { background: rgba(255,255,255,0.16); }
+
+.dtb-brand { display: flex; align-items: center; gap: 10px; }
+.dtb-logo {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--white);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+/* .dtb-logo svg { width: 22px; height: 22px; } */
+.dtb-brand-text { display: flex; flex-direction: column; }
+.dtb-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.2; }
+.dtb-tag  { font-size: 9.5px; color: var(--green); font-weight: 600; letter-spacing: .4px; }
+
+.dtb-right { display: flex; align-items: center; gap: 12px; }
+
+.dtb-icon-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.8); font-size: 14px;
+  transition: background .2s, color .2s;
+}
+.dtb-icon-btn:hover { background: rgba(255,255,255,0.16); color: #fff; }
+
+.dtb-add-btn {
+  background: var(--green); color: #fff;
+  padding: 8px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; gap: 6px;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.dtb-add-btn:hover { background: var(--green-dark); }
+
+.dtb-avatar {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 30px; padding: 4px 14px 4px 4px;
+}
+.dtb-avatar img {
+  width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--green);
+}
+.dtb-avatar span { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); }
+
+/* ══════ BODY ══════ */
+.dealer-body {
+  display: flex;
+  padding-top: 64px; /* topbar height */
+  min-height: 100vh;
+}
+
+/* ══════ SIDEBAR ══════ */
+.dealer-sidebar {
+  width: 240px; flex-shrink: 0;
+  background: var(--navy);
+  background-image: linear-gradient(180deg, #0d1b2e 0%, #0f2035 100%);
+  position: fixed; top: 64px; left: 0; bottom: 0;
+  overflow-y: auto; z-index: 200;
+  padding: 24px 16px 32px;
+  transition: transform .3s;
+  display: flex; flex-direction: column;
+}
+
+/* Profile block */
+.sidebar-profile {
+  text-align: center;
+  padding: 20px 0 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 24px;
+}
+.sp-avatar {
+  position: relative; display: inline-block; margin-bottom: 14px;
+}
+.sp-avatar img {
+  width: 80px; height: 80px; border-radius: 50%;
+  object-fit: cover; border: 3px solid var(--green);
+}
+.sp-online {
+  position: absolute; bottom: 3px; right: 3px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--green); border: 2px solid var(--navy);
+}
+.sidebar-profile h3 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.sp-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11.5px; color: var(--green); font-weight: 600;
+  background: rgba(60,182,72,0.12);
+  padding: 4px 12px; border-radius: 20px;
+}
+
+/* Nav links */
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+
+.snav-label {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3);
+  text-transform: uppercase; letter-spacing: .8px;
+  padding: 0 10px; margin-bottom: 6px; margin-top: 4px;
+}
+
+.snav-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 10px;
+  color: rgba(255,255,255,0.6); font-size: 13.5px; font-weight: 500;
+  transition: background .2s, color .2s;
+  text-decoration: none;
+}
+.snav-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
+.snav-link.active { background: var(--green); color: #fff; }
+.snav-link.active .snav-icon { color: #fff; }
+
+.snav-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.06); flex-shrink: 0;
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  transition: background .2s, color .2s;
+}
+.snav-link:hover .snav-icon { background: rgba(255,255,255,0.12); color: #fff; }
+.snav-link.active .snav-icon { background: rgba(255,255,255,0.2); }
+
+.snav-logout .snav-icon { color: #e57373; }
+.snav-logout:hover { background: rgba(229,115,115,0.1); color: #e57373; }
+.snav-logout:hover .snav-icon { background: rgba(229,115,115,0.15); }
+
+/* ══════ MAIN CONTENT AREA ══════ */
+.dealer-content {
+  margin-left: 240px;
+  flex: 1; padding: 32px;
+  min-height: calc(100vh - 64px);
+}
+
+/* ══════ RESPONSIVE ══════ */
+@media (max-width: 1024px) {
+  .dealer-sidebar { transform: translateX(-100%); }
+  .dealer-sidebar.open { transform: translateX(0); }
+  .dealer-content { margin-left: 0; }
+  .dtb-avatar span { display: none; }
+}
+
+@media (max-width: 640px) {
+  .dtb-add-btn span { display: none; }
+  .dtb-add-btn { padding: 8px 12px; }
+  .dealer-content { padding: 20px 16px; }
+}

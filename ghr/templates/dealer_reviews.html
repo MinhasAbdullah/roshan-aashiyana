@@ -1,0 +1,107 @@
+{% extends 'dealer_base.html' %}
+{% load static %}
+
+{% block title %}Reviews | Roshan Aashiyana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dealer_reviews.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="dash-header">
+  <div>
+    <p class="dash-greeting"><i class="fa-solid fa-star"></i> Customer Feedback</p>
+    <h1 class="dash-title">Dealer Reviews</h1>
+    <p class="dash-sub">See what buyers and tenants are saying about your properties</p>
+  </div>
+</div>
+
+{% if reviews %}
+
+<!-- ══ SUMMARY CARD ══ -->
+<div class="reviews-summary">
+  <div class="rs-score">
+    <span class="rs-big">{{ average_rating|default:"—" }}</span>
+    <div class="rs-right">
+      <div class="rs-stars">
+        {% for i in "12345" %}
+        <i class="fa-solid fa-star {% if forloop.counter <= average_rating|default:0 %}star-filled{% endif %}"></i>
+        {% endfor %}
+      </div>
+      <p>Based on {{ reviews|length }} review{{ reviews|length|pluralize }}</p>
+    </div>
+  </div>
+  <div class="rs-divider"></div>
+  <div class="rs-stats">
+    <div class="rs-stat">
+      <span class="rs-num">{{ reviews|length }}</span>
+      <span class="rs-lbl">Total Reviews</span>
+    </div>
+    <div class="rs-stat">
+      <span class="rs-num">{{ five_star_count|default:"0" }}</span>
+      <span class="rs-lbl">5-Star Reviews</span>
+    </div>
+    <div class="rs-stat">
+      <span class="rs-num">{{ average_rating|default:"0"|floatformat:1 }}</span>
+      <span class="rs-lbl">Avg. Rating</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REVIEWS LIST ══ -->
+<div class="reviews-list">
+  {% for review in reviews %}
+  <div class="review-card">
+
+    <!-- Left: avatar -->
+    <div class="rc-avatar">
+      <img src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff&size=80"
+           alt="{{ review.user.username }}">
+    </div>
+
+    <!-- Right: content -->
+    <div class="rc-body">
+      <div class="rc-top">
+        <div class="rc-user">
+          <h3>{{ review.user.username }}</h3>
+          <span class="rc-time"><i class="fa-regular fa-clock"></i> {{ review.created_at|timesince }} ago</span>
+        </div>
+        <div class="rc-rating">
+          <div class="rc-stars">
+            {% for i in "12345" %}
+            <i class="fa-{% if forloop.counter <= review.rating %}solid{% else %}regular{% endif %} fa-star"></i>
+            {% endfor %}
+          </div>
+          <span class="rc-score">{{ review.rating }}/5</span>
+        </div>
+      </div>
+
+      <div class="rc-property">
+        <i class="fa-solid fa-building"></i>
+        <a href="{% url 'property_detail' review.property.slug %}">{{ review.property.title }}</a>
+      </div>
+
+      <p class="rc-comment">{{ review.comment }}</p>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+
+<!-- ══ EMPTY STATE ══ -->
+<div class="empty-state">
+  <div class="es-icon"><i class="fa-regular fa-star"></i></div>
+  <h2>No Reviews Yet</h2>
+  <p>When buyers review your properties, they'll appear here.</p>
+  <a href="{% url 'my_listings' %}" class="btn-add-prop" style="display:inline-flex;width:auto;margin-top:4px;">
+    <i class="fa-solid fa-building"></i> View My Listings
+  </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

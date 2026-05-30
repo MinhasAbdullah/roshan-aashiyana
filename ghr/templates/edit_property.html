@@ -1,0 +1,458 @@
+{% extends 'dealer_base.html' %}
+{% load static %}
+
+{% block title %}Edit Property | Roshan Aashiyana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/edit_property.css' %}">
+{% endblock extra_css %}
+
+{% block dashboard_content %}
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="dash-header">
+  <div>
+    <p class="dash-greeting"><i class="fa-solid fa-pen-to-square"></i> Edit Listing</p>
+    <h1 class="dash-title">Edit Property</h1>
+    <p class="dash-sub">Update the details for <strong>{{ prop.title }}</strong></p>
+  </div>
+  <div class="header-actions">
+    <a href="{% url 'my_listings' %}" class="btn-back">
+      <i class="fa-solid fa-arrow-left"></i> My Listings
+    </a>
+    <!-- DELETE TRIGGER -->
+    <button class="btn-delete-trigger" id="openDeleteModal">
+      <i class="fa-solid fa-trash"></i> Delete Property
+    </button>
+  </div>
+</div>
+
+<!-- ══ LAYOUT ══ -->
+<div class="ep-layout">
+
+  <!-- ════ LEFT — FORM ════ -->
+  <div class="ep-form-col">
+    <form method="POST" enctype="multipart/form-data" id="editPropertyForm">
+      {% csrf_token %}
+
+      <!-- ── SECTION 1: Basic Info ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon"><i class="fa-solid fa-circle-info"></i></div>
+          <div>
+            <h2>Basic Information</h2>
+            <p>Title, type and pricing</p>
+          </div>
+          <div class="fc-step">1</div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-heading"></i> Property Title</label>
+          <div class="input-wrap">
+            <input type="text" name="title" value="{{ prop.title }}" required>
+          </div>
+        </div>
+
+        <div class="double-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-home"></i> Property Type</label>
+            <div class="input-wrap select-wrap">
+              <select name="property_type" required>
+                <option value="">Select Type</option>
+                {% for item in prop_types %}
+                <option value="{{ item.id }}" {% if prop.property_type.id == item.id %}selected{% endif %}>
+                  {{ item.name }}
+                </option>
+                {% endfor %}
+              </select>
+              <i class="fa-solid fa-chevron-down sel-arr"></i>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-tag"></i> Purpose</label>
+            <div class="input-wrap select-wrap">
+              <select name="purpose" required>
+                <option value="sale" {% if prop.purpose == "sale" %}selected{% endif %}>For Sale</option>
+                <option value="rent" {% if prop.purpose == "rent" %}selected{% endif %}>For Rent</option>
+              </select>
+              <i class="fa-solid fa-chevron-down sel-arr"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-money-bill"></i> Price (PKR)</label>
+          <div class="input-wrap input-prefix">
+            <span class="prefix">PKR</span>
+            <input type="number" name="price" value="{{ prop.price }}" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: Location ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-orange"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h2>Location</h2>
+            <p>City, area and full address</p>
+          </div>
+          <div class="fc-step fc-step-orange">2</div>
+        </div>
+
+        <div class="double-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-city"></i> City</label>
+            <div class="input-wrap">
+              <input type="text" name="city" value="{{ prop.city }}" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-map-pin"></i> Area / Locality</label>
+            <div class="input-wrap">
+              <input type="text" name="area" value="{{ prop.area }}" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-map"></i> Full Address</label>
+          <div class="input-wrap">
+            <textarea name="address" rows="3" required>{{ prop.address }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 3: Property Details ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-purple"><i class="fa-solid fa-list-check"></i></div>
+          <div>
+            <h2>Property Details</h2>
+            <p>Rooms, size and condition</p>
+          </div>
+          <div class="fc-step fc-step-purple">3</div>
+        </div>
+
+        <div class="details-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-bed"></i> Bedrooms</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="bedrooms">−</button>
+              <input type="number" name="bedrooms" id="bedrooms" value="{{ prop.bedrooms }}" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="bedrooms">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-shower"></i> Bathrooms</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="bathrooms">−</button>
+              <input type="number" name="bathrooms" id="bathrooms" value="{{ prop.bathrooms }}" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="bathrooms">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-kitchen-set"></i> Kitchens</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="kitchens">−</button>
+              <input type="number" name="kitchens" id="kitchens" value="{{ prop.kitchens }}" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="kitchens">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-car"></i> Garages</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="garages">−</button>
+              <input type="number" name="garages" id="garages" value="{{ prop.garages }}" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="garages">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="double-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-expand"></i> Property Size</label>
+            <div class="input-wrap">
+              <input type="text" name="property_size" value="{{ prop.property_size }}" placeholder="10 Marla">
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-calendar"></i> Year Built</label>
+            <div class="input-wrap">
+              <input type="number" name="year_built" value="{{ prop.year_built }}">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-couch"></i> Furnishing</label>
+          <div class="furnish-pills">
+            <label class="fpill {% if prop.furnishing == 'furnished' %}active{% endif %}">
+              <input type="radio" name="furnishing" value="furnished" {% if prop.furnishing == "furnished" %}checked{% endif %}> Furnished
+            </label>
+            <label class="fpill {% if prop.furnishing == 'semi_furnished' %}active{% endif %}">
+              <input type="radio" name="furnishing" value="semi_furnished" {% if prop.furnishing == "semi_furnished" %}checked{% endif %}> Semi Furnished
+            </label>
+            <label class="fpill {% if prop.furnishing == 'unfurnished' %}active{% endif %}">
+              <input type="radio" name="furnishing" value="unfurnished" {% if prop.furnishing == "unfurnished" %}checked{% endif %}> Unfurnished
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-align-left"></i> Description</label>
+          <div class="input-wrap">
+            <textarea name="description" rows="6" required>{{ prop.description }}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4: Features ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-yellow"><i class="fa-solid fa-star"></i></div>
+          <div>
+            <h2>Amenities & Features</h2>
+            <p>Select all that apply</p>
+          </div>
+          <div class="fc-step fc-step-yellow">4</div>
+        </div>
+
+        <div class="features-grid">
+          {% for item in features %}
+          <label class="feature-item {% if item in prop.features.all %}selected{% endif %}">
+            <input type="checkbox" name="features" value="{{ item.id }}"
+                   {% if item in prop.features.all %}checked{% endif %}>
+            <span class="fi-box"><i class="fa-solid fa-check"></i></span>
+            <span class="fi-name">{{ item.name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ── SECTION 5: Images ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-pink"><i class="fa-solid fa-images"></i></div>
+          <div>
+            <h2>Property Images</h2>
+            <p>Update featured image or gallery</p>
+          </div>
+          <div class="fc-step fc-step-pink">5</div>
+        </div>
+
+        <!-- Current featured image -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-star"></i> Featured Image</label>
+          <div class="current-img-preview">
+            <img src="{{ prop.featured_image.url }}" alt="{{ prop.title }}" id="featuredPreview">
+            <div class="cip-overlay">
+              <i class="fa-solid fa-camera"></i> Change Photo
+            </div>
+            <input type="file" name="featured_image" id="featuredInput" accept="image/*" class="cip-input">
+          </div>
+          <p class="field-hint"><i class="fa-solid fa-circle-info"></i> Leave empty to keep current image</p>
+        </div>
+
+        <!-- Gallery images -->
+        {% if prop.images.all %}
+        <div class="form-group">
+          <label><i class="fa-solid fa-images"></i> Current Gallery</label>
+          <div class="gallery-grid">
+            {% for image in prop.images.all %}
+            <div class="gallery-thumb">
+              <img src="{{ image.image.url }}" alt="Gallery image">
+              <div class="gt-overlay"><i class="fa-solid fa-expand"></i></div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Upload new gallery -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-cloud-arrow-up"></i> Add New Gallery Images</label>
+          <div class="file-zone" id="galleryZone">
+            <input type="file" name="images" multiple accept="image/*" id="galleryInput">
+            <div class="fz-inner">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Click or drag & drop to add more photos</p>
+              <span>JPG, PNG up to 5MB each</span>
+            </div>
+          </div>
+          <div class="new-previews" id="newPreviews"></div>
+        </div>
+      </div>
+
+      <!-- ── UPDATE BUTTON ── -->
+      <button type="submit" class="submit-btn">
+        <i class="fa-solid fa-circle-check"></i> Update Property
+      </button>
+
+    </form>
+  </div>
+
+  <!-- ════ RIGHT — SIDEBAR ════ -->
+  <aside class="ep-tips-col">
+
+    <!-- Current property snapshot -->
+    <div class="tips-card snapshot-card">
+      <div class="snap-img">
+        <img src="{{ prop.featured_image.url }}" alt="{{ prop.title }}" id="snapImg">
+      </div>
+      <div class="snap-body">
+        <h4>{{ prop.title }}</h4>
+        <span class="snap-purpose {% if prop.purpose == 'rent' %}sp-rent{% endif %}">
+          For {{ prop.purpose|title }}
+        </span>
+        <div class="snap-price">PKR {{ prop.price }}</div>
+        <div class="snap-loc"><i class="fa-solid fa-location-dot"></i> {{ prop.area }}, {{ prop.city }}</div>
+        <a href="{% url 'property_detail' prop.slug %}" class="snap-view" target="_blank">
+          <i class="fa-solid fa-eye"></i> Preview Listing
+        </a>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-card">
+      <h3><i class="fa-solid fa-lightbulb"></i> Update Tips</h3>
+      <ul class="tip-list">
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-camera"></i></div>
+          <div><strong>Fresh photos boost views</strong><span>Updated images get 3× more clicks.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-tag"></i></div>
+          <div><strong>Review your price</strong><span>Competitive pricing gets more inquiries.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-align-left"></i></div>
+          <div><strong>Update description</strong><span>Mention any new features or renovations.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-star"></i></div>
+          <div><strong>Check amenities</strong><span>Ensure all features are accurately selected.</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="tips-card danger-card">
+      <h3><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
+      <p>Permanently delete this property. This action cannot be undone.</p>
+      <button class="btn-delete-full" id="openDeleteModal2">
+        <i class="fa-solid fa-trash"></i> Delete This Property
+      </button>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- ═══ DELETE CONFIRMATION MODAL ═══ -->
+<div class="delete-modal" id="deleteModal">
+  <div class="dm-box">
+    <div class="dm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h2>Delete Property?</h2>
+    <p>You are about to permanently delete <strong>{{ prop.title }}</strong>. This cannot be undone.</p>
+
+    <div class="dm-prop-preview">
+      <img src="{{ prop.featured_image.url }}" alt="{{ prop.title }}">
+      <div>
+        <span>{{ prop.title }}</span>
+        <small>{{ prop.city }}, {{ prop.area }}</small>
+      </div>
+    </div>
+
+    <div class="dm-actions">
+      <button class="dm-cancel" id="closeDeleteModal">
+        <i class="fa-solid fa-xmark"></i> Cancel
+      </button>
+      <a href="{% url 'delete_property' prop.slug %}" class="dm-confirm">
+        <i class="fa-solid fa-trash"></i> Yes, Delete It
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Number steppers ──
+  document.querySelectorAll('.num-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      let val = parseInt(input.value) || 0;
+      if (btn.dataset.action === 'inc') val++;
+      else if (btn.dataset.action === 'dec' && val > 0) val--;
+      input.value = val;
+    });
+  });
+
+  // ── Furnishing pills ──
+  document.querySelectorAll('.fpill input').forEach(r => {
+    r.addEventListener('change', () => {
+      document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
+      r.closest('.fpill').classList.add('active');
+    });
+  });
+
+  // ── Feature checkboxes ──
+  document.querySelectorAll('.feature-item input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.feature-item').classList.toggle('selected', cb.checked);
+    });
+  });
+
+  // ── Featured image live preview ──
+  const featuredInput   = document.getElementById('featuredInput');
+  const featuredPreview = document.getElementById('featuredPreview');
+  const snapImg         = document.getElementById('snapImg');
+
+  featuredInput.addEventListener('change', function () {
+    if (this.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        featuredPreview.src = e.target.result;
+        snapImg.src = e.target.result;
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+
+  // ── Gallery new previews ──
+  document.getElementById('galleryInput').addEventListener('change', function () {
+    const container = document.getElementById('newPreviews');
+    container.innerHTML = '';
+    Array.from(this.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const div = document.createElement('div');
+        div.className = 'np-thumb';
+        div.innerHTML = `<img src="${e.target.result}" alt="New photo"><span>${file.name}</span>`;
+        container.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // ── Drag & drop gallery zone ──
+  const galleryZone  = document.getElementById('galleryZone');
+  const galleryInput = document.getElementById('galleryInput');
+  galleryZone.addEventListener('dragover', e => { e.preventDefault(); galleryZone.classList.add('drag-over'); });
+  galleryZone.addEventListener('dragleave', () => galleryZone.classList.remove('drag-over'));
+  galleryZone.addEventListener('drop', e => {
+    e.preventDefault(); galleryZone.classList.remove('drag-over');
+    galleryInput.files = e.dataTransfer.files;
+    galleryInput.dispatchEvent(new Event('change'));
+  });
+
+  // ── Delete modal ──
+  const deleteModal = document.getElementById('deleteModal');
+  const openBtns    = [document.getElementById('openDeleteModal'), document.getElementById('openDeleteModal2')];
+  const closeBtn    = document.getElementById('closeDeleteModal');
+
+  openBtns.forEach(btn => { if (btn) btn.addEventListener('click', () => deleteModal.classList.add('active')); });
+  closeBtn.addEventListener('click', () => deleteModal.classList.remove('active'));
+  deleteModal.addEventListener('click', e => { if (e.target === deleteModal) deleteModal.classList.remove('active'); });
+</script>
+
+{% endblock %}

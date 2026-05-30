@@ -1,0 +1,270 @@
+/* ═══════════════════════════════════════
+   ROSHAN AASHIYANA — dealer_register.css
+═══════════════════════════════════════ */
+
+/* ═══════ HERO STRIP ═══════ */
+.dr-hero {
+  position: relative;
+  background: var(--navy);
+  padding: 48px 0 40px;
+  overflow: hidden;
+}
+.dr-hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://t3.ftcdn.net/jpg/03/22/06/68/360_F_322066808_CANrp7u5Cdiz7700TJReqKD299d2AZtD.jpg');
+  background-size: cover; background-position: center;
+  opacity: .07;
+}
+.dr-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--navy) 55%, rgba(7,26,52,0.88));
+}
+.dr-hero-content {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+}
+
+.drh-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(60,182,72,0.15);
+  border: 2px solid rgba(60,182,72,0.3);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.drh-icon i { font-size: 26px; color: var(--green); }
+
+.drh-label {
+  font-size: 12px; font-weight: 700; color: var(--green);
+  text-transform: uppercase; letter-spacing: .6px;
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 8px;
+}
+
+.dr-hero-content h1 {
+  font-size: 30px; font-weight: 900; color: #fff;
+  line-height: 1.15; margin-bottom: 8px;
+}
+.dr-hero-content h1 span { color: var(--green); }
+
+.drh-sub { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+
+/* ═══════ MAIN SECTION ═══════ */
+.dr-section {
+  background: var(--light-gray);
+  padding: 40px 0 80px;
+}
+
+.dr-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+/* ══════ LEFT PANEL ══════ */
+.dr-left {
+  position: sticky; top: 84px;
+}
+
+.dr-left-inner {
+  background: var(--navy);
+  border-radius: 20px;
+  padding: 36px 32px;
+  background-image: linear-gradient(145deg, #0d1b2e 50%, #162840);
+  box-shadow: 0 8px 40px rgba(7,26,52,0.25);
+}
+
+.dr-left-inner h2 {
+  font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 10px;
+}
+.dr-left-inner > p {
+  font-size: 13.5px; color: rgba(255,255,255,0.6);
+  line-height: 1.65; margin-bottom: 32px;
+}
+
+/* Benefit list */
+.benefit-list {
+  list-style: none; padding: 0; margin-bottom: 36px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.benefit-list li {
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.ben-icon {
+  width: 42px; height: 42px; border-radius: 10px;
+  background: rgba(60,182,72,0.15);
+  border: 1px solid rgba(60,182,72,0.25);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ben-icon i { font-size: 16px; color: var(--green); }
+.benefit-list li div:last-child { display: flex; flex-direction: column; gap: 3px; }
+.benefit-list li strong { font-size: 14px; font-weight: 700; color: #fff; }
+.benefit-list li span  { font-size: 12.5px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+/* Stats row */
+.dr-stats-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 18px 20px;
+}
+.dr-stat { text-align: center; }
+.ds-num  { display: block; font-size: 24px; font-weight: 900; color: var(--green); line-height: 1; }
+.ds-lbl  { display: block; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.dr-stat-div { width: 1px; height: 36px; background: rgba(255,255,255,0.12); }
+
+/* ══════ RIGHT FORM ══════ */
+.dr-form-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: var(--card-shadow);
+}
+
+.dr-form-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 32px; padding-bottom: 24px;
+  border-bottom: 1.5px solid var(--border);
+}
+.dr-form-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.dr-form-icon i { font-size: 22px; color: var(--green); }
+.dr-form-header h2 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.dr-form-header p  { font-size: 13px; color: var(--text-muted); }
+
+/* Form groups */
+.dealer-form { display: flex; flex-direction: column; gap: 18px; }
+
+.form-group { display: flex; flex-direction: column; gap: 7px; }
+
+.form-group label {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 7px;
+}
+.form-group label i { color: var(--green); font-size: 13px; }
+
+/* Input wrap */
+.input-wrap {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  transition: border-color .2s, box-shadow .2s;
+  overflow: hidden;
+}
+.input-wrap:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(60,182,72,0.1);
+}
+
+.input-wrap input,
+.input-wrap select,
+.input-wrap textarea {
+  width: 100%; border: none; outline: none;
+  padding: 13px 16px;
+  font-size: 13.5px; font-family: inherit; color: var(--text);
+  background: transparent;
+}
+.input-wrap input::placeholder,
+.input-wrap textarea::placeholder { color: #aab4c4; }
+
+/* Select wrap */
+.select-wrap {
+  position: relative; display: flex; align-items: center;
+}
+.select-wrap select {
+  appearance: none; -webkit-appearance: none;
+  cursor: pointer; padding-right: 40px;
+}
+.sel-arrow {
+  position: absolute; right: 14px;
+  font-size: 12px; color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Textarea */
+.textarea-wrap textarea { resize: vertical; min-height: 90px; }
+
+/* File drop zone */
+.file-drop {
+  position: relative;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  min-height: 130px;
+  display: flex; align-items: center; justify-content: center;
+}
+.file-drop:hover,
+.file-drop.drag-over {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+.file-drop input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; z-index: 2;
+  width: 100%; height: 100%;
+}
+.file-drop-inner {
+  text-align: center; padding: 24px 20px; z-index: 1;
+}
+.file-drop-inner i  { font-size: 32px; color: var(--green); margin-bottom: 10px; display: block; }
+.file-drop-inner p  { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.file-drop-inner span { font-size: 12px; color: var(--text-muted); }
+
+/* Preview image */
+.file-preview {
+  display: none;
+  width: 100%; height: 160px;
+  object-fit: cover; border-radius: 10px;
+}
+
+/* Terms */
+.terms-note {
+  font-size: 12.5px; color: var(--text-muted);
+  display: flex; align-items: flex-start; gap: 7px;
+  line-height: 1.6;
+}
+.terms-note i { color: var(--green); margin-top: 2px; flex-shrink: 0; }
+.terms-note a { color: var(--green); font-weight: 600; }
+.terms-note a:hover { text-decoration: underline; }
+
+/* Submit button */
+.dealer-submit-btn {
+  width: 100%; padding: 15px;
+  background: var(--green); color: #fff; border: none;
+  border-radius: 12px; font-size: 15px; font-weight: 800;
+  cursor: pointer; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background .2s, transform .15s;
+  letter-spacing: .3px; margin-top: 4px;
+}
+.dealer-submit-btn:hover {
+  background: var(--green-dark); transform: translateY(-2px);
+}
+.dealer-submit-btn i { font-size: 16px; }
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 1024px) {
+  .dr-wrapper { grid-template-columns: 1fr; }
+  .dr-left { position: static; }
+  .dr-left-inner { padding: 28px 24px; }
+  .benefit-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+
+@media (max-width: 768px) {
+  .dr-hero-content h1 { font-size: 24px; }
+  .drh-icon { width: 52px; height: 52px; }
+  .dr-form-card { padding: 24px 20px; }
+  .benefit-list { grid-template-columns: 1fr; }
+  .dr-stats-row { gap: 12px; padding: 14px; }
+  .ds-num { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+  .dr-section { padding: 24px 0 60px; }
+  .dr-form-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .dr-stats-row { flex-direction: column; gap: 14px; }
+  .dr-stat-div { width: 60px; height: 1px; }
+}

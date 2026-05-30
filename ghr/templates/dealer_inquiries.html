@@ -1,0 +1,125 @@
+{% extends 'dealer_base.html' %}
+{% load static %}
+
+{% block title %}Inquiries | Roshan Aashiyana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dealer_inquiries.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="dash-header">
+  <div>
+    <p class="dash-greeting"><i class="fa-solid fa-envelope"></i> Lead Management</p>
+    <h1 class="dash-title">Property Inquiries</h1>
+    <p class="dash-sub">Buyers and tenants who reached out about your properties</p>
+  </div>
+  {% if inquiries %}
+  <div class="inq-total-badge">
+    <span class="itb-num">{{ inquiries|length }}</span>
+    <span class="itb-lbl">Total Inquiries</span>
+  </div>
+  {% endif %}
+</div>
+
+{% if inquiries %}
+
+<!-- ══ SUMMARY STRIP ══ -->
+<div class="inq-summary">
+  <div class="is-item">
+    <div class="is-icon is-blue"><i class="fa-solid fa-envelope-open-text"></i></div>
+    <div>
+      <strong>{{ inquiries|length }}</strong>
+      <span>Total Inquiries</span>
+    </div>
+  </div>
+  <div class="is-div"></div>
+  <div class="is-item">
+    <div class="is-icon is-green"><i class="fa-solid fa-phone"></i></div>
+    <div>
+      <strong>{{ inquiries|length }}</strong>
+      <span>Phone Leads</span>
+    </div>
+  </div>
+  <div class="is-div"></div>
+  <div class="is-item">
+    <div class="is-icon is-orange"><i class="fa-solid fa-building"></i></div>
+    <div>
+      <strong>{{ inquiries|length }}</strong>
+      <span>Properties Inquired</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ INQUIRIES LIST ══ -->
+<div class="inquiries-list">
+  {% for inquiry in inquiries %}
+  <div class="inquiry-card">
+
+    <!-- Left: avatar -->
+    <div class="inq-avatar">
+      <img src="https://ui-avatars.com/api/?name={{ inquiry.name }}&background=071a34&color=fff&size=80"
+           alt="{{ inquiry.name }}">
+    </div>
+
+    <!-- Right: content -->
+    <div class="inq-body">
+
+      <div class="inq-top">
+        <!-- User info -->
+        <div class="inq-user">
+          <h3>{{ inquiry.name }}</h3>
+          <div class="inq-meta">
+            <span><i class="fa-solid fa-envelope"></i> {{ inquiry.email }}</span>
+            <span><i class="fa-regular fa-clock"></i> {{ inquiry.created_at|timesince }} ago</span>
+          </div>
+        </div>
+        <!-- Contact actions -->
+        <div class="inq-actions">
+          <a href="tel:{{ inquiry.phone }}" class="inq-btn inq-btn-call">
+            <i class="fa-solid fa-phone"></i> {{ inquiry.phone }}
+          </a>
+          <a href="https://wa.me/{{ inquiry.phone }}" target="_blank" class="inq-btn inq-btn-wa">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+          <a href="mailto:{{ inquiry.email }}" class="inq-btn inq-btn-mail">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Property pill -->
+      <div class="inq-property">
+        <i class="fa-solid fa-building"></i>
+        Interested in:
+        <a href="{% url 'property_detail' inquiry.property.slug %}">{{ inquiry.property.title }}</a>
+      </div>
+
+      <!-- Message -->
+      <div class="inq-message">
+        <i class="fa-solid fa-quote-left"></i>
+        <p>{{ inquiry.message }}</p>
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% else %}
+
+<!-- ══ EMPTY STATE ══ -->
+<div class="empty-state">
+  <div class="es-icon"><i class="fa-regular fa-envelope"></i></div>
+  <h2>No Inquiries Yet</h2>
+  <p>When buyers send you messages about your properties, they'll appear here.</p>
+  <a href="{% url 'my_listings' %}" class="btn-go-listings">
+    <i class="fa-solid fa-building"></i> View My Listings
+  </a>
+</div>
+
+{% endif %}
+
+{% endblock %}

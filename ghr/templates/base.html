@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% endblock title %}</title>
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/RA2.png' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block css %}{% endblock %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  {% block nav %}
+  <header class="navbar">
+    <div class="container nav-container">
+
+      <!-- LOGO -->
+      <a href="{% url 'home' %}" class="logo">
+        <div class="logo-icon">
+          <img src="{% static 'images/RA2.png' %}" alt="" width="28px">
+          <!-- <i class="fa-solid fa-house"></i>
+          <i class="fa-solid fa-plus plus-overlay"></i> -->
+        </div>
+        <div class="logo-text">
+          <h1>ROSHAN <span>AASHIYANA</span></h1>
+          <p>Smart real-estate Marketplace</p>
+        </div>
+      </a>
+
+      <!-- NAV LINKS -->
+      <nav class="nav-links" id="navLinks">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'listings' %}">Browse</a>
+        <a href="{% url 'house' %}">Houses</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'favourites' %}">Favorites</a>
+        {% endif %}
+        <a href="#">About Us</a>
+
+        {% if user.is_authenticated %}
+        {% if user.dealer %}
+        <a href="{% url 'dashboard' %}" class="nav-btn-outline">Dashboard</a>
+        {% else %}
+        <a href="{% url 'dealer_register' %}" class="nav-btn-outline">Post Property</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="btn-login">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+        {% else %}
+        <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline">Post Property</a>
+        <a href="javascript:void(0)" class="btn-login" id="openModal">
+          <i class="fa-solid fa-user"></i> Sign In
+        </a>
+        {% endif %}
+      </nav>
+
+      <!-- MOBILE HAMBURGER -->
+      <div class="mobile-menu-icon" id="hamburger">
+        <i class="fa-solid fa-bars"></i>
+      </div>
+
+    </div>
+  </header>
+  {% endblock nav %}
+
+  <!-- MESSAGES -->
+  {% if messages %}
+  <div class="messages-container">
+    {% for msg in messages %}
+    <div class="msg message {{ msg.tags }}">
+      <i class="fa fa-check-circle"></i> {{ msg }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% block content %}{% endblock content %}
+
+  {% block footer %}
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Brand -->
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <div class="nav-logo">
+              <img src="{% static 'images/RA2.png' %}" alt="">
+            </div>
+            <div class="nav-brand-text">
+              <span class="brand-name">ROSHAN AASHIYANA</span>
+              <span class="brand-tagline">Smart real-estate Marketplace</span>
+            </div>
+          </div>
+          <p>Pakistan's trusted platform to buy, sell, and rent properties online.</p>
+          <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/in/abdullah-minhas-6798b932a/" class="social-link"
+              target="content-frame"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'listings' %}?purpose=sale">For Sale</a></li>
+            <li><a href="{% url 'listings' %}?purpose=rent">For Rent</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Cities -->
+        <div class="footer-col">
+          <h4>Popular Cities</h4>
+          <ul>
+            <li><a href="{% url 'listings' %}?city=Islamabad">Islamabad</a></li>
+            <li><a href="{% url 'listings' %}?city=Lahore">Lahore</a></li>
+            <li><a href="{% url 'listings' %}?city=Rawalpindi">Rawalpindi</a></li>
+            <li><a href="{% url 'listings' %}?city=Faisalabad">Faisalabad</a></li>
+            <li><a href="{% url 'listings' %}?city=Multan">Multan</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">FAQs</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact-item">
+            <i class="fa fa-map-marker-alt"></i>
+            <span>International Islamic University, Islamabad</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa fa-phone"></i>
+            <span>+92 319 0509847</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fa fa-envelope"></i>
+            <span>minhasabdullah8888@gmail.com</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="footer-bottom">© 2026 Roshan Aashiyana. All Rights Reserved.</div>
+    </div><!-- /.container -->
+  </footer>
+  {% endblock footer %}
+
+  <!-- AUTH MODAL -->
+  <div class="modal" id="modal">
+    <div class="auth-box" id="authBox">
+
+      <!-- LEFT panel -->
+      <div class="auth-left">
+        <div class="auth-left-content">
+          <div class="auth-logo">
+            <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 3L2 13h4v12h7v-8h2v8h7V13h4L14 3z" fill="#fff" />
+              <circle cx="14" cy="9" r="2.2" fill="#c8f5cc" />
+            </svg>
+          </div>
+          <h2>Welcome Back!</h2>
+          <p>Login to continue exploring premium properties across Pakistan.</p>
+          <div class="auth-features">
+            <div class="auth-feature"><i class="fa fa-check-circle"></i> Verified Properties</div>
+            <div class="auth-feature"><i class="fa fa-check-circle"></i> Best Price Guarantee</div>
+            <div class="auth-feature"><i class="fa fa-check-circle"></i> Easy & Secure Booking</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT panel -->
+      <div class="auth-right">
+        <button class="close-btn" id="closeModal"><i class="fa fa-times"></i></button>
+
+        <!-- LOGIN FORM -->
+        <div class="form-box login-form">
+          <h2>Login</h2>
+          <p>Access your Roshan Aashiyana account</p>
+          <form action="{% url 'SignIn' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+              <i class="fa fa-user"></i>
+              <input type="text" placeholder="Username or Email" name="uname" required>
+            </div>
+            <div class="input-group">
+              <i class="fa fa-lock"></i>
+              <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <button class="submit-btn">Login <i class="fa fa-arrow-right"></i></button>
+          </form>
+          <div class="bottom-text">
+            Don't have an account? <span id="openSignup">Sign Up</span>
+          </div>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div class="form-box signup-form">
+          <h2>Create Account</h2>
+          <p>Join Roshan Aashiyana today</p>
+          <form action="{% url 'SignUp' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+              <i class="fa fa-user"></i>
+              <input type="text" placeholder="Username" name="uname" required>
+            </div>
+            <div class="input-group">
+              <i class="fa fa-envelope"></i>
+              <input type="email" placeholder="Email Address" name="email" required>
+            </div>
+            <div class="input-group">
+              <i class="fa fa-phone"></i>
+              <input type="text" placeholder="Phone Number" name="phone">
+            </div>
+            <div class="input-group">
+              <i class="fa fa-lock"></i>
+              <input type="password" placeholder="Password" name="password" required>
+            </div>
+            <div class="input-group">
+              <i class="fa fa-lock"></i>
+              <input type="password" placeholder="Confirm Password" name="cpassword" required>
+            </div>
+            <button class="submit-btn">Create Account <i class="fa fa-arrow-right"></i></button>
+          </form>
+          <div class="bottom-text">
+            Already have an account? <span id="openLogin">Login</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script>
+    // Modal logic
+    const modal = document.getElementById("modal");
+    const authBox = document.getElementById("authBox");
+    const openModalBtn = document.getElementById("openModal");
+    const closeModalBtn = document.getElementById("closeModal");
+    const openSignup = document.getElementById("openSignup");
+    const openLogin = document.getElementById("openLogin");
+    const postPropertyBtn = document.getElementById("openModal2");
+    const links = document.querySelectorAll('.nav-links a');
+
+    links.forEach(link => {
+      if (link.href === window.location.href) {
+        link.classList.add('active');
+      }
+    });
+
+    if (openModalBtn) openModalBtn.addEventListener("click", () => {
+      modal.classList.add("active");
+      authBox.classList.remove("signup-mode");
+    });
+    if (postPropertyBtn) postPropertyBtn.addEventListener("click", () => {
+      modal.classList.add("active");
+      authBox.classList.remove("signup-mode");
+    });
+    closeModalBtn.addEventListener("click", () => modal.classList.remove("active"));
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("active"); });
+    openSignup.addEventListener("click", () => authBox.classList.add("signup-mode"));
+    openLogin.addEventListener("click", () => authBox.classList.remove("signup-mode"));
+
+    // Auto-dismiss messages
+    setTimeout(() => {
+      document.querySelectorAll(".msg").forEach(msg => {
+        msg.style.opacity = "0";
+        msg.style.transform = "translateX(50px)";
+        msg.style.transition = "0.4s";
+        setTimeout(() => msg.remove(), 400);
+      });
+    }, 3000);
+
+    // Hamburger menu
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+    if (hamburger) {
+      hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+      });
+    }
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Houses | Roshan آشیانہ 
+{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/listings.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container">
+
+        <div class="hero-content">
+
+            <div class="hero-text">
+
+                <h1>Properties for Rent</h1>
+
+                <p>
+                    Explore houses, apartments, plots and commercial properties across Pakistan.
+                </p>
+
+            </div>
+
+            <div class="hero-image">
+
+                <img src="{% static 'images/logo.png' %}" alt="">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="container">
+
+<form method="GET">
+
+    <div class="search-box">
+
+        <input type="text"
+               name="keyword"
+               placeholder="Search Property"
+               value="{{ request.GET.keyword }}">
+
+        <select name="property_type">
+
+            <option value="">Property Type</option>
+
+            <option value="House"
+            {% if request.GET.property_type == "House" %}
+            selected
+            {% endif %}
+            >
+                House
+            </option>
+
+            <option value="Apartment"
+            {% if request.GET.property_type == "Apartment" %}
+            selected
+            {% endif %}
+            >
+                Apartment
+            </option>
+
+            <option value="Plot"
+            {% if request.GET.property_type == "Plot" %}
+            selected
+            {% endif %}
+            >
+                Plot
+            </option>
+
+            <option value="Commercial"
+            {% if request.GET.property_type == "Commercial" %}
+            selected
+            {% endif %}
+            >
+                Commercial
+            </option>
+
+        </select>
+
+        <select name="purpose">
+
+            <option value="">Purpose</option>
+
+            <option value="sale"
+            {% if request.GET.purpose == "sale" %}
+            selected
+            {% endif %}
+            >
+                For Sale
+            </option>
+
+            <option value="rent"
+            {% if request.GET.purpose == "rent" %}
+            selected
+            {% endif %}
+            >
+                For Rent
+            </option>
+
+        </select>
+
+        <select name="sort">
+
+            <option value="">Sort By</option>
+
+            <option value="latest"
+            {% if request.GET.sort == "latest" %}
+            selected
+            {% endif %}
+            >
+                Latest
+            </option>
+
+            <option value="low"
+            {% if request.GET.sort == "low" %}
+            selected
+            {% endif %}
+            >
+                Low Price
+            </option>
+
+            <option value="high"
+            {% if request.GET.sort == "high" %}
+            selected
+            {% endif %}
+            >
+                High Price
+            </option>
+
+        </select>
+
+        <button type="submit" class="search-btn">
+            Search
+        </button>
+
+    </div>
+
+    <div class="main">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <h3>Filters</h3>
+
+            <div class="filter-group">
+
+                <h4>Bedrooms</h4>
+
+                <label>
+                    <input type="radio"
+                           name="bedrooms"
+                           value="1"
+                           {% if request.GET.bedrooms == "1" %}
+                           checked
+                           {% endif %}
+                    >
+                    1+
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="bedrooms"
+                           value="2"
+                           {% if request.GET.bedrooms == "2" %}
+                           checked
+                           {% endif %}
+                    >
+                    2+
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="bedrooms"
+                           value="3"
+                           {% if request.GET.bedrooms == "3" %}
+                           checked
+                           {% endif %}
+                    >
+                    3+
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="bedrooms"
+                           value="5"
+                           {% if request.GET.bedrooms == "5" %}
+                           checked
+                           {% endif %}
+                    >
+                    5+
+                </label>
+
+            </div>
+
+            <div class="filter-group">
+
+                <h4>City</h4>
+
+                <select name="city">
+
+                    <option value="">Select City</option>
+
+                    <option value="Islamabad"
+                    {% if request.GET.city == "Islamabad" %}
+                    selected
+                    {% endif %}
+                    >
+                        Islamabad
+                    </option>
+
+                    <option value="Lahore"
+                    {% if request.GET.city == "Lahore" %}
+                    selected
+                    {% endif %}
+                    >
+                        Lahore
+                    </option>
+
+                    <option value="Karachi"
+                    {% if request.GET.city == "Karachi" %}
+                    selected
+                    {% endif %}
+                    >
+                        Karachi
+                    </option>
+
+                    <option value="Rawalpindi"
+                    {% if request.GET.city == "Rawalpindi" %}
+                    selected
+                    {% endif %}
+                    >
+                        Rawalpindi
+                    </option>
+
+                </select>
+
+            </div>
+
+            <button type="submit" class="apply-btn">
+                Apply Filters
+            </button>
+
+        </aside>
+
+        <!-- LISTINGS -->
+
+        <div class="listings">
+
+            <div class="listing-top">
+
+                <h2>
+                    {{ prop.paginator.count }} Properties Found
+                </h2>
+
+            </div>
+
+            <div class="property-grid">
+
+                {% for item in prop %}
+
+                <a href="{% url 'property_detail' item.slug %}">
+
+                    <div class="card">
+
+                        <div class="card-image">
+
+                            <img src="{{ item.featured_image.url }}" alt="">
+
+                            <div class="tag">
+                                For {{ item.purpose }}
+                            </div>
+
+                        </div>
+
+                        <div class="card-content">
+
+                            <h3>{{ item.title }}</h3>
+
+                            <div class="location">
+                                {{ item.city }}
+                            </div>
+
+                            <div class="price">
+                                PKR {{ item.price }}
+                            </div>
+
+                            <div class="property-info">
+
+                                <span>
+                                    {{ item.bedrooms }} Beds
+                                </span>
+
+                                <span>
+                                    {{ item.bathrooms }} Baths
+                                </span>
+
+                                <span>
+                                    {{ item.property_size }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+                {% empty %}
+
+                <h2>No Properties Found</h2>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- PAGINATION -->
+
+            <div class="pagination">
+
+                {% if prop.has_previous %}
+
+                <a href="?page={{ prop.previous_page_number }}"
+                   class="page">
+                    Prev
+                </a>
+
+                {% endif %}
+
+                {% for num in prop.paginator.page_range %}
+
+                <a href="?page={{ num }}"
+                   class="page {% if prop.number == num %}active{% endif %}">
+                    {{ num }}
+                </a>
+
+                {% endfor %}
+
+                {% if prop.has_next %}
+
+                <a href="?page={{ prop.next_page_number }}"
+                   class="page">
+                    Next
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+</div>
+
+<script>
+
+    const sortSelect = document.querySelector('[name="sort"]');
+
+    sortSelect.addEventListener("change", () => {
+
+        sortSelect.form.submit();
+
+    });
+
+</script>
+
+{% endblock content %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}{% endblock nav %}
+{% block footer %}{% endblock footer %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dealer_base.css' %}">
+{% block extra_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="dealer-shell">
+
+  <!-- ══════════ TOP NAVBAR ══════════ -->
+  <header class="dealer-topbar">
+    <div class="dtb-left">
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <a href="{% url 'home' %}" class="dtb-brand">
+        <div class="dtb-logo">
+          <img src="{% static 'images/RA2.png' %}" alt="" width="28px">
+        </div>
+        <div class="dtb-brand-text">
+          <span class="dtb-name">ROSHAN AASHIYANA</span>
+          <span class="dtb-tag">Dealer Panel</span>
+        </div>
+      </a>
+    </div>
+    <div class="dtb-right">
+      <a href="{% url 'listings' %}" class="dtb-icon-btn" title="Browse Listings">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </a>
+      <a href="{% url 'add_property' %}" class="dtb-add-btn">
+        <i class="fa-solid fa-plus"></i> Add Property
+      </a>
+      <div class="dtb-avatar">
+        <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+        <span>{{ dealer.full_name|truncatechars:14 }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════ BODY ══════════ -->
+  <div class="dealer-body">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="dealer-sidebar" id="dealerSidebar">
+
+      <!-- Profile -->
+      <div class="sidebar-profile">
+        <div class="sp-avatar">
+          <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+          <div class="sp-online"></div>
+        </div>
+        <h3>{{ dealer.full_name }}</h3>
+        <div class="sp-badge"><i class="fa-solid fa-circle-check"></i> Verified Dealer</div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="sidebar-nav">
+        <p class="snav-label">Main Menu</p>
+
+        <a href="{% url 'dashboard' %}"
+           class="snav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <span class="snav-icon"><i class="fa-solid fa-gauge"></i></span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="{% url 'add_property' %}"
+           class="snav-link {% if request.resolver_match.url_name == 'add_property' %}active{% endif %}">
+          <span class="snav-icon"><i class="fa-solid fa-circle-plus"></i></span>
+          <span>Add Property</span>
+        </a>
+
+        <a href="{% url 'my_listings' %}"
+           class="snav-link {% if request.resolver_match.url_name == 'my_listings' %}active{% endif %}">
+          <span class="snav-icon"><i class="fa-solid fa-building"></i></span>
+          <span>My Listings</span>
+        </a>
+
+        <a href="{% url 'dealer_reviews' %}"
+           class="snav-link {% if request.resolver_match.url_name == 'dealer_reviews' %}active{% endif %}">
+          <span class="snav-icon"><i class="fa-solid fa-star"></i></span>
+          <span>Reviews</span>
+        </a>
+
+        <a href="{% url 'dealer_inquiries' %}"
+           class="snav-link {% if request.resolver_match.url_name == 'dealer_inquiries' %}active{% endif %}">
+          <span class="snav-icon"><i class="fa-solid fa-envelope"></i></span>
+          <span>Inquiries</span>
+        </a>
+
+        <p class="snav-label" style="margin-top:20px;">Account</p>
+
+        <a href="{% url 'home' %}" class="snav-link">
+          <span class="snav-icon"><i class="fa-solid fa-globe"></i></span>
+          <span>View Website</span>
+        </a>
+
+        <a href="{% url 'logout' %}" class="snav-link snav-logout">
+          <span class="snav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+    </aside>
+    <!-- /.dealer-sidebar -->
+
+    <!-- ══ MAIN CONTENT ══ -->
+    <main class="dealer-content">
+      {% block dashboard_content %}{% endblock %}
+    </main>
+
+  </div>
+  <!-- /.dealer-body -->
+
+</div>
+<!-- /.dealer-shell -->
+
+<script>
+  // Sidebar toggle (mobile)
+  const toggle  = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('dealerSidebar');
+  toggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', e => {
+    if (window.innerWidth < 1024 &&
+        !sidebar.contains(e.target) &&
+        !toggle.contains(e.target)) {
+      sidebar.classList.remove('open');
+    }
+  });
+</script>
+
+{% endblock %}

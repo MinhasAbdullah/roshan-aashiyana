@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ prop.title }} | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/property_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ PAGE HERO STRIP ═══════ -->
+<div class="detail-hero">
+  <div class="detail-hero-bg"></div>
+  <div class="detail-hero-overlay"></div>
+  <div class="container detail-hero-content">
+    <div class="breadcrumb">
+      <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a>
+      <i class="fa-solid fa-chevron-right bc-sep"></i>
+      <a href="{% url 'listings' %}">Properties</a>
+      <i class="fa-solid fa-chevron-right bc-sep"></i>
+      <a href="{% url 'listings' %}?city={{ prop.city }}">{{ prop.city }}</a>
+      <i class="fa-solid fa-chevron-right bc-sep"></i>
+      <span>{{ prop.title }}</span>
+    </div>
+    <h1 class="dh-title">{{ prop.title }}</h1>
+    <div class="dh-meta">
+      <span class="dh-location"><i class="fa-solid fa-location-dot"></i> {{ prop.area }}, {{ prop.city }}</span>
+      <span class="dh-badge {% if prop.purpose == 'sale' %}badge-sale{% else %}badge-rent{% endif %}">
+        For {{ prop.purpose|title }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MAIN BODY ═══════ -->
+<section class="property-page">
+  <div class="container">
+    <div class="property-layout">
+
+      <!-- ══════ LEFT COLUMN ══════ -->
+      <div class="prop-left">
+
+        <!-- MAIN IMAGE -->
+        <div class="main-image">
+          <img id="mainPhoto" src="{{ prop.featured_image.url }}" alt="{{ prop.title }}">
+          <div class="img-overlay-bar">
+            <span class="photo-count"><i class="fa-regular fa-image"></i> {{ prop.images.count|add:1 }} Photos</span>
+            <a href="{% url 'add_favourite' prop.slug %}" class="fav-pill">
+              <i class="fa-{% if is_favourite %}solid{% else %}regular{% endif %} fa-heart"></i>
+              {% if is_favourite %}Saved{% else %}Save{% endif %}
+            </a>
+          </div>
+        </div>
+
+        <!-- GALLERY -->
+        {% if prop.images.all %}
+        <div class="gallery">
+          <div class="gallery-img active" style="background-image:url('{{ prop.featured_image.url }}');"
+               data-src="{{ prop.featured_image.url }}"></div>
+          {% for img in prop.images.all %}
+          <div class="gallery-img" style="background-image:url('{{ img.image.url }}');"
+               data-src="{{ img.image.url }}"></div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- PROPERTY DETAILS -->
+        <div class="detail-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-list-check"></i> Property Details</h2>
+          </div>
+          <div class="info-grid">
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-bed"></i></div>
+              <div class="ib-text"><span>Bedrooms</span><strong>{{ prop.bedrooms }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-shower"></i></div>
+              <div class="ib-text"><span>Bathrooms</span><strong>{{ prop.bathrooms }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-kitchen-set"></i></div>
+              <div class="ib-text"><span>Kitchens</span><strong>{{ prop.kitchens }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-car"></i></div>
+              <div class="ib-text"><span>Garage</span><strong>{{ prop.garages }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-expand"></i></div>
+              <div class="ib-text"><span>Area</span><strong>{{ prop.property_size }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-couch"></i></div>
+              <div class="ib-text"><span>Furnishing</span><strong>{{ prop.furnishing }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-eye"></i></div>
+              <div class="ib-text"><span>Views</span><strong>{{ prop.views }}</strong></div>
+            </div>
+            <div class="info-box">
+              <div class="ib-icon"><i class="fa-solid fa-calendar"></i></div>
+              <div class="ib-text"><span>Year Built</span><strong>{{ prop.year_built }}</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="detail-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-align-left"></i> Description</h2>
+          </div>
+          <p class="desc-text">{{ prop.description }}</p>
+        </div>
+
+        <!-- AMENITIES & FEATURES -->
+        <div class="detail-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-star"></i> Amenities & Features</h2>
+          </div>
+          <div class="features-grid">
+            {% for feature in prop.features.all %}
+            <div class="feature-pill">
+              <i class="fa-solid fa-check"></i> {{ feature.name }}
+            </div>
+            {% empty %}
+            <p class="empty-note">No features listed for this property.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- REVIEWS -->
+        <div class="detail-card review-card">
+          <div class="card-head review-head">
+            <div>
+              <h2><i class="fa-solid fa-star-half-stroke"></i> Customer Reviews</h2>
+              <div class="rating-summary">
+                <div class="rating-big">{{ average_rating|floatformat:1 }}</div>
+                <div class="rating-right">
+                  <div class="stars-row">★★★★★</div>
+                  <p>{{ reviews.count }} Review{{ reviews.count|pluralize }}</p>
+                </div>
+              </div>
+            </div>
+            {% if user.is_authenticated %}
+            <button class="review-btn" id="openReview">
+              <i class="fa-solid fa-pen"></i> Write A Review
+            </button>
+            {% endif %}
+          </div>
+
+          <div class="review-list">
+            {% for review in reviews %}
+            <div class="single-review">
+              <div class="review-user">
+                <img src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff" alt="{{ review.user.username }}">
+                <div class="review-user-info">
+                  <h4>{{ review.user.username }}</h4>
+                  <div class="review-stars">
+                    {% for i in "12345" %}
+                      <i class="fa-{% if forloop.counter <= review.rating %}solid{% else %}regular{% endif %} fa-star"></i>
+                    {% endfor %}
+                  </div>
+                  <span class="review-time">{{ review.created_at|timesince }} ago</span>
+                </div>
+              </div>
+              <p class="review-text">{{ review.comment }}</p>
+            </div>
+            {% empty %}
+            <div class="no-reviews">
+              <i class="fa-regular fa-comment-dots"></i>
+              <p>No reviews yet. Be the first to review!</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+      <!-- /.prop-left -->
+
+      <!-- ══════ RIGHT SIDEBAR ══════ -->
+      <aside class="prop-sidebar">
+
+        <!-- PRICE CARD -->
+        <div class="contact-card price-card">
+          <div class="price-tag">PKR {{ prop.price }}</div>
+          <h3 class="prop-title-sm">{{ prop.title }}</h3>
+          <div class="loc-row"><i class="fa-solid fa-location-dot"></i> {{ prop.area }}, {{ prop.city }}</div>
+          <div class="quick-specs">
+            {% if prop.bedrooms %}<span><i class="fa-solid fa-bed"></i> {{ prop.bedrooms }} Beds</span>{% endif %}
+            {% if prop.bathrooms %}<span><i class="fa-solid fa-shower"></i> {{ prop.bathrooms }} Baths</span>{% endif %}
+            {% if prop.property_size %}<span><i class="fa-solid fa-expand"></i> {{ prop.property_size }}</span>{% endif %}
+          </div>
+          <button class="side-btn btn-green"><i class="fa-solid fa-phone"></i> Call Seller</button>
+          <button class="side-btn btn-outline-green"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+        </div>
+
+        <!-- DEALER CARD -->
+        <div class="contact-card dealer-card">
+          <p class="card-label">Listed by</p>
+          <div class="agent-row">
+            <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+            <div>
+              <h4>{{ dealer.full_name }}</h4>
+              <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified Dealer</span>
+            </div>
+          </div>
+          <button class="side-btn btn-green"><i class="fa-solid fa-eye"></i> View Phone Number</button>
+        </div>
+
+        <!-- INQUIRY CARD -->
+        <div class="contact-card inquiry-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-paper-plane"></i> Send Inquiry</h2>
+          </div>
+          <form method="POST" class="inquiry-form">
+            {% csrf_token %}
+            <div class="inq-group">
+              <i class="fa-solid fa-user"></i>
+              <input type="text" name="name" placeholder="Your Name" required>
+            </div>
+            <div class="inq-group">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" name="email" placeholder="Your Email" required>
+            </div>
+            <div class="inq-group">
+              <i class="fa-solid fa-phone"></i>
+              <input type="text" name="phone" placeholder="Phone Number" required>
+            </div>
+            <div class="inq-group inq-textarea">
+              <i class="fa-solid fa-message"></i>
+              <textarea name="message" rows="4" placeholder="I am interested in this property..."></textarea>
+            </div>
+            <button type="submit" class="side-btn btn-green" name="send_inquiry">
+              <i class="fa-solid fa-paper-plane"></i> Send Inquiry
+            </button>
+          </form>
+        </div>
+
+        <!-- OVERVIEW CARD -->
+        <div class="contact-card overview-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-chart-bar"></i> Overview</h2>
+          </div>
+          <div class="overview-list">
+            <div class="ov-row">
+              <span><i class="fa-solid fa-tag"></i> Purpose</span>
+              <strong>{{ prop.purpose|title }}</strong>
+            </div>
+            <div class="ov-row">
+              <span><i class="fa-solid fa-home"></i> Type</span>
+              <strong>{{ prop.property_type }}</strong>
+            </div>
+            <div class="ov-row">
+              <span><i class="fa-solid fa-expand"></i> Area</span>
+              <strong>{{ prop.property_size }}</strong>
+            </div>
+            <div class="ov-row">
+              <span><i class="fa-solid fa-bed"></i> Bedrooms</span>
+              <strong>{{ prop.bedrooms }}</strong>
+            </div>
+            <div class="ov-row">
+              <span><i class="fa-solid fa-shower"></i> Bathrooms</span>
+              <strong>{{ prop.bathrooms }}</strong>
+            </div>
+            <div class="ov-row">
+              <span><i class="fa-solid fa-eye"></i> Views</span>
+              <strong>{{ prop.views }}</strong>
+            </div>
+            <div class="ov-row">
+              <span><i class="fa-regular fa-clock"></i> Added</span>
+              <strong>{{ prop.created_at|timesince }} ago</strong>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ REVIEW MODAL ═══════ -->
+<div class="review-modal" id="reviewModal">
+  <div class="review-modal-box">
+    <button class="close-review" id="closeReview"><i class="fa-solid fa-times"></i></button>
+    <h2><i class="fa-solid fa-star"></i> Write A Review</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="modal-form-group">
+        <label>Your Rating</label>
+        <div class="star-select-row">
+          {% for val in "54321" %}
+          <label class="star-label">
+            <input type="radio" name="rating" value="{{ val }}"> {{ val }} <i class="fa-solid fa-star"></i>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="modal-form-group">
+        <label>Your Comment</label>
+        <textarea name="comment" rows="5" placeholder="Share your experience with this property..."></textarea>
+      </div>
+      <button type="submit" class="side-btn btn-green" name="send_review">
+        <i class="fa-solid fa-paper-plane"></i> Submit Review
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Gallery switcher
+  const galleryImgs = document.querySelectorAll(".gallery-img");
+  const mainPhoto = document.getElementById("mainPhoto");
+
+  galleryImgs.forEach(div => {
+    div.addEventListener("click", () => {
+      mainPhoto.src = div.dataset.src;
+      galleryImgs.forEach(d => d.classList.remove("active"));
+      div.classList.add("active");
+    });
+  });
+
+  // Review modal
+  const reviewModal = document.getElementById("reviewModal");
+  const openReview  = document.getElementById("openReview");
+  const closeReview = document.getElementById("closeReview");
+
+  if (openReview) openReview.onclick  = () => reviewModal.classList.add("active");
+  closeReview.onclick = () => reviewModal.classList.remove("active");
+  reviewModal.addEventListener("click", e => { if (e.target === reviewModal) reviewModal.classList.remove("active"); });
+</script>
+
+{% endblock %}

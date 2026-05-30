@@ -1,0 +1,437 @@
+{% extends 'dealer_base.html' %}
+{% load static %}
+
+{% block title %}Add Property | Roshan Aashiyana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/add_property.css' %}">
+{% endblock extra_css %}
+
+{% block dashboard_content %}
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="dash-header">
+  <div>
+    <p class="dash-greeting"><i class="fa-solid fa-circle-plus"></i> New Listing</p>
+    <h1 class="dash-title">Add New Property</h1>
+    <p class="dash-sub">Fill in the details below to publish your property listing.</p>
+  </div>
+  <a href="{% url 'my_listings' %}" class="btn-back">
+    <i class="fa-solid fa-arrow-left"></i> My Listings
+  </a>
+</div>
+
+<!-- ══ LAYOUT ══ -->
+<div class="ap-layout">
+
+  <!-- ════ LEFT — FORM ════ -->
+  <div class="ap-form-col">
+    <form method="POST" enctype="multipart/form-data" id="addPropertyForm">
+      {% csrf_token %}
+
+      <!-- ── SECTION 1: Basic Info ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon"><i class="fa-solid fa-circle-info"></i></div>
+          <div>
+            <h2>Basic Information</h2>
+            <p>Property title, type and pricing</p>
+          </div>
+          <div class="fc-step">1</div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-heading"></i> Property Title</label>
+          <div class="input-wrap">
+            <input type="text" name="title" placeholder="e.g. Modern 5-Bedroom Villa in DHA">
+          </div>
+        </div>
+
+        <div class="double-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-home"></i> Property Type</label>
+            <div class="input-wrap select-wrap">
+              <select name="property_type">
+                <option value="">Select Type</option>
+                {% for item in propertytype %}
+                <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endfor %}
+              </select>
+              <i class="fa-solid fa-chevron-down sel-arr"></i>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-tag"></i> Purpose</label>
+            <div class="input-wrap select-wrap">
+              <select name="purpose">
+                <option value="sale">For Sale</option>
+                <option value="rent">For Rent</option>
+              </select>
+              <i class="fa-solid fa-chevron-down sel-arr"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-Pakistani-rupee-sign"></i> Price (PKR)</label>
+          <div class="input-wrap input-prefix">
+            <span class="prefix">PKR</span>
+            <input type="number" name="price" placeholder="e.g. 1500000">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: Location ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-orange"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h2>Location</h2>
+            <p>City, area and full address</p>
+          </div>
+          <div class="fc-step fc-step-orange">2</div>
+        </div>
+
+        <div class="double-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-city"></i> City</label>
+            <div class="input-wrap">
+              <input type="text" name="city" placeholder="e.g. Islamabad">
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-map-pin"></i> Area / Locality</label>
+            <div class="input-wrap">
+              <input type="text" name="area" placeholder="e.g. DHA Phase 2">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-map"></i> Full Address</label>
+          <div class="input-wrap">
+            <textarea name="address" rows="3" placeholder="Street number, block, sector..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 3: Property Details ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-purple"><i class="fa-solid fa-list-check"></i></div>
+          <div>
+            <h2>Property Details</h2>
+            <p>Rooms, size and condition</p>
+          </div>
+          <div class="fc-step fc-step-purple">3</div>
+        </div>
+
+        <div class="details-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-bed"></i> Bedrooms</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="bedrooms">−</button>
+              <input type="number" name="bedrooms" id="bedrooms" value="0" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="bedrooms">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-shower"></i> Bathrooms</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="bathrooms">−</button>
+              <input type="number" name="bathrooms" id="bathrooms" value="0" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="bathrooms">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-kitchen-set"></i> Kitchens</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="kitchens">−</button>
+              <input type="number" name="kitchens" id="kitchens" value="0" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="kitchens">+</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-car"></i> Garages</label>
+            <div class="input-wrap num-wrap">
+              <button type="button" class="num-btn" data-action="dec" data-target="garages">−</button>
+              <input type="number" name="garages" id="garages" value="0" min="0">
+              <button type="button" class="num-btn" data-action="inc" data-target="garages">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="double-grid">
+          <div class="form-group">
+            <label><i class="fa-solid fa-expand"></i> Property Size</label>
+            <div class="input-wrap">
+              <input type="text" name="property_size" placeholder="e.g. 10 Marla, 1 Kanal">
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fa-solid fa-calendar"></i> Year Built</label>
+            <div class="input-wrap">
+              <input type="number" name="year_built" placeholder="e.g. 2020">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-couch"></i> Furnishing</label>
+          <div class="furnish-pills">
+            <label class="fpill">
+              <input type="radio" name="furnishing" value="furnished"> Furnished
+            </label>
+            <label class="fpill">
+              <input type="radio" name="furnishing" value="semi_furnished" checked> Semi Furnished
+            </label>
+            <label class="fpill">
+              <input type="radio" name="furnishing" value="unfurnished"> Unfurnished
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-align-left"></i> Description</label>
+          <div class="input-wrap">
+            <textarea name="description" rows="6"
+              placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4: Features ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-yellow"><i class="fa-solid fa-star"></i></div>
+          <div>
+            <h2>Amenities & Features</h2>
+            <p>Select all that apply</p>
+          </div>
+          <div class="fc-step fc-step-yellow">4</div>
+        </div>
+
+        <div class="features-grid">
+          {% for item in features %}
+          <label class="feature-item">
+            <input type="checkbox" name="features" value="{{ item.id }}">
+            <span class="fi-box"><i class="fa-solid fa-check"></i></span>
+            <span class="fi-name">{{ item.name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- ── SECTION 5: Images ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-pink"><i class="fa-solid fa-images"></i></div>
+          <div>
+            <h2>Upload Images</h2>
+            <p>Featured image + additional gallery photos</p>
+          </div>
+          <div class="fc-step fc-step-pink">5</div>
+        </div>
+
+        <!-- Featured Image -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-star"></i> Featured Image <span class="req">*</span></label>
+          <div class="file-zone" id="featuredZone">
+            <input type="file" name="featured_image" id="featuredInput" accept="image/*">
+            <div class="fz-inner" id="featuredInner">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <p>Click or drag & drop featured image</p>
+              <span>This will be shown as the main property photo</span>
+            </div>
+            <img id="featuredPreview" class="fz-preview" src="" alt="">
+          </div>
+        </div>
+
+        <!-- Additional Images -->
+        <div class="form-group">
+          <label><i class="fa-solid fa-images"></i> Additional Gallery Images</label>
+          <div class="multi-upload">
+            <div class="file-zone file-zone-sm">
+              <input type="file" name="images" accept="image/*" class="extra-img-input">
+              <div class="fz-inner-sm"><i class="fa-solid fa-plus"></i><span>Photo 1</span></div>
+              <img class="fz-preview-sm" src="" alt="">
+            </div>
+            <div class="file-zone file-zone-sm">
+              <input type="file" name="images" accept="image/*" class="extra-img-input">
+              <div class="fz-inner-sm"><i class="fa-solid fa-plus"></i><span>Photo 2</span></div>
+              <img class="fz-preview-sm" src="" alt="">
+            </div>
+            <div class="file-zone file-zone-sm">
+              <input type="file" name="images" accept="image/*" class="extra-img-input">
+              <div class="fz-inner-sm"><i class="fa-solid fa-plus"></i><span>Photo 3</span></div>
+              <img class="fz-preview-sm" src="" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SUBMIT ── -->
+      <button type="submit" class="submit-btn">
+        <i class="fa-solid fa-circle-check"></i> Publish Property
+      </button>
+
+    </form>
+  </div>
+
+  <!-- ════ RIGHT — TIPS ════ -->
+  <aside class="ap-tips-col">
+
+    <!-- Progress tracker -->
+    <div class="tips-card progress-card">
+      <h3><i class="fa-solid fa-chart-simple"></i> Form Progress</h3>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p class="progress-label" id="progressLabel">0% Complete</p>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-card">
+      <h3><i class="fa-solid fa-lightbulb"></i> Listing Tips</h3>
+      <ul class="tip-list">
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-camera"></i></div>
+          <div><strong>Use high quality images</strong><span>Clear, well-lit photos get 3× more views.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div><strong>Add complete address</strong><span>Buyers prefer exact location details.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-tag"></i></div>
+          <div><strong>Set accurate price</strong><span>Competitive pricing gets more inquiries.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-list"></i></div>
+          <div><strong>Fill all details</strong><span>Complete listings rank higher in search.</span></div>
+        </li>
+        <li>
+          <div class="tip-icon"><i class="fa-solid fa-star"></i></div>
+          <div><strong>Select amenities</strong><span>Highlight features that add value.</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Quick stats -->
+    <div class="tips-card stat-reminder">
+      <div class="sr-row">
+        <i class="fa-solid fa-eye"></i>
+        <div><strong>1500+</strong><span>Active browsers daily</span></div>
+      </div>
+      <div class="sr-row">
+        <i class="fa-solid fa-envelope"></i>
+        <div><strong>Get leads</strong><span>Buyers contact you directly</span></div>
+      </div>
+      <div class="sr-row">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div><strong>Verified badge</strong><span>Builds buyer confidence</span></div>
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<script>
+  // ── Number stepper buttons ──
+  document.querySelectorAll('.num-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      let val = parseInt(input.value) || 0;
+      if (btn.dataset.action === 'inc') val++;
+      else if (btn.dataset.action === 'dec' && val > 0) val--;
+      input.value = val;
+      updateProgress();
+    });
+  });
+
+  // ── Furnishing pills ──
+  document.querySelectorAll('.fpill input').forEach(r => {
+    r.addEventListener('change', () => {
+      document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
+      r.closest('.fpill').classList.add('active');
+    });
+    if (r.checked) r.closest('.fpill').classList.add('active');
+  });
+
+  // ── Feature checkboxes toggle ──
+  document.querySelectorAll('.feature-item input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.feature-item').classList.toggle('selected', cb.checked);
+    });
+  });
+
+  // ── Featured image preview ──
+  const featuredInput   = document.getElementById('featuredInput');
+  const featuredPreview = document.getElementById('featuredPreview');
+  const featuredInner   = document.getElementById('featuredInner');
+
+  featuredInput.addEventListener('change', function () {
+    if (this.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        featuredPreview.src = e.target.result;
+        featuredPreview.style.display = 'block';
+        featuredInner.style.display = 'none';
+      };
+      reader.readAsDataURL(this.files[0]);
+    }
+    updateProgress();
+  });
+
+  // ── Extra image previews ──
+  document.querySelectorAll('.extra-img-input').forEach(input => {
+    input.addEventListener('change', function () {
+      const zone   = this.closest('.file-zone-sm');
+      const inner  = zone.querySelector('.fz-inner-sm');
+      const preview = zone.querySelector('.fz-preview-sm');
+      if (this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          inner.style.display = 'none';
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  });
+
+  // ── Drag & drop featured zone ──
+  const featuredZone = document.getElementById('featuredZone');
+  featuredZone.addEventListener('dragover', e => { e.preventDefault(); featuredZone.classList.add('drag-over'); });
+  featuredZone.addEventListener('dragleave', () => featuredZone.classList.remove('drag-over'));
+  featuredZone.addEventListener('drop', e => {
+    e.preventDefault(); featuredZone.classList.remove('drag-over');
+    featuredInput.files = e.dataTransfer.files;
+    featuredInput.dispatchEvent(new Event('change'));
+  });
+
+  // ── Progress bar ──
+  function updateProgress() {
+    const fields = ['title', 'price', 'city', 'area', 'description'];
+    let filled = 0;
+    fields.forEach(f => {
+      const el = document.querySelector(`[name="${f}"]`);
+      if (el && el.value.trim()) filled++;
+    });
+    if (featuredInput.files.length) filled++;
+    const pct = Math.round((filled / (fields.length + 1)) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = pct + '% Complete';
+  }
+
+  document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', updateProgress);
+    el.addEventListener('change', updateProgress);
+  });
+
+  updateProgress();
+</script>
+
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Favourites | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/favourites.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ HERO STRIP ═══════ -->
+<div class="fav-hero">
+  <div class="fav-hero-bg"></div>
+  <div class="fav-hero-overlay"></div>
+  <div class="container fav-hero-content">
+    <div class="fav-hero-icon"><i class="fa-solid fa-heart"></i></div>
+    <div>
+      <h1>My Favourite Properties</h1>
+      <p>Properties you've saved for later</p>
+    </div>
+    <div class="fav-count-badge">
+      <span class="fc-num">{{ favourite|length }}</span>
+      <span class="fc-label">Saved</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MAIN ═══════ -->
+<section class="fav-page">
+  <div class="container">
+
+    {% if favourite %}
+    <div class="fav-grid">
+      {% for item in favourite %}
+      <div class="fav-card">
+
+        <!-- Image -->
+        <div class="fav-img-wrap">
+          <a href="{% url 'property_detail' item.property.slug %}">
+            <img src="{{ item.property.featured_image.url }}" alt="{{ item.property.title }}">
+          </a>
+          <div class="fav-badge {% if item.property.purpose == 'rent' %}badge-rent{% endif %}">
+            For {{ item.property.purpose|title }}
+          </div>
+          <!-- Remove from favourites -->
+          <a href="{% url 'add_favourite' item.property.slug %}" class="fav-remove" title="Remove from favourites">
+            <i class="fa-solid fa-heart"></i>
+          </a>
+        </div>
+
+        <!-- Content -->
+        <div class="fav-content">
+          <a href="{% url 'property_detail' item.property.slug %}" class="fav-title-link">
+            <h3>{{ item.property.title }}</h3>
+          </a>
+
+          <div class="fav-location">
+            <i class="fa-solid fa-location-dot"></i>
+            {{ item.property.area }}, {{ item.property.city }}
+          </div>
+
+          <div class="fav-price">PKR {{ item.property.price }}</div>
+
+          <div class="fav-specs">
+            {% if item.property.bedrooms %}
+            <span><i class="fa-solid fa-bed"></i> {{ item.property.bedrooms }} Beds</span>
+            {% endif %}
+            {% if item.property.bathrooms %}
+            <span><i class="fa-solid fa-shower"></i> {{ item.property.bathrooms }} Baths</span>
+            {% endif %}
+            {% if item.property.property_size %}
+            <span><i class="fa-solid fa-expand"></i> {{ item.property.property_size }}</span>
+            {% endif %}
+          </div>
+
+          <div class="fav-footer">
+            <a href="{% url 'property_detail' item.property.slug %}" class="btn-view">
+              <i class="fa-solid fa-arrow-right"></i> View Property
+            </a>
+            <a href="{% url 'add_favourite' item.property.slug %}" class="btn-remove">
+              <i class="fa-regular fa-trash-can"></i> Remove
+            </a>
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+      <div class="empty-icon"><i class="fa-regular fa-heart"></i></div>
+      <h2>No Saved Properties Yet</h2>
+      <p>Start exploring and save properties you love by clicking the heart icon.</p>
+      <a href="{% url 'listings' %}" class="btn-explore">
+        <i class="fa-solid fa-search"></i> Browse Properties
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}

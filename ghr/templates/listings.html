@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Browse Properties | Roshan Aashiyana{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/listings.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<!-- ═══════ HERO BANNER ═══════ -->
+<section class="listings-hero">
+  <div class="listings-hero-bg"></div>
+  <div class="listings-hero-overlay"></div>
+  <div class="container listings-hero-content">
+    <div class="listings-hero-text">
+      <p class="lh-label"><i class="fa-solid fa-location-dot"></i> Pakistan's #1 Property Platform</p>
+      <h1>Browse <span>Properties</span></h1>
+      <p class="lh-sub">Explore houses, apartments, plots and commercial properties across Pakistan.</p>
+    </div>
+    <div class="lh-stats">
+      <div class="lh-stat"><span class="lh-num">1500+</span><span class="lh-name">Listings</span></div>
+      <div class="lh-stat-div"></div>
+      <div class="lh-stat"><span class="lh-num">25+</span><span class="lh-name">Cities</span></div>
+      <div class="lh-stat-div"></div>
+      <div class="lh-stat"><span class="lh-num">100%</span><span class="lh-name">Verified</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ SEARCH BAR ═══════ -->
+<div class="search-strip">
+  <div class="container">
+    <form method="GET" id="searchForm">
+      <div class="search-bar">
+        <div class="sb-field">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <div class="sb-inner">
+            <label>Search</label>
+            <input type="text" name="keyword" placeholder="City, area or keyword" value="{{ request.GET.keyword }}">
+          </div>
+        </div>
+        <div class="sb-div"></div>
+        <div class="sb-field">
+          <i class="fa-solid fa-house-chimney"></i>
+          <div class="sb-inner">
+            <label>Property Type</label>
+            <select name="property_type">
+              <option value="">All Types</option>
+              <option value="House"      {% if request.GET.property_type == "House"      %}selected{% endif %}>House</option>
+              <option value="Apartment"  {% if request.GET.property_type == "Apartment"  %}selected{% endif %}>Apartment</option>
+              <option value="Plot"       {% if request.GET.property_type == "Plot"       %}selected{% endif %}>Plot</option>
+              <option value="Commercial" {% if request.GET.property_type == "Commercial" %}selected{% endif %}>Commercial</option>
+            </select>
+          </div>
+        </div>
+        <div class="sb-div"></div>
+        <div class="sb-field">
+          <i class="fa-solid fa-tag"></i>
+          <div class="sb-inner">
+            <label>Purpose</label>
+            <select name="purpose">
+              <option value="">Buy or Rent</option>
+              <option value="sale" {% if request.GET.purpose == "sale" %}selected{% endif %}>For Sale</option>
+              <option value="rent" {% if request.GET.purpose == "rent" %}selected{% endif %}>For Rent</option>
+            </select>
+          </div>
+        </div>
+        <div class="sb-div"></div>
+        <div class="sb-field">
+          <i class="fa-solid fa-arrow-down-wide-short"></i>
+          <div class="sb-inner">
+            <label>Sort By</label>
+            <select name="sort" id="sortSelect">
+              <option value="">Default</option>
+              <option value="latest" {% if request.GET.sort == "latest" %}selected{% endif %}>Latest</option>
+              <option value="low"    {% if request.GET.sort == "low"    %}selected{% endif %}>Low Price</option>
+              <option value="high"   {% if request.GET.sort == "high"   %}selected{% endif %}>High Price</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="sb-btn">
+          <i class="fa-solid fa-magnifying-glass"></i> Search
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════ MAIN LAYOUT ═══════ -->
+<div class="listings-body">
+  <div class="container">
+    <form method="GET" id="filterForm">
+
+      <!-- preserve search params -->
+      {% if request.GET.keyword %}<input type="hidden" name="keyword" value="{{ request.GET.keyword }}">{% endif %}
+      {% if request.GET.property_type %}<input type="hidden" name="property_type" value="{{ request.GET.property_type }}">{% endif %}
+      {% if request.GET.purpose %}<input type="hidden" name="purpose" value="{{ request.GET.purpose }}">{% endif %}
+      {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+
+      <div class="listings-layout">
+
+        <!-- ── SIDEBAR ── -->
+        <aside class="sidebar">
+          <div class="sidebar-header">
+            <h3><i class="fa-solid fa-sliders"></i> Filters</h3>
+            <a href="{% url 'listings' %}" class="clear-link">Clear all</a>
+          </div>
+
+          <!-- Bedrooms -->
+          <div class="filter-group">
+            <h4>Bedrooms</h4>
+            <div class="radio-pills">
+              {% for val,lbl in "1:1+,2:2+,3:3+,5:5+"|dictsort:"0" %}{% endfor %}
+              <label class="pill {% if request.GET.bedrooms == '1' %}active{% endif %}">
+                <input type="radio" name="bedrooms" value="1" {% if request.GET.bedrooms == "1" %}checked{% endif %}> 1+
+              </label>
+              <label class="pill {% if request.GET.bedrooms == '2' %}active{% endif %}">
+                <input type="radio" name="bedrooms" value="2" {% if request.GET.bedrooms == "2" %}checked{% endif %}> 2+
+              </label>
+              <label class="pill {% if request.GET.bedrooms == '3' %}active{% endif %}">
+                <input type="radio" name="bedrooms" value="3" {% if request.GET.bedrooms == "3" %}checked{% endif %}> 3+
+              </label>
+              <label class="pill {% if request.GET.bedrooms == '5' %}active{% endif %}">
+                <input type="radio" name="bedrooms" value="5" {% if request.GET.bedrooms == "5" %}checked{% endif %}> 5+
+              </label>
+            </div>
+          </div>
+
+          <!-- City -->
+          <div class="filter-group">
+            <h4>City</h4>
+            <div class="select-wrap">
+              <i class="fa-solid fa-location-dot"></i>
+              <select name="city">
+                <option value="">All Cities</option>
+                <option value="Islamabad"  {% if request.GET.city == "Islamabad"  %}selected{% endif %}>Islamabad</option>
+                <option value="Lahore"     {% if request.GET.city == "Lahore"     %}selected{% endif %}>Lahore</option>
+                <option value="Karachi"    {% if request.GET.city == "Karachi"    %}selected{% endif %}>Karachi</option>
+                <option value="Rawalpindi" {% if request.GET.city == "Rawalpindi" %}selected{% endif %}>Rawalpindi</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Purpose quick filter -->
+          <div class="filter-group">
+            <h4>Purpose</h4>
+            <div class="radio-pills">
+              <label class="pill {% if request.GET.purpose == 'sale' %}active{% endif %}">
+                <input type="radio" name="purpose" value="sale" {% if request.GET.purpose == "sale" %}checked{% endif %}> For Sale
+              </label>
+              <label class="pill {% if request.GET.purpose == 'rent' %}active{% endif %}">
+                <input type="radio" name="purpose" value="rent" {% if request.GET.purpose == "rent" %}checked{% endif %}> For Rent
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="apply-btn">
+            <i class="fa-solid fa-filter"></i> Apply Filters
+          </button>
+        </aside>
+
+        <!-- ── LISTINGS ── -->
+        <div class="listings-panel">
+
+          <div class="listing-top">
+            <h2><span class="count">{{ prop.paginator.count }}</span> Properties Found</h2>
+          </div>
+
+          <div class="property-grid">
+            {% for item in prop %}
+            <div class="card">
+              <div class="card-image">
+                <a href="{% url 'property_detail' item.slug %}" class="card-img-link">
+                  <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+                </a>
+                <div class="tag {% if item.purpose == 'rent' %}tag-rent{% endif %}">
+                  For {{ item.purpose|title }}
+                </div>
+                {% if request.user.is_authenticated %}
+                  <a href="{% url 'add_favourite' item.slug %}" class="fav-btn">
+                  {% if item.id in favourite_ids %}
+                    <i class="fa-solid fa-heart" style="color:#e53935;"></i>
+                  {% else %}
+                    <i class="fa-regular fa-heart"></i>
+                  {% endif %}
+                {% else %}
+                  <i class="fa-regular fa-heart"></i>
+                {% endif %}
+                </a>
+              </div>
+              <div class="card-content">
+                <a href="{% url 'property_detail' item.slug %}" class="card-link">
+                  <h3>{{ item.title }}</h3>
+                  <div class="location">
+                    <i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}
+                  </div>
+                  <div class="price">PKR {{ item.price }}</div>
+                  <div class="property-info">
+                    {% if item.bedrooms %}<span><i class="fa-solid fa-bed"></i> {{ item.bedrooms }} Beds</span>{% endif %}
+                    {% if item.bathrooms %}<span><i class="fa-solid fa-shower"></i> {{ item.bathrooms }} Baths</span>{% endif %}
+                    {% if item.property_size %}<span><i class="fa-solid fa-expand"></i> {{ item.property_size }}</span>{% endif %}
+                  </div>
+                </a>
+              </div>
+            </div>
+            {% empty %}
+            <div class="no-results">
+              <i class="fa-solid fa-house-circle-xmark"></i>
+              <h3>No Properties Found</h3>
+              <p>Try adjusting your filters or search term.</p>
+              <a href="{% url 'listings' %}" class="apply-btn" style="display:inline-flex;width:auto;margin-top:8px;">Clear Filters</a>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- PAGINATION -->
+          <div class="pagination">
+            {% if prop.has_previous %}
+            <a href="?page={{ prop.previous_page_number }}" class="page page-arrow">
+              <i class="fa-solid fa-chevron-left"></i>
+            </a>
+            {% endif %}
+            {% for num in prop.paginator.page_range %}
+            <a href="?page={{ num }}" class="page {% if prop.number == num %}active{% endif %}">{{ num }}</a>
+            {% endfor %}
+            {% if prop.has_next %}
+            <a href="?page={{ prop.next_page_number }}" class="page page-arrow">
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
+            {% endif %}
+          </div>
+
+        </div>
+        <!-- /.listings-panel -->
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Auto-submit on sort change
+  document.getElementById('sortSelect').addEventListener('change', function() {
+    document.getElementById('searchForm').submit();
+  });
+
+  // Pill radio — highlight on click
+  document.querySelectorAll('.radio-pills .pill input').forEach(input => {
+    input.addEventListener('change', () => {
+      input.closest('.radio-pills').querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      input.closest('.pill').classList.add('active');
+    });
+  });
+</script>
+
+{% endblock content %}
