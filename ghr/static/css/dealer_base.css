@@ -157,6 +157,7 @@
   min-height: calc(100vh - 64px);
 }
 
+
 /* ══════ RESPONSIVE ══════ */
 @media (max-width: 1024px) {
   .dealer-sidebar { transform: translateX(-100%); }

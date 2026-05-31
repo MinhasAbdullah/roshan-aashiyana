@@ -5,76 +5,81 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Sum
-from .models import Property, Dealer, PropertyImage, Features, PropertyType, DealerReview, Inquiry,Favorite
-
-# Create your views here.
+from .models import Property, Dealer, PropertyImage, Features, PropertyType, DealerReview, Inquiry,Favorite,ContactMessage
+import re
 
 
 def SignUp(request):
     if request.method == "POST":
-        request.session['last_form'] = 'signup'
         uname = request.POST.get("uname", '').strip()
         email = request.POST.get("email", '').strip()
         phone = request.POST.get("phone", '').strip()
         password = request.POST.get("password", '')
         cpassword = request.POST.get("cpassword", '')
 
+        error = None
+
         if len(uname) < 6:
-            messages.error(request, "Username must be atleast 6 characters")
-            return redirect('home')
-        
-        if len(password) < 6:
-            messages.error(request, "Password must be at least 6 characters.")
-            return redirect('home')
+            error = "Username must be at least 6 characters."
+        elif not re.match(r'^[a-zA-Z0-9_]+$', uname):
+            error = "Username can only contain letters, numbers and underscores."
+        elif len(password) < 6:
+            error = "Password must be at least 6 characters."
+        elif password != cpassword:
+            error = "Passwords do not match."
+        elif User.objects.filter(username=uname).exists():
+            error = "Username already taken. Please choose another."
+        elif User.objects.filter(email=email).exists():
+            error = "An account with this email already exists."
 
-        if password != cpassword:
-            messages.error(request, "Password Doesn't match")
-            return redirect("home")
-
-        if User.objects.filter(username=uname).exists():
-            messages.error(request, "Username already exists")
-            return redirect("home")
-        
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "An account with this email already exists.")
-            return redirect('home')
+        if error:
+            from urllib.parse import urlencode
+            from django.urls import reverse
+            params = urlencode({
+                'auth_error': error,
+                'auth_form': 'signup',
+                'auth_uname': uname,
+                'auth_email':email
+            })
+            return redirect(f"{reverse('home')}?{params}")
 
         user = User.objects.create_user(username=uname, email=email, password=password)
         user.save()
-        messages.success(request, "Account created succesfully")
+        login(request, user)
         return redirect("home")
     return redirect("home")
 
 
 def SignIn(request):
     if request.method == "POST":
-        request.session['last_form'] = 'login'
-        uname = request.POST.get("uname")
-        password = request.POST.get("password")
+        uname = request.POST.get("uname", "").strip()
+        password = request.POST.get("password", "")
 
         user = authenticate(request, username=uname, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "You're Login Successfully")
             return redirect("home")
         else:
-            messages.error(request, "Invalid Username or password")
-            return redirect("home")
+            from urllib.parse import urlencode
+            from django.urls import reverse
+            params = urlencode({
+                'auth_error': 'Invalid username or password. Please try again',
+                'auth_form': 'login',
+                'auth_uname': uname,
+            })
+            return redirect(f"{reverse('home')}?{params}")
 
     return redirect("home")
 
 
 def logout_user(request):
     logout(request)
-    messages.success(request, "You're Logged out")
+    messages.success(request, "You're Logged out successfully")
     return redirect("home")
 
 
 def home(request):
-    # is_dealer = False
-    # if request.user.is_authenticated:
-    #     is_dealer = request.user.dealer_set.exists()
-
+    
     properties = Property.objects.filter(is_featured="True").order_by("-created_at")
     return render(request, "home.html", {"prop": properties})
 
@@ -122,8 +127,8 @@ def listings(request):
     return render(request, "listings.html", {"prop": page_obj,'favourite_ids':favourite_ids})
 
 
-def property_detail(request, slug):
-    property = Property.objects.get(slug=slug)
+def property_detail(request, id, slug):
+    property = Property.objects.get(id=id)
     dealer = property.dealer
 
     reviews = DealerReview.objects.filter(property=property)
@@ -137,7 +142,7 @@ def property_detail(request, slug):
         comment = request.POST.get('comment')
 
         DealerReview.objects.create(property=property, user=request.user, rating=rating, comment = comment)
-        return redirect('property_detail', slug=slug)
+        return redirect('property_detail', id=property.id, slug=property.slug)
     
     if request.method == "POST" and "send_inquiry" in request.POST:
         name = request.POST.get('name')
@@ -147,7 +152,7 @@ def property_detail(request, slug):
 
         Inquiry.objects.create(property=property, name=name, email=email, phone=phone, message=message)
         messages.success(request,'Inquiry send successfully')
-        return redirect('property_detail', slug=slug)
+        return redirect('property_detail', slug=property.slug, id=property.id)
     
     is_favourite = False
     
@@ -158,17 +163,18 @@ def property_detail(request, slug):
     return render(request, "property_detail.html", {"prop": property, 'dealer':dealer, 'reviews': reviews, 'is_favourite':is_favourite})
 
 
-def house(request):
-    properties = Property.objects.filter(property_type__name="House").order_by(
-        "-created_at"
-    )
-
-    paginator = Paginator(properties, 9)
-    page = request.GET.get("page")
-    page_obj = paginator.get_page(page)
-    return render(request, "house.html", {"prop": page_obj})
-
 def about(request):
+    if request.method == "POST":
+        ContactMessage.objects.create(
+            name=request.POST.get("name"),
+            email=request.POST.get("email"),
+            phone=request.POST.get("phone"),
+            subject=request.POST.get("subject"),
+            message=request.POST.get("message"),
+        )
+
+        messages.success(request, "Your message has been sent successfully.")
+        return redirect("about")
     return render(request, 'about.html')
 
 
@@ -176,32 +182,47 @@ def about(request):
 def dealer_register(request):
     if Dealer.objects.filter(user=request.user).exists():
         return redirect("dashboard")
+    
+    errors = {}
+    old = {}
 
     if request.method == "POST":
-        name = request.POST.get("name")
-        cnic = request.POST.get("cnic",'').strip()
-        address = request.POST.get("address")
-        gender = request.POST.get("gender")
-        phone = request.POST.get("phone")
+        name = request.POST.get("name", "").strip()
+        cnic = request.POST.get("cnic", "").strip()
+        address = request.POST.get("address", "").strip()
+        gender = request.POST.get("gender", "")
+        phone = request.POST.get("phone", "").strip()
         picture = request.FILES.get("picture")
 
-        import re
+        old = {
+            'name': name, 'cnic': cnic,
+            'phone': phone, 'gender': gender, 'address': address,
+        }
+
+        if len(name) < 3:
+            errors['name'] = "Full name must be at least 3 characters."
+ 
         cnic_pattern = r'^\d{5}-\d{7}-\d{1}$'
-        if not re.match(cnic_pattern, cnic):
-            messages.error(request, "Invalid CNIC format. Use: 35202-1234567-1")
-            return redirect('dealer_register')
+        if not cnic:
+            errors['cnic'] = "CNIC is required."
+        elif not re.match(cnic_pattern, cnic):
+            errors['cnic'] = "Invalid format. Use: 35202-1234567-1"
+        elif Dealer.objects.filter(cnic=cnic).exists():
+            errors['cnic'] = "A dealer with this CNIC already exists."
+ 
+        phone_digits = re.sub(r'\D', '', phone)
+        if len(phone_digits) < 10:
+            errors['phone'] = "Enter a valid Pakistani phone number."
+ 
+        if not address:
+            errors['address'] = "Address is required."
+ 
+        if not picture:
+            errors['picture'] = "Please upload a profile picture."
 
-        # ── Unique CNIC ──
-        if Dealer.objects.filter(cnic=cnic).exists():
-            messages.error(request, "A dealer account with this CNIC already exists.")
-            return redirect('dealer_register')
-
-        # ── One dealer per user ──
-        if Dealer.objects.filter(user=request.user).exists():
-            messages.error(request, "You already have a dealer account.")
-            return redirect('dashboard')
-
-        Dealer.objects.create(
+        
+        if not errors:
+            Dealer.objects.create(
             user=request.user,
             full_name=name,
             cnic=cnic,
@@ -216,7 +237,10 @@ def dealer_register(request):
 
 @login_required
 def dashboard(request):
-    dealer = Dealer.objects.get(user=request.user)
+    try:
+        dealer = Dealer.objects.get(user=request.user)
+    except Dealer.DoesNotExist:
+        return redirect('dealer_register')
     properties = Property.objects.filter(dealer=dealer)
     inquiries = Inquiry.objects.filter(property__in=properties)
 
@@ -302,10 +326,10 @@ def my_listings(request):
 
 
 @login_required
-def edit_property(request, slug):
+def edit_property(request, id, slug):
 
     dealer = Dealer.objects.get(user=request.user)
-    property = Property.objects.get(slug=slug, dealer=dealer)
+    property = Property.objects.get(id=id, slug=slug, dealer=dealer)
 
     if request.method == "POST":
         property.title = request.POST.get("title")
@@ -371,8 +395,8 @@ def dealer_reviews(request):
     return render(request, 'dealer_reviews.html', {'dealer':dealer, 'reviews':reviews})
 
 @login_required
-def add_favourite(request, slug):
-    property = Property.objects.get(slug=slug)
+def add_favourite(request, id, slug):
+    property = get_object_or_404(Property, id=id, slug=slug)
     favourite = Favorite.objects.filter(user=request.user, property=property)
 
     if favourite.exists():
@@ -380,7 +404,7 @@ def add_favourite(request, slug):
     else:
         Favorite.objects.create(user=request.user, property=property)
     
-    return redirect('property_detail', slug=slug)
+    return redirect('property_detail', id=property.id, slug=property.slug)
 
 @login_required
 def favourites(request):
@@ -390,9 +414,10 @@ def favourites(request):
 
 
 @login_required
-def delete_property(request, slug):
+def delete_property(request, id, slug):
     dealer = Dealer.objects.get(user=request.user)
-    property = Property.objects.get(slug=slug, dealer = dealer)
+    property = Property.objects.get(id=id, slug=slug, dealer = dealer)
     property.delete()
-    messages.success(request, 'deleted succesfully')
+    messages.success(request, 'Property deleted succesfully')
     return redirect('dashboard')
+

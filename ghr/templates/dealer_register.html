@@ -9,7 +9,6 @@
 
 {% block content %}
 
-<!-- ═══════ HERO STRIP ═══════ -->
 <div class="dr-hero">
   <div class="dr-hero-bg"></div>
   <div class="dr-hero-overlay"></div>
@@ -23,80 +22,50 @@
   </div>
 </div>
 
-<!-- ═══════ MAIN SECTION ═══════ -->
 <section class="dr-section">
   <div class="container">
     <div class="dr-wrapper">
 
-      <!-- ══ LEFT PANEL ══ -->
+      <!-- LEFT BENEFITS -->
       <div class="dr-left">
-
         <div class="dr-left-inner">
           <h2>Why Join as a Dealer?</h2>
           <p>Unlock powerful tools to grow your real estate business across Pakistan.</p>
-
           <ul class="benefit-list">
             <li>
               <div class="ben-icon"><i class="fa-solid fa-building"></i></div>
-              <div>
-                <strong>Post Unlimited Properties</strong>
-                <span>List houses, plots, apartments & more with no limits.</span>
-              </div>
+              <div><strong>Post Unlimited Properties</strong><span>List houses, plots, apartments & more with no limits.</span></div>
             </li>
             <li>
               <div class="ben-icon"><i class="fa-solid fa-chart-line"></i></div>
-              <div>
-                <strong>Dealer Dashboard Access</strong>
-                <span>Manage all your listings from one powerful dashboard.</span>
-              </div>
+              <div><strong>Dealer Dashboard Access</strong><span>Manage all your listings from one powerful dashboard.</span></div>
             </li>
             <li>
               <div class="ben-icon"><i class="fa-solid fa-users"></i></div>
-              <div>
-                <strong>Receive Buyer Leads</strong>
-                <span>Get direct inquiries from serious buyers and tenants.</span>
-              </div>
+              <div><strong>Receive Buyer Leads</strong><span>Get direct inquiries from serious buyers and tenants.</span></div>
             </li>
             <li>
               <div class="ben-icon"><i class="fa-solid fa-shield-halved"></i></div>
-              <div>
-                <strong>Verified Badge</strong>
-                <span>Build trust with a verified dealer profile on all listings.</span>
-              </div>
+              <div><strong>Verified Badge</strong><span>Build trust with a verified dealer profile on all listings.</span></div>
             </li>
             <li>
               <div class="ben-icon"><i class="fa-solid fa-bolt"></i></div>
-              <div>
-                <strong>Priority Listing Visibility</strong>
-                <span>Your properties get featured to thousands of active buyers.</span>
-              </div>
+              <div><strong>Priority Listing Visibility</strong><span>Your properties get featured to thousands of active buyers.</span></div>
             </li>
           </ul>
-
           <div class="dr-stats-row">
-            <div class="dr-stat">
-              <span class="ds-num">1500+</span>
-              <span class="ds-lbl">Active Listings</span>
-            </div>
+            <div class="dr-stat"><span class="ds-num">1500+</span><span class="ds-lbl">Active Listings</span></div>
             <div class="dr-stat-div"></div>
-            <div class="dr-stat">
-              <span class="ds-num">2500+</span>
-              <span class="ds-lbl">Happy Clients</span>
-            </div>
+            <div class="dr-stat"><span class="ds-num">2500+</span><span class="ds-lbl">Happy Clients</span></div>
             <div class="dr-stat-div"></div>
-            <div class="dr-stat">
-              <span class="ds-num">25+</span>
-              <span class="ds-lbl">Cities</span>
-            </div>
+            <div class="dr-stat"><span class="ds-num">25+</span><span class="ds-lbl">Cities</span></div>
           </div>
         </div>
-
       </div>
 
-      <!-- ══ RIGHT FORM ══ -->
+      <!-- RIGHT FORM -->
       <div class="dr-right">
         <div class="dr-form-card">
-
           <div class="dr-form-header">
             <div class="dr-form-icon"><i class="fa-solid fa-user-tie"></i></div>
             <div>
@@ -105,42 +74,57 @@
             </div>
           </div>
 
-          <form method="POST" enctype="multipart/form-data" class="dealer-form">
+          <form method="POST" enctype="multipart/form-data" class="dealer-form" id="dealerForm" novalidate>
             {% csrf_token %}
 
             <!-- Full Name -->
             <div class="form-group">
               <label><i class="fa-solid fa-user"></i> Full Name</label>
-              <div class="input-wrap">
-                <input type="text" name="name" placeholder="Enter your full name" required>
+              <div class="input-wrap dr-field {% if errors.name %}field-invalid{% endif %}" id="dr-name-wrap">
+                <input type="text" name="name" id="drName"
+                       value="{{ old.name|default:'' }}"
+                       placeholder="Enter your full name">
               </div>
+              <p class="field-hint-msg {% if errors.name %}msg-error{% endif %}" id="dr-name-msg">
+                {% if errors.name %}{{ errors.name }}{% endif %}
+              </p>
             </div>
 
             <!-- CNIC -->
             <div class="form-group">
               <label><i class="fa-solid fa-id-card"></i> CNIC</label>
-              <div class="input-wrap">
-                <input type="text" name="cnic" placeholder="35202-1234567-1" required>
+              <div class="input-wrap dr-field {% if errors.cnic %}field-invalid{% endif %}" id="dr-cnic-wrap">
+                <input type="text" name="cnic" id="drCnic"
+                       value="{{ old.cnic|default:'' }}"
+                       placeholder="35202-1234567-1" maxlength="15">
               </div>
+              <p class="field-hint-msg {% if errors.cnic %}msg-error{% endif %}" id="dr-cnic-msg">
+                {% if errors.cnic %}{{ errors.cnic }}{% endif %}
+              </p>
             </div>
 
             <!-- Phone -->
             <div class="form-group">
               <label><i class="fa-solid fa-phone"></i> Phone Number</label>
-              <div class="input-wrap">
-                <input type="text" name="phone" placeholder="+92 300 0000000" required>
+              <div class="input-wrap dr-field {% if errors.phone %}field-invalid{% endif %}" id="dr-phone-wrap">
+                <input type="text" name="phone" id="drPhone"
+                       value="{{ old.phone|default:'' }}"
+                       placeholder="+92 300 0000000">
               </div>
+              <p class="field-hint-msg {% if errors.phone %}msg-error{% endif %}" id="dr-phone-msg">
+                {% if errors.phone %}{{ errors.phone }}{% endif %}
+              </p>
             </div>
 
             <!-- Gender -->
             <div class="form-group">
               <label><i class="fa-solid fa-venus-mars"></i> Gender</label>
               <div class="input-wrap select-wrap">
-                <select name="gender">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                  <option value="prefer not to say">Prefer not to say</option>
+                <select name="gender" id="drGender">
+                  <option value="male"   {% if old.gender == 'male' %}selected{% endif %}>Male</option>
+                  <option value="female" {% if old.gender == 'female' %}selected{% endif %}>Female</option>
+                  <option value="other"  {% if old.gender == 'other' %}selected{% endif %}>Other</option>
+                  <option value="prefer not to say" {% if old.gender == 'prefer not to say' %}selected{% endif %}>Prefer not to say</option>
                 </select>
                 <i class="fa-solid fa-chevron-down sel-arrow"></i>
               </div>
@@ -149,16 +133,20 @@
             <!-- Address -->
             <div class="form-group">
               <label><i class="fa-solid fa-location-dot"></i> Address</label>
-              <div class="input-wrap textarea-wrap">
-                <textarea name="address" rows="3" placeholder="Your full address..." required></textarea>
+              <div class="input-wrap textarea-wrap dr-field {% if errors.address %}field-invalid{% endif %}" id="dr-address-wrap">
+                <textarea name="address" id="drAddress" rows="3"
+                          placeholder="Your full address...">{{ old.address|default:'' }}</textarea>
               </div>
+              <p class="field-hint-msg {% if errors.address %}msg-error{% endif %}" id="dr-address-msg">
+                {% if errors.address %}{{ errors.address }}{% endif %}
+              </p>
             </div>
 
             <!-- Profile Picture -->
             <div class="form-group">
               <label><i class="fa-solid fa-camera"></i> Profile Picture</label>
-              <div class="file-drop" id="fileDrop">
-                <input type="file" name="picture" id="pictureInput" accept="image/*" required>
+              <div class="file-drop {% if errors.picture %}file-drop-error{% endif %}" id="fileDrop">
+                <input type="file" name="picture" id="pictureInput" accept="image/*">
                 <div class="file-drop-inner" id="fileDropInner">
                   <i class="fa-solid fa-cloud-arrow-up"></i>
                   <p>Click or drag & drop your photo here</p>
@@ -166,48 +154,66 @@
                 </div>
                 <img id="filePreview" class="file-preview" src="" alt="Preview">
               </div>
+              <p class="field-hint-msg {% if errors.picture %}msg-error{% endif %}" id="dr-pic-msg">
+                {% if errors.picture %}{{ errors.picture }}{% endif %}
+              </p>
             </div>
 
-            <!-- Terms note -->
             <p class="terms-note">
               <i class="fa-solid fa-lock"></i>
               By registering, you agree to our <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>.
             </p>
 
-            <button type="submit" class="dealer-submit-btn">
+            <button type="submit" class="dealer-submit-btn" id="dealerSubmitBtn">
               <i class="fa-solid fa-circle-check"></i> Create Dealer Account
             </button>
 
           </form>
         </div>
       </div>
-      <!-- /.dr-right -->
 
     </div>
   </div>
 </section>
 
 <script>
-  // Image preview on file select
-  const pictureInput = document.getElementById('pictureInput');
-  const filePreview  = document.getElementById('filePreview');
+(() => {
+  // ── Image preview ──
+  const pictureInput  = document.getElementById('pictureInput');
+  const filePreview   = document.getElementById('filePreview');
   const fileDropInner = document.getElementById('fileDropInner');
+  const fileDrop      = document.getElementById('fileDrop');
+  const drPicMsg      = document.getElementById('dr-pic-msg');
 
   pictureInput.addEventListener('change', function () {
     const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        filePreview.src = e.target.result;
-        filePreview.style.display = 'block';
-        fileDropInner.style.display = 'none';
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // File type check
+    if (!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)) {
+      setDrField('fileDrop', 'dr-pic-msg', false, 'Only JPG, PNG or WebP images allowed.');
+      pictureInput.value = '';
+      return;
     }
+    // File size check (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setDrField('fileDrop', 'dr-pic-msg', false, 'File too large. Max size is 5MB.');
+      pictureInput.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      filePreview.src = e.target.result;
+      filePreview.style.display = 'block';
+      fileDropInner.style.display = 'none';
+      fileDrop.classList.remove('file-drop-error');
+      drPicMsg.textContent = '✓ Photo selected!';
+      drPicMsg.className = 'field-hint-msg msg-valid';
+    };
+    reader.readAsDataURL(file);
   });
 
-  // Drag & drop styling
-  const fileDrop = document.getElementById('fileDrop');
   fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('drag-over'); });
   fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('drag-over'));
   fileDrop.addEventListener('drop', e => {
@@ -216,6 +222,94 @@
     pictureInput.files = e.dataTransfer.files;
     pictureInput.dispatchEvent(new Event('change'));
   });
+
+  // ── Helper: set wrap + msg state ──
+  function setDrField(wrapId, msgId, isValid, msg) {
+    const wrap = document.getElementById(wrapId);
+    const msgEl = document.getElementById(msgId);
+    if (!wrap || !msgEl) return;
+    wrap.classList.remove('field-valid', 'field-invalid', 'file-drop-error');
+    msgEl.className = 'field-hint-msg';
+    if (isValid) {
+      wrap.classList.add('field-valid');
+      msgEl.classList.add('msg-valid');
+    } else {
+      wrap.classList.add(wrapId === 'fileDrop' ? 'file-drop-error' : 'field-invalid');
+      msgEl.classList.add('msg-error');
+    }
+    msgEl.textContent = msg || '';
+  }
+
+  // ── Full Name ──
+  const drName = document.getElementById('drName');
+  if (drName) {
+    drName.addEventListener('input', () => {
+      const val = drName.value.trim();
+      if (!val) {
+        setDrField('dr-name-wrap', 'dr-name-msg', false, 'Full name is required.');
+      } else if (val.length < 3) {
+        setDrField('dr-name-wrap', 'dr-name-msg', false, `${val.length}/3 — needs ${3 - val.length} more character(s).`);
+      } else {
+        setDrField('dr-name-wrap', 'dr-name-msg', true, '✓ Looks good!');
+      }
+    });
+  }
+
+  // ── CNIC — auto-format as user types ──
+  const drCnic = document.getElementById('drCnic');
+  if (drCnic) {
+    drCnic.addEventListener('input', function () {
+      // Strip non-digits
+      let digits = this.value.replace(/\D/g, '').slice(0, 13);
+      // Auto-insert dashes: XXXXX-XXXXXXX-X
+      let formatted = digits;
+      if (digits.length > 5)  formatted = digits.slice(0, 5)  + '-' + digits.slice(5);
+      if (digits.length > 12) formatted = formatted.slice(0, 13) + '-' + digits.slice(12);
+      this.value = formatted;
+
+      const valid = /^\d{5}-\d{7}-\d{1}$/.test(this.value);
+      if (!this.value) {
+        setDrField('dr-cnic-wrap', 'dr-cnic-msg', false, 'CNIC is required.');
+      } else if (!valid) {
+        const filled = digits.length;
+        setDrField('dr-cnic-wrap', 'dr-cnic-msg', false, `${filled}/13 digits — format: 35202-1234567-1`);
+      } else {
+        setDrField('dr-cnic-wrap', 'dr-cnic-msg', true, '✓ Valid CNIC format!');
+      }
+    });
+  }
+
+  // ── Phone ──
+  const drPhone = document.getElementById('drPhone');
+  if (drPhone) {
+    drPhone.addEventListener('input', () => {
+      const digits = drPhone.value.replace(/\D/g, '');
+      if (!drPhone.value.trim()) {
+        setDrField('dr-phone-wrap', 'dr-phone-msg', false, 'Phone number is required.');
+      } else if (digits.length < 10) {
+        setDrField('dr-phone-wrap', 'dr-phone-msg', false, `${digits.length}/10 digits entered.`);
+      } else {
+        setDrField('dr-phone-wrap', 'dr-phone-msg', true, '✓ Valid phone number!');
+      }
+    });
+  }
+
+  // ── Address ──
+  const drAddress = document.getElementById('drAddress');
+  if (drAddress) {
+    drAddress.addEventListener('input', () => {
+      const val = drAddress.value.trim();
+      if (!val) {
+        setDrField('dr-address-wrap', 'dr-address-msg', false, 'Address is required.');
+      } else if (val.length < 10) {
+        setDrField('dr-address-wrap', 'dr-address-msg', false, 'Please enter a more complete address.');
+      } else {
+        setDrField('dr-address-wrap', 'dr-address-msg', true, '✓ Address entered.');
+      }
+    });
+  }
+
+})();
 </script>
 
 {% endblock %}

@@ -80,7 +80,7 @@
 
       <div class="rc-property">
         <i class="fa-solid fa-building"></i>
-        <a href="{% url 'property_detail' review.property.slug %}">{{ review.property.title }}</a>
+        <a href="{% url 'property_detail' review.property.id review.property.slug %}">{{ review.property.title }}</a>
       </div>
 
       <p class="rc-comment">{{ review.comment }}</p>

@@ -188,19 +188,6 @@ ul { list-style: none; }
 }
 .msg i { font-size: 16px; }
 
-/* Messages inside modal */
-.modal-messages {
-  margin-bottom: 14px;
-}
-.modal-msg {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 14px; border-radius: 8px;
-  font-size: 13px; font-weight: 600; margin-bottom: 8px;
-}
-.modal-msg.error   { background: #fef2f2; color: #e53935; border: 1px solid #fecdd3; }
-.modal-msg.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-.modal-msg i { font-size: 14px; flex-shrink: 0; }
-
 /* ───── FOOTER ───── */
 footer {
   background: var(--navy);
@@ -423,4 +410,81 @@ footer {
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
   .logo-text h1 { font-size: 13px; }
+}
+
+/* ═══════ MODAL REAL-TIME VALIDATION ═══════ */
+
+/* Error banner inside modal */
+.modal-error {
+  display: none;
+  align-items: center; gap: 8px;
+  background: #fef2f2; color: #e53935;
+  border: 1px solid #fecdd3; border-radius: 8px;
+  padding: 10px 14px; font-size: 13px; font-weight: 600;
+  margin-bottom: 14px;
+}
+.modal-error i { font-size: 14px; flex-shrink: 0; }
+
+/* Input group states */
+.input-group.field-valid {
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
+}
+.input-group.field-invalid {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229,57,53,0.1) !important;
+}
+
+/* Validation icons inside input-group */
+.ig-check, .ig-cross {
+  font-size: 14px; flex-shrink: 0;
+  display: none;
+}
+.field-valid  .ig-check { display: block; color: #16a34a; }
+.field-invalid .ig-cross { display: block; color: #e53935; }
+
+/* Field hint messages */
+.field-hint-msg {
+  font-size: 12px; font-weight: 600;
+  margin-top: -10px; margin-bottom: 4px;
+  min-height: 18px;
+  padding-left: 2px;
+  transition: color .2s;
+}
+.msg-valid { color: #16a34a; }
+.msg-error { color: #e53935; }
+
+/* Password show/hide button */
+.pwd-toggle {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 14px; flex-shrink: 0;
+  padding: 0 2px; display: flex; align-items: center;
+  transition: color .2s;
+}
+.pwd-toggle:hover { color: var(--green); }
+
+/* Password strength bar */
+.pwd-strength-wrap {
+  display: none;
+  height: 5px; background: var(--border);
+  border-radius: 10px; overflow: hidden;
+  margin-top: -10px; margin-bottom: 4px;
+}
+.pwd-strength-bar {
+  height: 100%; width: 0;
+  border-radius: 10px;
+  transition: width .35s ease, background .35s ease;
+}
+.pwd-strength-label {
+  font-size: 11px; font-weight: 700;
+  margin-top: -6px; margin-bottom: 6px;
+  padding-left: 2px;
+}
+
+/* Disabled submit button */
+.submit-btn:disabled {
+  background: #a0b4a0 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  opacity: .7;
 }

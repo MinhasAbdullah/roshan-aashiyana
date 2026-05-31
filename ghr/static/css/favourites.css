@@ -80,6 +80,7 @@
   position: relative;
   height: 220px;
   overflow: hidden;
+  border-radius: 16px 16px 0 0;
 }
 .fav-img-wrap a { display: block; height: 100%; }
 .fav-img-wrap img {
@@ -88,6 +89,7 @@
   object-fit: cover;
   transition: transform .35s;
   display: block;
+  border-radius: 0;
 }
 .fav-card:hover .fav-img-wrap img { transform: scale(1.05); }
 

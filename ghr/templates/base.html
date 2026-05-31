@@ -10,8 +10,7 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   {% block css %}{% endblock %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -20,13 +19,9 @@
   {% block nav %}
   <header class="navbar">
     <div class="container nav-container">
-
-      <!-- LOGO -->
       <a href="{% url 'home' %}" class="logo">
         <div class="logo-icon">
           <img src="{% static 'images/RA2.png' %}" alt="" width="28px">
-          <!-- <i class="fa-solid fa-house"></i>
-          <i class="fa-solid fa-plus plus-overlay"></i> -->
         </div>
         <div class="logo-text">
           <h1>ROSHAN <span>AASHIYANA</span></h1>
@@ -34,43 +29,38 @@
         </div>
       </a>
 
-      <!-- NAV LINKS -->
       <nav class="nav-links" id="navLinks">
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'listings' %}">Browse</a>
-        <!-- <a href="{% url 'house' %}">Houses</a> -->
         {% if user.is_authenticated %}
         <a href="{% url 'favourites' %}">Favorites</a>
         {% endif %}
         <a href="{% url 'about' %}">About & Contact</a>
-
         {% if user.is_authenticated %}
-        {% if user.dealer %}
-        <a href="{% url 'dashboard' %}" class="nav-btn-outline">Dashboard</a>
+          {% if user.dealer %}
+          <a href="{% url 'dashboard' %}" class="nav-btn-outline">Dashboard</a>
+          {% else %}
+          <a href="{% url 'dealer_register' %}" class="nav-btn-outline">Post Property</a>
+          {% endif %}
+          <a href="{% url 'logout' %}" class="btn-login">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </a>
         {% else %}
-        <a href="{% url 'dealer_register' %}" class="nav-btn-outline">Post Property</a>
-        {% endif %}
-        <a href="{% url 'logout' %}" class="btn-login">
-          <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </a>
-        {% else %}
-        <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline">Post Property</a>
-        <a href="javascript:void(0)" class="btn-login" id="openModal">
-          <i class="fa-solid fa-user"></i> Sign In
-        </a>
+          <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline">Post Property</a>
+          <a href="javascript:void(0)" class="btn-login" id="openModal">
+            <i class="fa-solid fa-user"></i> Sign In
+          </a>
         {% endif %}
       </nav>
 
-      <!-- MOBILE HAMBURGER -->
       <div class="mobile-menu-icon" id="hamburger">
         <i class="fa-solid fa-bars"></i>
       </div>
-
     </div>
   </header>
   {% endblock nav %}
 
-  <!-- MESSAGES -->
+  <!-- Non-auth Django messages (delete success, inquiry sent etc.) -->
   {% if messages %}
   <div class="messages-container">
     {% for msg in messages %}
@@ -87,12 +77,10 @@
   <footer>
     <div class="container">
       <div class="footer-grid">
-
-        <!-- Brand -->
         <div class="footer-brand">
           <div class="footer-logo-wrap">
             <div class="nav-logo">
-              <img src="{% static 'images/RA2.png' %}" alt="">
+              <img src="{% static 'images/RA3.png' %}" alt="">
             </div>
             <div class="nav-brand-text">
               <span class="brand-name">ROSHAN AASHIYANA</span>
@@ -104,23 +92,20 @@
             <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
             <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
             <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.linkedin.com/in/abdullah-minhas-6798b932a/" class="social-link"
-              target="content-frame"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.linkedin.com/in/abdullah-minhas-6798b932a/" class="social-link" target="_blank">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
           </div>
         </div>
-
-        <!-- Quick Links -->
         <div class="footer-col">
           <h4>Quick Links</h4>
           <ul>
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'listings' %}?purpose=sale">For Sale</a></li>
             <li><a href="{% url 'listings' %}?purpose=rent">For Rent</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="{% url 'about' %}#contact">Contact</a></li>
           </ul>
         </div>
-
-        <!-- Cities -->
         <div class="footer-col">
           <h4>Popular Cities</h4>
           <ul>
@@ -131,8 +116,6 @@
             <li><a href="{% url 'listings' %}?city=Multan">Multan</a></li>
           </ul>
         </div>
-
-        <!-- Support -->
         <div class="footer-col">
           <h4>Support</h4>
           <ul>
@@ -142,8 +125,6 @@
             <li><a href="#">FAQs</a></li>
           </ul>
         </div>
-
-        <!-- Contact -->
         <div class="footer-col">
           <h4>Contact Us</h4>
           <div class="footer-contact-item">
@@ -159,24 +140,23 @@
             <span>minhasabdullah8888@gmail.com</span>
           </div>
         </div>
-
       </div>
       <div class="footer-bottom">© 2026 Roshan Aashiyana. All Rights Reserved.</div>
-    </div><!-- /.container -->
+    </div>
   </footer>
   {% endblock footer %}
 
-  <!-- AUTH MODAL -->
+  <!-- ═══════ AUTH MODAL ═══════ -->
   <div class="modal" id="modal">
     <div class="auth-box" id="authBox">
 
-      <!-- LEFT panel -->
+      <!-- LEFT -->
       <div class="auth-left">
         <div class="auth-left-content">
           <div class="auth-logo">
             <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
-              <path d="M14 3L2 13h4v12h7v-8h2v8h7V13h4L14 3z" fill="#fff" />
-              <circle cx="14" cy="9" r="2.2" fill="#c8f5cc" />
+              <path d="M14 3L2 13h4v12h7v-8h2v8h7V13h4L14 3z" fill="#fff"/>
+              <circle cx="14" cy="9" r="2.2" fill="#c8f5cc"/>
             </svg>
           </div>
           <h2>Welcome Back!</h2>
@@ -189,76 +169,120 @@
         </div>
       </div>
 
-      <!-- RIGHT panel -->
+      <!-- RIGHT -->
       <div class="auth-right">
         <button class="close-btn" id="closeModal"><i class="fa fa-times"></i></button>
 
-        <!-- LOGIN FORM -->
-        <div class="form-box login-form">
+        <!-- ── LOGIN FORM ── -->
+        <div class="form-box login-form" id="loginFormBox">
           <h2>Login</h2>
           <p>Access your Roshan Aashiyana account</p>
-          {% if messages %}
-          <div class="modal-messages">
-            {% for msg in messages %}
-            <div class="modal-msg {{ msg.tags }}">
-              <i class="fa-solid fa-circle-xmark"></i> {{ msg }}
-            </div>
-            {% endfor %}
+
+          <!-- Error banner (filled by JS from URL param) -->
+          <div class="modal-error" id="loginError">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span></span>
           </div>
-          {% endif %}
-          <form action="{% url 'SignIn' %}" method="POST">
+
+          <form action="{% url 'SignIn' %}" method="POST" id="loginForm" novalidate>
             {% csrf_token %}
-            <div class="input-group">
-              <i class="fa fa-user"></i>
-              <input type="text" placeholder="Username or Email" name="uname" required>
+            <!-- Username -->
+            <div class="input-group" id="lg-uname-group">
+              <i class="fa fa-user ig-icon"></i>
+              <input type="text" placeholder="Username" name="uname" id="lgUname" autocomplete="username">
+              <i class="fa-solid fa-circle-check ig-check"></i>
+              <i class="fa-solid fa-circle-xmark ig-cross"></i>
             </div>
-            <div class="input-group">
-              <i class="fa fa-lock"></i>
-              <input type="password" placeholder="Password" name="password" required>
+            <p class="field-hint-msg" id="lg-uname-msg"></p>
+
+            <!-- Password -->
+            <div class="input-group" id="lg-pass-group">
+              <i class="fa fa-lock ig-icon"></i>
+              <input type="password" placeholder="Password" name="password" id="lgPass" autocomplete="current-password">
+              <button type="button" class="pwd-toggle" data-target="lgPass">
+                <i class="fa-solid fa-eye"></i>
+              </button>
             </div>
-            <button class="submit-btn">Login <i class="fa fa-arrow-right"></i></button>
+            <p class="field-hint-msg" id="lg-pass-msg"></p>
+
+            <button class="submit-btn" type="submit" id="loginSubmitBtn">
+              Login <i class="fa fa-arrow-right"></i>
+            </button>
           </form>
           <div class="bottom-text">
             Don't have an account? <span id="openSignup">Sign Up</span>
           </div>
         </div>
 
-        <!-- SIGNUP FORM -->
-        <div class="form-box signup-form">
+        <!-- ── SIGNUP FORM ── -->
+        <div class="form-box signup-form" id="signupFormBox">
           <h2>Create Account</h2>
           <p>Join Roshan Aashiyana today</p>
-          {% if messages %}
-          <div class="modal-messages">
-            {% for msg in messages %}
-            <div class="modal-msg {{ msg.tags }}">
-              <i class="fa-solid fa-circle-xmark"></i> {{ msg }}
-            </div>
-            {% endfor %}
+
+          <!-- Error banner (filled by JS from URL param) -->
+          <div class="modal-error" id="signupError">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span></span>
           </div>
-          {% endif %}
-          <form action="{% url 'SignUp' %}" method="POST">
+
+          <form action="{% url 'SignUp' %}" method="POST" id="signupForm" novalidate>
             {% csrf_token %}
-            <div class="input-group">
-              <i class="fa fa-user"></i>
-              <input type="text" placeholder="Username" name="uname" required>
+
+            <!-- Username -->
+            <div class="input-group" id="su-uname-group">
+              <i class="fa fa-user ig-icon"></i>
+              <input type="text" placeholder="Username (min 6 chars)" name="uname" id="suUname" autocomplete="username">
+              <i class="fa-solid fa-circle-check ig-check"></i>
+              <i class="fa-solid fa-circle-xmark ig-cross"></i>
             </div>
-            <div class="input-group">
-              <i class="fa fa-envelope"></i>
-              <input type="email" placeholder="Email Address" name="email" required>
+            <p class="field-hint-msg" id="su-uname-msg"></p>
+
+            <!-- Email -->
+            <div class="input-group" id="su-email-group">
+              <i class="fa fa-envelope ig-icon"></i>
+              <input type="email" placeholder="Email Address" name="email" id="suEmail" autocomplete="email">
+              <i class="fa-solid fa-circle-check ig-check"></i>
+              <i class="fa-solid fa-circle-xmark ig-cross"></i>
             </div>
-            <div class="input-group">
-              <i class="fa fa-phone"></i>
-              <input type="text" placeholder="Phone Number" name="phone">
+            <p class="field-hint-msg" id="su-email-msg"></p>
+
+            <!-- Phone -->
+            <div class="input-group" id="su-phone-group">
+              <i class="fa fa-phone ig-icon"></i>
+              <input type="text" placeholder="Phone Number (optional)" name="phone" id="suPhone" autocomplete="tel">
+              <i class="fa-solid fa-circle-check ig-check"></i>
+              <i class="fa-solid fa-circle-xmark ig-cross"></i>
             </div>
-            <div class="input-group">
-              <i class="fa fa-lock"></i>
-              <input type="password" placeholder="Password" name="password" required>
+            <p class="field-hint-msg" id="su-phone-msg"></p>
+
+            <!-- Password -->
+            <div class="input-group" id="su-pass-group">
+              <i class="fa fa-lock ig-icon"></i>
+              <input type="password" placeholder="Password (min 6 chars)" name="password" id="suPass" autocomplete="new-password">
+              <button type="button" class="pwd-toggle" data-target="suPass">
+                <i class="fa-solid fa-eye"></i>
+              </button>
             </div>
-            <div class="input-group">
-              <i class="fa fa-lock"></i>
-              <input type="password" placeholder="Confirm Password" name="cpassword" required>
+            <p class="field-hint-msg" id="su-pass-msg"></p>
+            <!-- Password strength bar -->
+            <div class="pwd-strength-wrap" id="pwdStrengthWrap">
+              <div class="pwd-strength-bar" id="pwdStrengthBar"></div>
             </div>
-            <button class="submit-btn">Create Account <i class="fa fa-arrow-right"></i></button>
+            <p class="pwd-strength-label" id="pwdStrengthLabel"></p>
+
+            <!-- Confirm password -->
+            <div class="input-group" id="su-cpass-group">
+              <i class="fa fa-lock ig-icon"></i>
+              <input type="password" placeholder="Confirm Password" name="cpassword" id="suCpass" autocomplete="new-password">
+              <button type="button" class="pwd-toggle" data-target="suCpass">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+            <p class="field-hint-msg" id="su-cpass-msg"></p>
+
+            <button class="submit-btn" type="submit" id="signupSubmitBtn" disabled>
+              Create Account <i class="fa fa-arrow-right"></i>
+            </button>
           </form>
           <div class="bottom-text">
             Already have an account? <span id="openLogin">Login</span>
@@ -269,77 +293,297 @@
     </div>
   </div>
 
-  <!-- JS -->
+  <!-- ═══════ GLOBAL JS ═══════ -->
   <script>
-    // Modal logic
-    const modal = document.getElementById("modal");
-    const authBox = document.getElementById("authBox");
-    const openModalBtn = document.getElementById("openModal");
-    const closeModalBtn = document.getElementById("closeModal");
-    const openSignup = document.getElementById("openSignup");
-    const openLogin = document.getElementById("openLogin");
-    const postPropertyBtn = document.getElementById("openModal2");
-    const links = document.querySelectorAll('.nav-links a');
+  (() => {
+    // ── Modal open/close ──
+    const modal    = document.getElementById('modal');
+    const authBox  = document.getElementById('authBox');
+    const openBtn  = document.getElementById('openModal');
+    const openBtn2 = document.getElementById('openModal2');
+    const closeBtn = document.getElementById('closeModal');
+    const openSignupLink = document.getElementById('openSignup');
+    const openLoginLink  = document.getElementById('openLogin');
 
-    links.forEach(link => {
-      if (link.href === window.location.href) {
-        link.classList.add('active');
-      }
+    function openModal(mode) {
+      modal.classList.add('active');
+      authBox.classList.toggle('signup-mode', mode === 'signup');
+    }
+
+    if (openBtn)  openBtn.addEventListener('click',  () => openModal('login'));
+    if (openBtn2) openBtn2.addEventListener('click', () => openModal('login'));
+    if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    window.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
+    openSignupLink.addEventListener('click', () => openModal('signup'));
+    openLoginLink.addEventListener('click',  () => openModal('login'));
+
+    // ── Nav active link ──
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      if (link.href === window.location.href) link.classList.add('active');
     });
 
-    if (openModalBtn) openModalBtn.addEventListener("click", () => {
-      modal.classList.add("active");
-      authBox.classList.remove("signup-mode");
-    });
-    if (postPropertyBtn) postPropertyBtn.addEventListener("click", () => {
-      modal.classList.add("active");
-      authBox.classList.remove("signup-mode");
-    });
-    closeModalBtn.addEventListener("click", () => modal.classList.remove("active"));
-    window.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("active"); });
-    openSignup.addEventListener("click", () => authBox.classList.add("signup-mode"));
-    openLogin.addEventListener("click", () => authBox.classList.remove("signup-mode"));
+    // ── Hamburger ──
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    if (hamburger) hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
 
-    // Auto-dismiss messages
+    // ── Auto-dismiss Django messages (non-modal ones) ──
     setTimeout(() => {
-      document.querySelectorAll(".msg").forEach(msg => {
-        msg.style.opacity = "0";
-        msg.style.transform = "translateX(50px)";
-        msg.style.transition = "0.4s";
+      document.querySelectorAll('.msg').forEach(msg => {
+        msg.style.opacity = '0';
+        msg.style.transform = 'translateX(50px)';
+        msg.style.transition = '0.4s';
         setTimeout(() => msg.remove(), 400);
       });
     }, 3000);
 
-    // Hamburger menu
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("navLinks");
-    if (hamburger) {
-      hamburger.addEventListener("click", () => {
-        navLinks.classList.toggle("open");
+    // ── URL param error handler — reopen modal with error, restore values ──
+    const params    = new URLSearchParams(window.location.search);
+    const authError = params.get('auth_error');
+    const authForm  = params.get('auth_form');
+
+    if (authError) {
+      openModal(authForm || 'login');
+
+      if (authForm === 'signup') {
+        const errEl = document.getElementById('signupError');
+        errEl.querySelector('span').textContent = authError;
+        errEl.style.display = 'flex';
+        // Restore values
+        const u = document.getElementById('suUname');
+        const e = document.getElementById('suEmail');
+        const p = document.getElementById('suPhone');
+        if (u && params.get('auth_uname')) u.value = params.get('auth_uname');
+        if (e && params.get('auth_email')) e.value = params.get('auth_email');
+        if (p && params.get('auth_phone')) p.value = params.get('auth_phone');
+      } else {
+        const errEl = document.getElementById('loginError');
+        errEl.querySelector('span').textContent = authError;
+        errEl.style.display = 'flex';
+        const u = document.getElementById('lgUname');
+        if (u && params.get('auth_uname')) u.value = params.get('auth_uname');
+      }
+
+      // Clean URL without reload
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    // ── Password show/hide toggle ──
+    document.querySelectorAll('.pwd-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const icon  = btn.querySelector('i');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.className = 'fa-solid fa-eye-slash';
+        } else {
+          input.type = 'password';
+          icon.className = 'fa-solid fa-eye';
+        }
+      });
+    });
+
+    // ════════════════════════════════════════
+    // REAL-TIME SIGNUP VALIDATION
+    // ════════════════════════════════════════
+    const suUname  = document.getElementById('suUname');
+    const suEmail  = document.getElementById('suEmail');
+    const suPhone  = document.getElementById('suPhone');
+    const suPass   = document.getElementById('suPass');
+    const suCpass  = document.getElementById('suCpass');
+    const submitBtn = document.getElementById('signupSubmitBtn');
+
+    // Track validity state
+    const validity = { uname: false, email: true, phone: true, pass: false, cpass: false };
+
+    function setFieldState(groupId, msgId, isValid, msg, isOptional) {
+      const group = document.getElementById(groupId);
+      const msgEl = document.getElementById(msgId);
+      if (!group || !msgEl) return;
+
+      // Remove previous states
+      group.classList.remove('field-valid', 'field-invalid');
+      msgEl.classList.remove('msg-valid', 'msg-error');
+
+      if (isOptional && !group.querySelector('input').value.trim()) {
+        msgEl.textContent = '';
+        return; // optional and empty — neutral
+      }
+
+      if (isValid) {
+        group.classList.add('field-valid');
+        msgEl.classList.add('msg-valid');
+        msgEl.textContent = msg || '';
+      } else {
+        group.classList.add('field-invalid');
+        msgEl.classList.add('msg-error');
+        msgEl.textContent = msg || '';
+      }
+
+      // Update submit button
+      submitBtn.disabled = !Object.values(validity).every(Boolean);
+    }
+
+    // Username
+    if (suUname) {
+      suUname.addEventListener('input', () => {
+        const val = suUname.value.trim();
+        if (!val) {
+          setFieldState('su-uname-group', 'su-uname-msg', false, 'Username is required.');
+          validity.uname = false;
+        } else if (val.length < 6) {
+          setFieldState('su-uname-group', 'su-uname-msg', false, `${val.length}/6 — needs ${6 - val.length} more character(s).`);
+          validity.uname = false;
+        } else if (!/^[a-zA-Z0-9_]+$/.test(val)) {
+          setFieldState('su-uname-group', 'su-uname-msg', false, 'Only letters, numbers and underscores allowed.');
+          validity.uname = false;
+        } else {
+          setFieldState('su-uname-group', 'su-uname-msg', true, '✓ Username looks good!');
+          validity.uname = true;
+        }
+        submitBtn.disabled = !Object.values(validity).every(Boolean);
       });
     }
 
-  </script>
-  <script>
-    // Auto-reopen modal if Django sent a message (means form was submitted & failed)
-    {% if messages %}
-    document.addEventListener("DOMContentLoaded", () => {
-      const modal = document.getElementById("modal");
-      const authBox = document.getElementById("authBox");
-      // Check which form was last submitted
-      const lastForm = "{{ request.session.last_form|default:'login' }}";
-      if (modal) {
-        modal.classList.add("active");
-        if (lastForm === "signup") {
-          authBox.classList.add("signup-mode");
+    // Email
+    if (suEmail) {
+      suEmail.addEventListener('input', () => {
+        const val = suEmail.value.trim();
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!val) {
+          setFieldState('su-email-group', 'su-email-msg', false, 'Email is required.');
+          validity.email = false;
+        } else if (!emailRe.test(val)) {
+          setFieldState('su-email-group', 'su-email-msg', false, 'Enter a valid email address.');
+          validity.email = false;
         } else {
-          authBox.classList.remove("signup-mode");
+          setFieldState('su-email-group', 'su-email-msg', true, '✓ Valid email!');
+          validity.email = true;
         }
-      }
-    });
-    {% endif %}
+        submitBtn.disabled = !Object.values(validity).every(Boolean);
+      });
+    }
+
+    // Phone (optional)
+    if (suPhone) {
+      suPhone.addEventListener('input', () => {
+        const val = suPhone.value.trim();
+        if (!val) {
+          setFieldState('su-phone-group', 'su-phone-msg', true, '', true);
+          validity.phone = true;
+        } else {
+          const digits = val.replace(/\D/g, '');
+          if (digits.length < 10) {
+            setFieldState('su-phone-group', 'su-phone-msg', false, 'Enter at least 10 digits.');
+            validity.phone = false;
+          } else {
+            setFieldState('su-phone-group', 'su-phone-msg', true, '✓ Valid phone number!');
+            validity.phone = true;
+          }
+        }
+        submitBtn.disabled = !Object.values(validity).every(Boolean);
+      });
+    }
+
+    // Password + strength meter
+    if (suPass) {
+      suPass.addEventListener('input', () => {
+        const val = suPass.value;
+        const bar   = document.getElementById('pwdStrengthBar');
+        const label = document.getElementById('pwdStrengthLabel');
+        const wrap  = document.getElementById('pwdStrengthWrap');
+
+        if (!val) {
+          setFieldState('su-pass-group', 'su-pass-msg', false, 'Password is required.');
+          validity.pass = false;
+          if (wrap) wrap.style.display = 'none';
+        } else {
+          if (wrap) wrap.style.display = 'block';
+          // Strength scoring
+          let score = 0;
+          if (val.length >= 6)  score++;
+          if (val.length >= 10) score++;
+          if (/[A-Z]/.test(val))  score++;
+          if (/[0-9]/.test(val))  score++;
+          if (/[^A-Za-z0-9]/.test(val)) score++;
+
+          const levels = [
+            { pct: '20%',  color: '#e53935', text: 'Very Weak' },
+            { pct: '40%',  color: '#f97316', text: 'Weak' },
+            { pct: '60%',  color: '#eab308', text: 'Fair' },
+            { pct: '80%',  color: '#22c55e', text: 'Strong' },
+            { pct: '100%', color: '#16a34a', text: 'Very Strong' },
+          ];
+          const lvl = levels[Math.min(score - 1, 4)] || levels[0];
+          if (bar)   { bar.style.width = lvl.pct; bar.style.background = lvl.color; }
+          if (label) { label.textContent = lvl.text; label.style.color = lvl.color; }
+
+          if (val.length < 6) {
+            setFieldState('su-pass-group', 'su-pass-msg', false, `${val.length}/6 — needs ${6 - val.length} more character(s).`);
+            validity.pass = false;
+          } else {
+            setFieldState('su-pass-group', 'su-pass-msg', true, '✓ Password length is good.');
+            validity.pass = true;
+          }
+        }
+        // Re-check confirm password if already filled
+        if (suCpass && suCpass.value) suCpass.dispatchEvent(new Event('input'));
+        submitBtn.disabled = !Object.values(validity).every(Boolean);
+      });
+    }
+
+    // Confirm password
+    if (suCpass) {
+      suCpass.addEventListener('input', () => {
+        const val = suCpass.value;
+        if (!val) {
+          setFieldState('su-cpass-group', 'su-cpass-msg', false, 'Please confirm your password.');
+          validity.cpass = false;
+        } else if (suPass && val !== suPass.value) {
+          setFieldState('su-cpass-group', 'su-cpass-msg', false, 'Passwords do not match.');
+          validity.cpass = false;
+        } else {
+          setFieldState('su-cpass-group', 'su-cpass-msg', true, '✓ Passwords match!');
+          validity.cpass = true;
+        }
+        submitBtn.disabled = !Object.values(validity).every(Boolean);
+      });
+    }
+
+    // ── LOGIN: basic non-empty check ──
+    const lgUname = document.getElementById('lgUname');
+    const lgPass  = document.getElementById('lgPass');
+
+    if (lgUname) {
+      lgUname.addEventListener('input', () => {
+        const g = document.getElementById('lg-uname-group');
+        const m = document.getElementById('lg-uname-msg');
+        if (!lgUname.value.trim()) {
+          g.classList.add('field-invalid'); g.classList.remove('field-valid');
+          m.className = 'field-hint-msg msg-error'; m.textContent = 'Username is required.';
+        } else {
+          g.classList.add('field-valid'); g.classList.remove('field-invalid');
+          m.className = 'field-hint-msg'; m.textContent = '';
+        }
+      });
+    }
+
+    if (lgPass) {
+      lgPass.addEventListener('input', () => {
+        const g = document.getElementById('lg-pass-group');
+        const m = document.getElementById('lg-pass-msg');
+        if (!lgPass.value) {
+          g.classList.add('field-invalid'); g.classList.remove('field-valid');
+          m.className = 'field-hint-msg msg-error'; m.textContent = 'Password is required.';
+        } else {
+          g.classList.add('field-valid'); g.classList.remove('field-invalid');
+          m.className = 'field-hint-msg'; m.textContent = '';
+        }
+      });
+    }
+
+  })();
   </script>
 
 </body>
-
 </html>

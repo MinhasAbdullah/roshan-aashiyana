@@ -172,14 +172,14 @@
             {% for item in prop %}
             <div class="card">
               <div class="card-image">
-                <a href="{% url 'property_detail' item.slug %}" class="card-img-link">
+                <a href="{% url 'property_detail' item.id item.slug %}" class="card-img-link">
                   <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
                 </a>
                 <div class="tag {% if item.purpose == 'rent' %}tag-rent{% endif %}">
                   For {{ item.purpose|title }}
                 </div>
                 {% if request.user.is_authenticated %}
-                  <a href="{% url 'add_favourite' item.slug %}" class="fav-btn">
+                  <a href="{% url 'add_favourite' item.id item.slug %}" class="fav-btn">
                   {% if item.id in favourite_ids %}
                     <i class="fa-solid fa-heart" style="color:#e53935;"></i>
                   {% else %}
@@ -191,7 +191,7 @@
                 </a>
               </div>
               <div class="card-content">
-                <a href="{% url 'property_detail' item.slug %}" class="card-link">
+                <a href="{% url 'property_detail' item.id item.slug %}" class="card-link">
                   <h3>{{ item.title }}</h3>
                   <div class="location">
                     <i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}

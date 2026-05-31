@@ -45,7 +45,7 @@
 
     <!-- Image -->
     <div class="lc-image">
-      <a href="{% url 'property_detail' item.slug %}">
+      <a href="{% url 'property_detail' item.id item.slug %}">
         <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
       </a>
       <span class="lc-purpose {% if item.purpose == 'rent' %}lc-rent{% endif %}">
@@ -59,7 +59,7 @@
 
     <!-- Content -->
     <div class="lc-body">
-      <a href="{% url 'property_detail' item.slug %}" class="lc-title-link">
+      <a href="{% url 'property_detail' item.id item.slug %}" class="lc-title-link">
         <h2>{{ item.title }}</h2>
       </a>
 
@@ -86,13 +86,13 @@
           <i class="fa-solid fa-eye"></i> {{ item.views }} Views
         </span>
         <div class="lc-actions">
-          <a href="{% url 'property_detail' item.slug %}" class="act-btn act-view" title="View">
+          <a href="{% url 'property_detail' item.id item.slug %}" class="act-btn act-view" title="View">
             <i class="fa-solid fa-eye"></i>
           </a>
-          <a href="{% url 'edit_property' item.slug %}" class="act-btn act-edit" title="Edit">
+          <a href="{% url 'edit_property' item.id item.slug %}" class="act-btn act-edit" title="Edit">
             <i class="fa-solid fa-pen"></i>
           </a>
-          <a href="" class="act-btn act-delete" title="Delete"
+          <a href="{% url 'delete_property' item.id item.slug %}" class="act-btn act-delete" title="Delete"
              onclick="return confirm('Are you sure you want to delete this property?')">
             <i class="fa-solid fa-trash"></i>
           </a>

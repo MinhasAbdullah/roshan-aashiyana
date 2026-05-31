@@ -37,21 +37,21 @@
 
         <!-- Image -->
         <div class="fav-img-wrap">
-          <a href="{% url 'property_detail' item.property.slug %}">
+          <a href="{% url 'property_detail' item.property.id item.property.slug %}">
             <img src="{{ item.property.featured_image.url }}" alt="{{ item.property.title }}">
           </a>
           <div class="fav-badge {% if item.property.purpose == 'rent' %}badge-rent{% endif %}">
             For {{ item.property.purpose|title }}
           </div>
           <!-- Remove from favourites -->
-          <a href="{% url 'add_favourite' item.property.slug %}" class="fav-remove" title="Remove from favourites">
+          <a href="{% url 'add_favourite' item.property.id item.property.slug %}" class="fav-remove" title="Remove from favourites">
             <i class="fa-solid fa-heart"></i>
           </a>
         </div>
 
         <!-- Content -->
         <div class="fav-content">
-          <a href="{% url 'property_detail' item.property.slug %}" class="fav-title-link">
+          <a href="{% url 'property_detail' item.property.id item.property.slug %}" class="fav-title-link">
             <h3>{{ item.property.title }}</h3>
           </a>
 
@@ -75,10 +75,10 @@
           </div>
 
           <div class="fav-footer">
-            <a href="{% url 'property_detail' item.property.slug %}" class="btn-view">
+            <a href="{% url 'property_detail' item.property.id item.property.slug %}" class="btn-view">
               <i class="fa-solid fa-arrow-right"></i> View Property
             </a>
-            <a href="{% url 'add_favourite' item.property.slug %}" class="btn-remove">
+            <a href="{% url 'add_favourite' item.property.id item.property.slug %}" class="btn-remove">
               <i class="fa-regular fa-trash-can"></i> Remove
             </a>
           </div>

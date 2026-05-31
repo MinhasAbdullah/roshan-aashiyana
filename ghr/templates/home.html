@@ -225,7 +225,7 @@
 
     <div class="property-grid">
       {% for item in prop %}
-      <a href="{% url 'property_detail' item.slug %}" class="prop-card-link">
+      <a href="{% url 'property_detail' item.id item.slug %}" class="prop-card-link">
         <div class="prop-card">
           <div class="prop-img-wrap">
             <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">

@@ -307,7 +307,7 @@
         </span>
         <div class="snap-price">PKR {{ prop.price }}</div>
         <div class="snap-loc"><i class="fa-solid fa-location-dot"></i> {{ prop.area }}, {{ prop.city }}</div>
-        <a href="{% url 'property_detail' prop.slug %}" class="snap-view" target="_blank">
+        <a href="{% url 'property_detail' prop.id prop.slug %}" class="snap-view" target="_blank">
           <i class="fa-solid fa-eye"></i> Preview Listing
         </a>
       </div>
@@ -368,7 +368,7 @@
       <button class="dm-cancel" id="closeDeleteModal">
         <i class="fa-solid fa-xmark"></i> Cancel
       </button>
-      <a href="{% url 'delete_property' prop.slug %}" class="dm-confirm">
+      <a href="{% url 'delete_property' prop.id prop.slug %}" class="dm-confirm">
         <i class="fa-solid fa-trash"></i> Yes, Delete It
       </a>
     </div>

@@ -94,7 +94,7 @@
       <div class="inq-property">
         <i class="fa-solid fa-building"></i>
         Interested in:
-        <a href="{% url 'property_detail' inquiry.property.slug %}">{{ inquiry.property.title }}</a>
+        <a href="{% url 'property_detail' inquiry.property.id inquiry.property.slug %}">{{ inquiry.property.title }}</a>
       </div>
 
       <!-- Message -->

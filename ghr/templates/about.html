@@ -73,7 +73,7 @@
       <div class="story-img">
         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Our Story">
         <div class="story-badge">
-          <span class="sb-year">2024</span>
+          <span class="sb-year">2026</span>
           <span class="sb-text">Founded</span>
         </div>
       </div>
@@ -152,7 +152,22 @@
     <div class="team-grid">
       <div class="team-card">
         <div class="tc-img">
-          <img src="https://ui-avatars.com/api/?name=Abdullah+Minhas&background=3cb648&color=fff&size=200" alt="Abdullah Minhas">
+          <img src="{% static 'images/rumman.jpeg' %}" alt="Rumman Khan">
+        </div>
+        <h3>Rumman Khan</h3>
+        <p class="tc-role">Marketing & Growth</p>
+        <p class="tc-bio">Connecting buyers and sellers across Pakistan through smart outreach and community building.</p>
+        <div class="tc-socials">
+          <a href="https://www.linkedin.com/in/rummankhan786" target="_blank" class="tcs-link">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="#" class="tcs-link"><i class="fab fa-github"></i></a>
+          <a href="#" class="tcs-link"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="tc-img">
+          <img src="{% static 'images/abdullah.jpeg' %}" alt="Abdullah Minhas">
         </div>
         <h3>Abdullah Minhas</h3>
         <p class="tc-role">Founder & Lead Developer</p>
@@ -161,11 +176,27 @@
           <a href="https://www.linkedin.com/in/abdullah-minhas-6798b932a/" target="_blank" class="tcs-link">
             <i class="fab fa-linkedin-in"></i>
           </a>
-          <a href="#" class="tcs-link"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/MinhasAbdullah" target="_blank" class="tcs-link"><i class="fab fa-github"></i></a>
+          <a href="#" class="tcs-link"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="tc-img">
+          <img src="{% static 'images/ahsan.jpeg' %}" alt="Ahsan Zahid">
+        </div>
+        <h3>Ahsan Zahid</h3>
+        <p class="tc-role">UI/UX Designer</p>
+        <p class="tc-bio">Crafting beautiful and intuitive experiences that make property browsing effortless.</p>
+        <div class="tc-socials">
+          <a href="https://www.linkedin.com/in/me-ah-san/" target="_blank" class="tcs-link">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="https://github.com/me-ahsan" target="_blank" class="tcs-link"><i class="fab fa-github"></i></a>
           <a href="#" class="tcs-link"><i class="fab fa-twitter"></i></a>
         </div>
       </div>
     </div>
+    
   </div>
 </section>
 
@@ -226,54 +257,64 @@
       </div>
 
       <!-- Right: form -->
-      <div class="contact-form-wrap">
-        <form class="contact-form" method="POST" action="#">
-          {% csrf_token %}
-          <div class="cf-row">
-            <div class="cf-group">
-              <label><i class="fa-solid fa-user"></i> Full Name</label>
-              <div class="cf-input-wrap">
-                <input type="text" name="name" placeholder="Your full name" required>
-              </div>
-            </div>
-            <div class="cf-group">
-              <label><i class="fa-solid fa-envelope"></i> Email</label>
-              <div class="cf-input-wrap">
-                <input type="email" name="email" placeholder="your@email.com" required>
-              </div>
-            </div>
-          </div>
+          <div class="contact-form-wrap">
+      {% if user.is_authenticated %}
+        <form class="contact-form" method="POST" action="{% url 'about' %}">
+        {% csrf_token %}
+        <div class="cf-row">
           <div class="cf-group">
-            <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+            <label><i class="fa-solid fa-user"></i> Full Name</label>
             <div class="cf-input-wrap">
-              <input type="text" name="phone" placeholder="+92 300 0000000">
+              <input type="text" name="name" placeholder="Your full name" required>
             </div>
           </div>
           <div class="cf-group">
-            <label><i class="fa-solid fa-tag"></i> Subject</label>
-            <div class="cf-input-wrap cf-select-wrap">
-              <select name="subject">
-                <option value="">Select a subject</option>
-                <option>General Inquiry</option>
-                <option>Property Listing</option>
-                <option>Dealer Registration</option>
-                <option>Technical Support</option>
-                <option>Partnership</option>
-              </select>
-              <i class="fa-solid fa-chevron-down cf-arr"></i>
-            </div>
-          </div>
-          <div class="cf-group">
-            <label><i class="fa-solid fa-message"></i> Message</label>
+            <label><i class="fa-solid fa-envelope"></i> Email</label>
             <div class="cf-input-wrap">
-              <textarea name="message" rows="5" placeholder="Write your message here..." required></textarea>
+              <input type="email" name="email" placeholder="your@email.com" required>
             </div>
           </div>
-          <button type="submit" class="cf-submit">
-            <i class="fa-solid fa-paper-plane"></i> Send Message
-          </button>
+        </div>
+        <div class="cf-group">
+          <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+          <div class="cf-input-wrap">
+            <input type="text" name="phone" placeholder="+92 300 0000000">
+          </div>
+        </div>
+        <div class="cf-group">
+          <label><i class="fa-solid fa-tag"></i> Subject</label>
+          <div class="cf-input-wrap cf-select-wrap">
+            <select name="subject">
+              <option value="">Select a subject</option>
+              <option>General Inquiry</option>
+              <option>Property Listing</option>
+              <option>Dealer Registration</option>
+              <option>Technical Support</option>
+              <option>Partnership</option>
+            </select>
+            <i class="fa-solid fa-chevron-down cf-arr"></i>
+          </div>
+        </div>
+        <div class="cf-group">
+          <label><i class="fa-solid fa-message"></i> Message</label>
+          <div class="cf-input-wrap">
+            <textarea name="message" rows="5" placeholder="Write your message here..." required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="cf-submit">
+          <i class="fa-solid fa-paper-plane"></i> Send Message
+        </button>
         </form>
-      </div>
+      {% else %}
+        <div style="text-align:center; padding:40px 20px;">
+        <i class="fa-solid fa-lock" style="font-size:40px; color:#7a8fa8; margin-bottom:16px;"></i>
+        <p style="color:#7a8fa8; margin-bottom:20px;">Please login to send us a message</p>
+        <a href="javascript:void(0)" onclick="document.getElementById('openModal').click()" class="cf-submit">
+          <i class="fa-solid fa-user"></i> Login to Send Message
+        </a>
+        </div>
+      {% endif %}
+    </div>
 
     </div>
   </div>
