@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ HERO ═══════ -->
+<section class="about-hero">
+  <div class="ah-bg"></div>
+  <div class="ah-overlay"></div>
+  <div class="container ah-content">
+    <div class="ah-text">
+      <p class="ah-label"><i class="fa-solid fa-circle-check"></i> Pakistan's Trusted Platform</p>
+      <h1>About <span>Roshan Aashiyana</span></h1>
+      <p class="ah-sub">We are on a mission to make property buying, selling and renting simple,
+        transparent and accessible for every Pakistani family.</p>
+      <div class="ah-btns">
+        <a href="{% url 'listings' %}" class="btn-primary">
+          <i class="fa-solid fa-search"></i> Browse Properties
+        </a>
+        <a href="#contact" class="btn-outline">
+          <i class="fa-solid fa-envelope"></i> Contact Us
+        </a>
+      </div>
+    </div>
+    <div class="ah-image">
+      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="About Roshan Aashiyana">
+      <div class="ah-img-badge">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div><strong>100% Verified</strong><span>All listings</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ STATS ═══════ -->
+<!-- <section class="about-stats">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="sb-icon"><i class="fa-solid fa-building"></i></div>
+        <div class="sb-num">1500+</div>
+        <div class="sb-lbl">Properties Listed</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="sb-num">2500+</div>
+        <div class="sb-lbl">Happy Customers</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+        <div class="sb-num">25+</div>
+        <div class="sb-lbl">Cities Covered</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-icon"><i class="fa-solid fa-handshake"></i></div>
+        <div class="sb-num">500+</div>
+        <div class="sb-lbl">Verified Dealers</div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- ═══════ STORY ═══════ -->
+<section class="about-story">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-img">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Our Story">
+        <div class="story-badge">
+          <span class="sb-year">2024</span>
+          <span class="sb-text">Founded</span>
+        </div>
+      </div>
+      <div class="story-text">
+        <p class="section-label"><i class="fa-solid fa-star"></i> Our Story</p>
+        <h2>Built for Pakistan's<br><span>Real Estate Market</span></h2>
+        <p>Roshan Aashiyana was born out of a simple observation — finding a home in Pakistan
+          was unnecessarily complex, opaque and stressful. We set out to change that.</p>
+        <p>Our platform brings buyers, sellers, renters and verified dealers onto one trusted
+          space, with transparent pricing, verified listings and a smooth experience from
+          search to deal.</p>
+        <div class="story-points">
+          <div class="sp-item">
+            <div class="sp-dot"></div>
+            <span>Transparent, verified property listings</span>
+          </div>
+          <div class="sp-item">
+            <div class="sp-dot"></div>
+            <span>Direct connection between buyers & dealers</span>
+          </div>
+          <div class="sp-item">
+            <div class="sp-dot"></div>
+            <span>Covering all major cities across Pakistan</span>
+          </div>
+          <div class="sp-item">
+            <div class="sp-dot"></div>
+            <span>Free property posting for verified dealers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ VALUES ═══════ -->
+<section class="about-values">
+  <div class="container">
+    <div class="section-header-center">
+      <p class="section-label"><i class="fa-solid fa-heart"></i> What We Stand For</p>
+      <h2>Our Core <span>Values</span></h2>
+      <p>Everything we build is guided by these principles</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="vc-icon vc-green"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3>Trust & Transparency</h3>
+        <p>Every property on our platform is verified. No fake listings, no hidden fees.</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-blue"><i class="fa-solid fa-bolt"></i></div>
+        <h3>Speed & Simplicity</h3>
+        <p>From search to inquiry in minutes. We remove complexity at every step.</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-orange"><i class="fa-solid fa-users"></i></div>
+        <h3>Community First</h3>
+        <p>We serve every Pakistani family — from first-time buyers to seasoned investors.</p>
+      </div>
+      <div class="value-card">
+        <div class="vc-icon vc-purple"><i class="fa-solid fa-chart-line"></i></div>
+        <h3>Dealer Success</h3>
+        <p>Our dealers get powerful tools to list, manage and grow their business.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ TEAM ═══════ -->
+<section class="about-team">
+  <div class="container">
+    <div class="section-header-center">
+      <p class="section-label"><i class="fa-solid fa-user-group"></i> The Team</p>
+      <h2>Meet the <span>People</span> Behind It</h2>
+      <p>A passionate team dedicated to transforming Pakistan's real estate experience</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="tc-img">
+          <img src="https://ui-avatars.com/api/?name=Abdullah+Minhas&background=3cb648&color=fff&size=200" alt="Abdullah Minhas">
+        </div>
+        <h3>Abdullah Minhas</h3>
+        <p class="tc-role">Founder & Lead Developer</p>
+        <p class="tc-bio">Building Roshan Aashiyana to make property search simple and trustworthy for every Pakistani.</p>
+        <div class="tc-socials">
+          <a href="https://www.linkedin.com/in/abdullah-minhas-6798b932a/" target="_blank" class="tcs-link">
+            <i class="fab fa-linkedin-in"></i>
+          </a>
+          <a href="#" class="tcs-link"><i class="fab fa-github"></i></a>
+          <a href="#" class="tcs-link"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CONTACT ═══════ -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="section-header-center">
+      <p class="section-label"><i class="fa-solid fa-paper-plane"></i> Get In Touch</p>
+      <h2>Contact <span>Us</span></h2>
+      <p>Have a question or want to partner with us? We'd love to hear from you.</p>
+    </div>
+
+    <div class="contact-grid">
+
+      <!-- Left: info cards -->
+      <div class="contact-info">
+        <div class="ci-card">
+          <div class="ci-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div>
+            <h4>Our Location</h4>
+            <p>International Islamic University, Islamabad, Pakistan</p>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon"><i class="fa-solid fa-phone"></i></div>
+          <div>
+            <h4>Phone Number</h4>
+            <p>+92 319 0509847</p>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <h4>Email Address</h4>
+            <p>minhasabdullah8888@gmail.com</p>
+          </div>
+        </div>
+        <div class="ci-card">
+          <div class="ci-icon"><i class="fa-solid fa-clock"></i></div>
+          <div>
+            <h4>Working Hours</h4>
+            <p>Mon – Fri: 9:00 AM – 6:00 PM</p>
+          </div>
+        </div>
+
+        <!-- Social -->
+        <div class="ci-socials">
+          <p>Follow Us</p>
+          <div class="cis-links">
+            <a href="#" class="cis-btn"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="cis-btn"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="cis-btn"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/in/abdullah-minhas-6798b932a/" target="_blank" class="cis-btn">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="contact-form-wrap">
+        <form class="contact-form" method="POST" action="#">
+          {% csrf_token %}
+          <div class="cf-row">
+            <div class="cf-group">
+              <label><i class="fa-solid fa-user"></i> Full Name</label>
+              <div class="cf-input-wrap">
+                <input type="text" name="name" placeholder="Your full name" required>
+              </div>
+            </div>
+            <div class="cf-group">
+              <label><i class="fa-solid fa-envelope"></i> Email</label>
+              <div class="cf-input-wrap">
+                <input type="email" name="email" placeholder="your@email.com" required>
+              </div>
+            </div>
+          </div>
+          <div class="cf-group">
+            <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+            <div class="cf-input-wrap">
+              <input type="text" name="phone" placeholder="+92 300 0000000">
+            </div>
+          </div>
+          <div class="cf-group">
+            <label><i class="fa-solid fa-tag"></i> Subject</label>
+            <div class="cf-input-wrap cf-select-wrap">
+              <select name="subject">
+                <option value="">Select a subject</option>
+                <option>General Inquiry</option>
+                <option>Property Listing</option>
+                <option>Dealer Registration</option>
+                <option>Technical Support</option>
+                <option>Partnership</option>
+              </select>
+              <i class="fa-solid fa-chevron-down cf-arr"></i>
+            </div>
+          </div>
+          <div class="cf-group">
+            <label><i class="fa-solid fa-message"></i> Message</label>
+            <div class="cf-input-wrap">
+              <textarea name="message" rows="5" placeholder="Write your message here..." required></textarea>
+            </div>
+          </div>
+          <button type="submit" class="cf-submit">
+            <i class="fa-solid fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ CTA ═══════ -->
+<section class="about-cta">
+  <div class="container">
+    <div class="cta-banner">
+      <div class="cta-icon-wrap"><i class="fa-solid fa-house-circle-check"></i></div>
+      <div class="cta-text">
+        <h3>Ready to Find Your Dream Home?</h3>
+        <p>Browse thousands of verified properties across Pakistan right now.</p>
+      </div>
+      <a href="{% url 'listings' %}" class="btn-primary">
+        <i class="fa-solid fa-search"></i> Browse Properties
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

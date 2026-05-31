@@ -87,6 +87,9 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),# Your DB password
         'HOST': config('DB_HOST'),     # Set to 'localhost' for local dev
         'PORT': config('DB_PORT'),          # Default PostgreSQL port
+        'OPTIONS': {
+            'sslmode': 'require',  # 👈 required for Neon
+        }
     }
 }
 
@@ -128,7 +131,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media storage
 STORAGES = {
@@ -136,7 +139,7 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 

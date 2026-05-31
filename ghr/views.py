@@ -12,11 +12,20 @@ from .models import Property, Dealer, PropertyImage, Features, PropertyType, Dea
 
 def SignUp(request):
     if request.method == "POST":
-        uname = request.POST.get("uname")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        password = request.POST.get("password")
-        cpassword = request.POST.get("cpassword")
+        request.session['last_form'] = 'signup'
+        uname = request.POST.get("uname", '').strip()
+        email = request.POST.get("email", '').strip()
+        phone = request.POST.get("phone", '').strip()
+        password = request.POST.get("password", '')
+        cpassword = request.POST.get("cpassword", '')
+
+        if len(uname) < 6:
+            messages.error(request, "Username must be atleast 6 characters")
+            return redirect('home')
+        
+        if len(password) < 6:
+            messages.error(request, "Password must be at least 6 characters.")
+            return redirect('home')
 
         if password != cpassword:
             messages.error(request, "Password Doesn't match")
@@ -25,6 +34,10 @@ def SignUp(request):
         if User.objects.filter(username=uname).exists():
             messages.error(request, "Username already exists")
             return redirect("home")
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "An account with this email already exists.")
+            return redirect('home')
 
         user = User.objects.create_user(username=uname, email=email, password=password)
         user.save()
@@ -35,6 +48,7 @@ def SignUp(request):
 
 def SignIn(request):
     if request.method == "POST":
+        request.session['last_form'] = 'login'
         uname = request.POST.get("uname")
         password = request.POST.get("password")
 
@@ -154,6 +168,9 @@ def house(request):
     page_obj = paginator.get_page(page)
     return render(request, "house.html", {"prop": page_obj})
 
+def about(request):
+    return render(request, 'about.html')
+
 
 @login_required
 def dealer_register(request):
@@ -162,11 +179,27 @@ def dealer_register(request):
 
     if request.method == "POST":
         name = request.POST.get("name")
-        cnic = request.POST.get("cnic")
+        cnic = request.POST.get("cnic",'').strip()
         address = request.POST.get("address")
         gender = request.POST.get("gender")
         phone = request.POST.get("phone")
         picture = request.FILES.get("picture")
+
+        import re
+        cnic_pattern = r'^\d{5}-\d{7}-\d{1}$'
+        if not re.match(cnic_pattern, cnic):
+            messages.error(request, "Invalid CNIC format. Use: 35202-1234567-1")
+            return redirect('dealer_register')
+
+        # ── Unique CNIC ──
+        if Dealer.objects.filter(cnic=cnic).exists():
+            messages.error(request, "A dealer account with this CNIC already exists.")
+            return redirect('dealer_register')
+
+        # ── One dealer per user ──
+        if Dealer.objects.filter(user=request.user).exists():
+            messages.error(request, "You already have a dealer account.")
+            return redirect('dashboard')
 
         Dealer.objects.create(
             user=request.user,

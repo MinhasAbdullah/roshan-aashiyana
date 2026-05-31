@@ -6,6 +6,7 @@ urlpatterns = [
     path('listings/', views.listings, name='listings'),
     path('property/<slug:slug>/', views.property_detail , name='property_detail'),
     path('house/', views.house, name='house'),
+    path('about/', views.about, name='about'),
     path('register/',views.SignUp, name='SignUp'),
     path('login/', views.SignIn, name='SignIn'),
     path('logout/', views.logout_user, name='logout'),
