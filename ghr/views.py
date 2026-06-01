@@ -361,10 +361,11 @@ def dealer_register(request):
         elif Dealer.objects.filter(cnic=cnic).exists():
             errors["cnic"] = "A dealer with this CNIC already exists."
 
-        phone_digits = re.sub(r"\D", "", phone)
-        if len(phone_digits) < 10:
-            errors["phone"] = "Enter a valid Pakistani phone number."
-
+        phone_pattern = r"^\+92[0-9]{10}$"
+        if not phone:
+            errors["phone"] = "Phone number is required."
+        elif not re.match(phone_pattern, phone):
+            errors["phone"] = "Enter phone in +92XXXXXXXXXX format (e.g. +923001234567)"
         if not address:
             errors["address"] = "Address is required."
 
