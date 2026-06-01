@@ -22,6 +22,7 @@ from django.http import HttpResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
+from django.conf import settings
 
 
 def SignUp(request):
@@ -84,7 +85,7 @@ def SignUp(request):
             Regards,
             Roshan Aashiyana Team
             """,
-            from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
             fail_silently=True,
         )
@@ -247,7 +248,7 @@ def property_detail(request, id, slug):
             Message:
             {message}
             """,
-            from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[dealer.user.email],
             fail_silently=True,
             )
@@ -357,7 +358,7 @@ def dealer_register(request):
         Regards,
         Roshan Aashiyana Team
         """,
-        from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
+        from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[request.user.email],
         )
         return redirect("dashboard")
@@ -606,7 +607,7 @@ def verify_email(request, uidb64, token):
                     Regards,
                     Roshan Aashiyana Team
                     """,
-            from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
+            from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
             fail_silently=True,
         )
