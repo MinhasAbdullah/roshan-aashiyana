@@ -250,7 +250,8 @@
               {% endif %}
             </div>
             <div class="prop-footer">
-              <span class="prop-price">PKR {{ item.price }}</span>
+              {% load humanize %}
+              <span class="prop-price">PKR {{ item.price  | intcomma }}</span>
               <span class="btn-details">View Details</span>
             </div>
           </div>

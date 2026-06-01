@@ -23,7 +23,6 @@
   position: relative; z-index: 2;
   display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
 }
-
 .drh-icon {
   width: 64px; height: 64px; border-radius: 50%;
   background: rgba(60,182,72,0.15);
@@ -31,20 +30,17 @@
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .drh-icon i { font-size: 26px; color: var(--green); }
-
 .drh-label {
   font-size: 12px; font-weight: 700; color: var(--green);
   text-transform: uppercase; letter-spacing: .6px;
   display: flex; align-items: center; gap: 6px;
   margin-bottom: 8px;
 }
-
 .dr-hero-content h1 {
   font-size: 30px; font-weight: 900; color: #fff;
   line-height: 1.15; margin-bottom: 8px;
 }
 .dr-hero-content h1 span { color: var(--green); }
-
 .drh-sub { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.6; }
 
 /* ═══════ MAIN SECTION ═══════ */
@@ -52,7 +48,6 @@
   background: var(--light-gray);
   padding: 40px 0 80px;
 }
-
 .dr-wrapper {
   display: grid;
   grid-template-columns: 1fr 480px;
@@ -61,10 +56,7 @@
 }
 
 /* ══════ LEFT PANEL ══════ */
-.dr-left {
-  position: sticky; top: 84px;
-}
-
+.dr-left { position: sticky; top: 84px; }
 .dr-left-inner {
   background: var(--navy);
   border-radius: 20px;
@@ -72,23 +64,15 @@
   background-image: linear-gradient(145deg, #0d1b2e 50%, #162840);
   box-shadow: 0 8px 40px rgba(7,26,52,0.25);
 }
-
-.dr-left-inner h2 {
-  font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 10px;
-}
-.dr-left-inner > p {
-  font-size: 13.5px; color: rgba(255,255,255,0.6);
-  line-height: 1.65; margin-bottom: 32px;
-}
+.dr-left-inner h2 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+.dr-left-inner > p { font-size: 13.5px; color: rgba(255,255,255,0.6); line-height: 1.65; margin-bottom: 32px; }
 
 /* Benefit list */
 .benefit-list {
   list-style: none; padding: 0; margin-bottom: 36px;
   display: flex; flex-direction: column; gap: 20px;
 }
-.benefit-list li {
-  display: flex; align-items: flex-start; gap: 14px;
-}
+.benefit-list li { display: flex; align-items: flex-start; gap: 14px; }
 .ben-icon {
   width: 42px; height: 42px; border-radius: 10px;
   background: rgba(60,182,72,0.15);
@@ -98,7 +82,7 @@
 .ben-icon i { font-size: 16px; color: var(--green); }
 .benefit-list li div:last-child { display: flex; flex-direction: column; gap: 3px; }
 .benefit-list li strong { font-size: 14px; font-weight: 700; color: #fff; }
-.benefit-list li span  { font-size: 12.5px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+.benefit-list li span { font-size: 12.5px; color: rgba(255,255,255,0.55); line-height: 1.5; }
 
 /* Stats row */
 .dr-stats-row {
@@ -108,8 +92,8 @@
   border-radius: 12px; padding: 18px 20px;
 }
 .dr-stat { text-align: center; }
-.ds-num  { display: block; font-size: 24px; font-weight: 900; color: var(--green); line-height: 1; }
-.ds-lbl  { display: block; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.ds-num { display: block; font-size: 24px; font-weight: 900; color: var(--green); line-height: 1; }
+.ds-lbl { display: block; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
 .dr-stat-div { width: 1px; height: 36px; background: rgba(255,255,255,0.12); }
 
 /* ══════ RIGHT FORM ══════ */
@@ -119,7 +103,6 @@
   padding: 36px 32px;
   box-shadow: var(--card-shadow);
 }
-
 .dr-form-header {
   display: flex; align-items: center; gap: 16px;
   margin-bottom: 32px; padding-bottom: 24px;
@@ -135,17 +118,15 @@
 .dr-form-header p  { font-size: 13px; color: var(--text-muted); }
 
 /* Form groups */
-.dealer-form { display: flex; flex-direction: column; gap: 18px; }
-
-.form-group { display: flex; flex-direction: column; gap: 7px; }
-
+.dealer-form { display: flex; flex-direction: column; gap: 4px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
 .form-group label {
   font-size: 13px; font-weight: 700; color: var(--text);
   display: flex; align-items: center; gap: 7px;
 }
 .form-group label i { color: var(--green); font-size: 13px; }
 
-/* Input wrap */
+/* ─── Input wrap — DEFAULT ─── */
 .input-wrap {
   border: 1.5px solid var(--border);
   border-radius: 10px;
@@ -156,7 +137,6 @@
   border-color: var(--green);
   box-shadow: 0 0 0 3px rgba(60,182,72,0.1);
 }
-
 .input-wrap input,
 .input-wrap select,
 .input-wrap textarea {
@@ -168,22 +148,44 @@
 .input-wrap input::placeholder,
 .input-wrap textarea::placeholder { color: #aab4c4; }
 
+/* ─── VALID state — green border ─── */
+.input-wrap.field-valid {
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
+}
+
+/* ─── INVALID state — red border ─── */
+.input-wrap.field-invalid {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229,57,53,0.1) !important;
+}
+
 /* Select wrap */
-.select-wrap {
-  position: relative; display: flex; align-items: center;
-}
-.select-wrap select {
-  appearance: none; -webkit-appearance: none;
-  cursor: pointer; padding-right: 40px;
-}
-.sel-arrow {
-  position: absolute; right: 14px;
-  font-size: 12px; color: var(--text-muted);
-  pointer-events: none;
-}
+.select-wrap { position: relative; display: flex; align-items: center; }
+.select-wrap select { appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 40px; }
+.sel-arrow { position: absolute; right: 14px; font-size: 12px; color: var(--text-muted); pointer-events: none; }
 
 /* Textarea */
 .textarea-wrap textarea { resize: vertical; min-height: 90px; }
+
+/* ─── Field hint messages ─── */
+.field-hint-msg {
+  font-size: 12.5px;
+  font-weight: 600;
+  min-height: 18px;
+  line-height: 1.4;
+  padding-left: 2px;
+  display: block;
+  transition: color .15s;
+}
+/* Green success message */
+.field-hint-msg.msg-valid {
+  color: #16a34a;
+}
+/* Red error message */
+.field-hint-msg.msg-error {
+  color: #e53935;
+}
 
 /* File drop zone */
 .file-drop {
@@ -206,12 +208,16 @@
   opacity: 0; cursor: pointer; z-index: 2;
   width: 100%; height: 100%;
 }
-.file-drop-inner {
-  text-align: center; padding: 24px 20px; z-index: 1;
+.file-drop-inner { text-align: center; padding: 24px 20px; z-index: 1; }
+.file-drop-inner i   { font-size: 32px; color: var(--green); margin-bottom: 10px; display: block; }
+.file-drop-inner p   { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.file-drop-inner span{ font-size: 12px; color: var(--text-muted); }
+
+/* ─── File drop error state ─── */
+.file-drop.file-drop-error {
+  border-color: #e53935 !important;
+  background: #fff5f5 !important;
 }
-.file-drop-inner i  { font-size: 32px; color: var(--green); margin-bottom: 10px; display: block; }
-.file-drop-inner p  { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-.file-drop-inner span { font-size: 12px; color: var(--text-muted); }
 
 /* Preview image */
 .file-preview {
@@ -220,11 +226,11 @@
   object-fit: cover; border-radius: 10px;
 }
 
-/* Terms */
+/* Terms note */
 .terms-note {
   font-size: 12.5px; color: var(--text-muted);
   display: flex; align-items: flex-start; gap: 7px;
-  line-height: 1.6;
+  line-height: 1.6; margin-top: 8px;
 }
 .terms-note i { color: var(--green); margin-top: 2px; flex-shrink: 0; }
 .terms-note a { color: var(--green); font-weight: 600; }
@@ -238,11 +244,9 @@
   cursor: pointer; font-family: inherit;
   display: flex; align-items: center; justify-content: center; gap: 10px;
   transition: background .2s, transform .15s;
-  letter-spacing: .3px; margin-top: 4px;
+  letter-spacing: .3px; margin-top: 12px;
 }
-.dealer-submit-btn:hover {
-  background: var(--green-dark); transform: translateY(-2px);
-}
+.dealer-submit-btn:hover { background: var(--green-dark); transform: translateY(-2px); }
 .dealer-submit-btn i { font-size: 16px; }
 
 /* ═══════ RESPONSIVE ═══════ */
@@ -252,7 +256,6 @@
   .dr-left-inner { padding: 28px 24px; }
   .benefit-list { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 }
-
 @media (max-width: 768px) {
   .dr-hero-content h1 { font-size: 24px; }
   .drh-icon { width: 52px; height: 52px; }
@@ -261,74 +264,9 @@
   .dr-stats-row { gap: 12px; padding: 14px; }
   .ds-num { font-size: 20px; }
 }
-
 @media (max-width: 480px) {
   .dr-section { padding: 24px 0 60px; }
   .dr-form-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .dr-stats-row { flex-direction: column; gap: 14px; }
   .dr-stat-div { width: 60px; height: 1px; }
 }
-
-/* ═══════ REAL-TIME VALIDATION STYLES ═══════ */
-
-/* Field hint messages */
-.field-hint-msg {
-  font-size: 12px; font-weight: 600;
-  margin-top: 5px; min-height: 18px;
-  display: flex; align-items: center; gap: 5px;
-  transition: color .2s;
-}
-.msg-valid { color: #16a34a; }
-.msg-error { color: #e53935; }
-
-/* Valid input wrap */
-.dr-field.field-valid {
-  border-color: #16a34a !important;
-  box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
-}
-/* Invalid input wrap */
-.dr-field.field-invalid {
-  border-color: #e53935 !important;
-  box-shadow: 0 0 0 3px rgba(229,57,53,0.1) !important;
-}
-
-/* File drop error state */
-.file-drop.file-drop-error {
-  border-color: #e53935 !important;
-  background: #fff5f5 !important;
-}
-
-/* ═══════ REAL-TIME VALIDATION — field states ═══════ */
-
-/* Valid state — green border */
-.input-wrap.field-valid {
-  border-color: #16a34a !important;
-  box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
-}
-
-/* Invalid state — red border */
-.input-wrap.field-invalid {
-  border-color: #e53935 !important;
-  box-shadow: 0 0 0 3px rgba(229,57,53,0.1) !important;
-}
-
-/* File drop error */
-.file-drop.file-drop-error {
-  border-color: #e53935 !important;
-  background: #fff5f5;
-}
-
-/* Hint messages shown under each field */
-.field-hint-msg {
-  font-size: 12.5px;
-  font-weight: 600;
-  min-height: 18px;
-  padding-left: 2px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 2px;
-  transition: color .2s;
-}
-.msg-valid { color: #16a34a; }
-.msg-error { color: #e53935; }

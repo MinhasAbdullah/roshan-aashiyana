@@ -92,7 +92,8 @@
             </div>
           </td>
           <td><span class="td-city"><i class="fa-solid fa-location-dot"></i> {{ item.city }}</span></td>
-          <td><span class="td-price">PKR {{ item.price }}</span></td>
+          {% load humanize %}
+          <td><span class="td-price">PKR {{ item.price | intcomma }}</span></td>
           <td>
             <span class="purpose-pill {% if item.purpose == 'rent' %}pill-rent{% endif %}">
               {{ item.get_purpose_display }}

@@ -196,7 +196,8 @@
                   <div class="location">
                     <i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}
                   </div>
-                  <div class="price">PKR {{ item.price }}</div>
+                  {% load humanize %}
+                  <div class="price">PKR {{ item.price | intcomma }}</div>
                   <div class="property-info">
                     {% if item.bedrooms %}<span><i class="fa-solid fa-bed"></i> {{ item.bedrooms }} Beds</span>{% endif %}
                     {% if item.bathrooms %}<span><i class="fa-solid fa-shower"></i> {{ item.bathrooms }} Baths</span>{% endif %}

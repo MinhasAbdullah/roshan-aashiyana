@@ -59,8 +59,8 @@
             <i class="fa-solid fa-location-dot"></i>
             {{ item.property.area }}, {{ item.property.city }}
           </div>
-
-          <div class="fav-price">PKR {{ item.property.price }}</div>
+          {% load humanize %}
+          <div class="fav-price">PKR {{ item.property.price | intcomma }}</div>
 
           <div class="fav-specs">
             {% if item.property.bedrooms %}

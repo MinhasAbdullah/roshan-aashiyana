@@ -86,7 +86,7 @@ def SignUp(request):
             """,
             from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
             recipient_list=[user.email],
-            fail_silently=False,
+            fail_silently=True,
         )
         messages.success(request,"Account created successfully. Please check your email and verify your account.")
         return redirect("home")
@@ -249,7 +249,7 @@ def property_detail(request, id, slug):
             """,
             from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
             recipient_list=[dealer.user.email],
-            fail_silently=False
+            fail_silently=True,
             )
         messages.success(request, "Inquiry send successfully")
         return redirect("property_detail", slug=property.slug, id=property.id)
@@ -357,7 +357,7 @@ def dealer_register(request):
         Regards,
         Roshan Aashiyana Team
         """,
-        from_email=None,
+        from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
         recipient_list=[request.user.email],
         )
         return redirect("dashboard")
@@ -578,16 +578,6 @@ def check_cnic(request):
     return JsonResponse({"exists": exists})
 
 
-def test_email(request):
-    send_mail(
-        subject="Roshan Aashiyana",
-        message="Hi this is test mail ",
-        from_email="abdullahwork8888@gmail.com",
-        recipient_list=["minhasabdullah8888@gmail.com"],
-        fail_silently=False,
-    )
-    return HttpResponse("email sent")
-
 def verify_email(request, uidb64, token):
 
     try:
@@ -618,7 +608,7 @@ def verify_email(request, uidb64, token):
                     """,
             from_email="Roshan Aashiyana <abdullahwork8888@gmail.com>",
             recipient_list=[user.email],
-            fail_silently=False,
+            fail_silently=True,
         )
 
         messages.success(
