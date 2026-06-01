@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('listings/', views.listings, name='listings'),
+    path('check-cnic/', views.check_cnic, name='check_cnic'),
     path('property/<int:id>/<slug:slug>/', views.property_detail, name='property_detail'),
     path('about/', views.about, name='about'),
     path('register/',views.SignUp, name='SignUp'),
@@ -19,5 +20,7 @@ urlpatterns = [
     path('delete/<int:id>/<slug:slug>/', views.delete_property, name='delete_property'),
     path('dealer_inquiries/', views.dealer_inquiries, name='dealer_inquiries'),
     path('dealer_reviews/', views.dealer_reviews, name='dealer_reviews'),
+    path('email/', views.test_email, name='email'),
+    path('verify-email/<uidb64>/<token>/',views.verify_email,name='verify_email')
 ]
 

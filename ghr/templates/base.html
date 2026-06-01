@@ -42,9 +42,45 @@
           {% else %}
           <a href="{% url 'dealer_register' %}" class="nav-btn-outline">Post Property</a>
           {% endif %}
-          <a href="{% url 'logout' %}" class="btn-login">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-          </a>
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-trigger" id="profileTrigger">
+              <div class="profile-avatar">
+                  {{ user.username|first|upper }}
+              </div>
+            </div>
+              
+            <div class="dropdown-menu" id="dropdownMenu">
+                <!-- User Info -->
+              <div class="dropdown-header">
+                <div class="dropdown-avatar">{{ user.username|first|upper }}</div>
+                <div>
+                  <div class="dropdown-name">{{ user.get_full_name|default:user.username }}</div>
+                  <div class="dropdown-email">{{ user.email }}</div>
+                  </div>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                {% if user.dealer %}
+                <a href="{% url 'dashboard' %}" class="dropdown-item">
+                  <i class="fa-solid fa-gauge"></i> Dashboard
+                </a>
+                {% endif %}
+                <a href="{% url 'favourites' %}" class="dropdown-item">
+                  <i class="fa-solid fa-heart"></i> My Favourites
+                </a>
+                <a href="#" class="dropdown-item">
+                  <i class="fa-solid fa-user"></i> Account Settings
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <a href="{% url 'logout' %}" class="dropdown-item dropdown-logout">
+                  <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+              </div>
+            </div>
         {% else %}
           <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline">Post Property</a>
           <a href="javascript:void(0)" class="btn-login" id="openModal">
@@ -583,6 +619,18 @@
     }
 
   })();
+//  profile dropmenu 
+  const trigger = document.getElementById('profileTrigger');
+  const menu = document.getElementById('dropdownMenu');
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    menu.classList.remove('open');
+  });
   </script>
 
 </body>

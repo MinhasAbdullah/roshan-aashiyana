@@ -178,7 +178,7 @@
 
 <script>
 (() => {
-  // ── Image preview ──
+  // ── Image preview & drag/drop ──
   const pictureInput  = document.getElementById('pictureInput');
   const filePreview   = document.getElementById('filePreview');
   const fileDropInner = document.getElementById('fileDropInner');
@@ -188,33 +188,26 @@
   pictureInput.addEventListener('change', function () {
     const file = this.files[0];
     if (!file) return;
-
-    // File type check
     if (!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)) {
-      setDrField('fileDrop', 'dr-pic-msg', false, 'Only JPG, PNG or WebP images allowed.');
-      pictureInput.value = '';
-      return;
+      showFieldError('fileDrop', 'dr-pic-msg', 'Only JPG, PNG or WebP images allowed.', true);
+      this.value = ''; return;
     }
-    // File size check (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      setDrField('fileDrop', 'dr-pic-msg', false, 'File too large. Max size is 5MB.');
-      pictureInput.value = '';
-      return;
+      showFieldError('fileDrop', 'dr-pic-msg', 'File too large. Max size is 5MB.', true);
+      this.value = ''; return;
     }
-
     const reader = new FileReader();
     reader.onload = e => {
       filePreview.src = e.target.result;
       filePreview.style.display = 'block';
       fileDropInner.style.display = 'none';
       fileDrop.classList.remove('file-drop-error');
-      drPicMsg.textContent = '✓ Photo selected!';
-      drPicMsg.className = 'field-hint-msg msg-valid';
+      showFieldSuccess('fileDrop', 'dr-pic-msg', '✓ Photo selected!', true);
     };
     reader.readAsDataURL(file);
   });
 
-  fileDrop.addEventListener('dragover', e => { e.preventDefault(); fileDrop.classList.add('drag-over'); });
+  fileDrop.addEventListener('dragover',  e => { e.preventDefault(); fileDrop.classList.add('drag-over'); });
   fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('drag-over'));
   fileDrop.addEventListener('drop', e => {
     e.preventDefault();
@@ -223,91 +216,169 @@
     pictureInput.dispatchEvent(new Event('change'));
   });
 
-  // ── Helper: set wrap + msg state ──
-  function setDrField(wrapId, msgId, isValid, msg) {
-    const wrap = document.getElementById(wrapId);
+  // ── Core helpers ──
+  // wrapId = the id of the .input-wrap div (or fileDrop)
+  // msgId  = the id of the <p class="field-hint-msg"> element
+  // isFile = true when the wrap is the file-drop zone (different class handling)
+
+  function showFieldSuccess(wrapId, msgId, message, isFile) {
+    const wrap  = document.getElementById(wrapId);
     const msgEl = document.getElementById(msgId);
     if (!wrap || !msgEl) return;
-    wrap.classList.remove('field-valid', 'field-invalid', 'file-drop-error');
-    msgEl.className = 'field-hint-msg';
-    if (isValid) {
-      wrap.classList.add('field-valid');
-      msgEl.classList.add('msg-valid');
+    if (isFile) {
+      wrap.classList.remove('file-drop-error');
     } else {
-      wrap.classList.add(wrapId === 'fileDrop' ? 'file-drop-error' : 'field-invalid');
-      msgEl.classList.add('msg-error');
+      wrap.classList.remove('field-invalid');
+      wrap.classList.add('field-valid');
     }
-    msgEl.textContent = msg || '';
+    msgEl.className = 'field-hint-msg msg-valid';
+    msgEl.textContent = message;
+  }
+
+  function showFieldError(wrapId, msgId, message, isFile) {
+    const wrap  = document.getElementById(wrapId);
+    const msgEl = document.getElementById(msgId);
+    if (!wrap || !msgEl) return;
+    if (isFile) {
+      wrap.classList.add('file-drop-error');
+    } else {
+      wrap.classList.remove('field-valid');
+      wrap.classList.add('field-invalid');
+    }
+    msgEl.className = 'field-hint-msg msg-error';
+    msgEl.textContent = message;
+  }
+
+  function clearField(wrapId, msgId) {
+    const wrap  = document.getElementById(wrapId);
+    const msgEl = document.getElementById(msgId);
+    if (!wrap || !msgEl) return;
+    wrap.classList.remove('field-valid', 'field-invalid');
+    msgEl.className = 'field-hint-msg';
+    msgEl.textContent = '';
   }
 
   // ── Full Name ──
   const drName = document.getElementById('drName');
-  if (drName) {
-    drName.addEventListener('input', () => {
-      const val = drName.value.trim();
-      if (!val) {
-        setDrField('dr-name-wrap', 'dr-name-msg', false, 'Full name is required.');
-      } else if (val.length < 3) {
-        setDrField('dr-name-wrap', 'dr-name-msg', false, `${val.length}/3 — needs ${3 - val.length} more character(s).`);
-      } else {
-        setDrField('dr-name-wrap', 'dr-name-msg', true, '✓ Looks good!');
-      }
-    });
-  }
+  drName.addEventListener('input', () => {
+    const val = drName.value.trim();
+    if (!val) {
+      showFieldError('dr-name-wrap', 'dr-name-msg', 'Full name is required.');
+    } else if (val.length < 3) {
+      showFieldError('dr-name-wrap', 'dr-name-msg', `Too short — needs ${3 - val.length} more character(s).`);
+    } else {
+      showFieldSuccess('dr-name-wrap', 'dr-name-msg', '✓ Name looks good!');
+    }
+  });
 
-  // ── CNIC — auto-format as user types ──
+  // ── CNIC — auto-format + server uniqueness check ──
   const drCnic = document.getElementById('drCnic');
-  if (drCnic) {
-    drCnic.addEventListener('input', function () {
-      // Strip non-digits
-      let digits = this.value.replace(/\D/g, '').slice(0, 13);
-      // Auto-insert dashes: XXXXX-XXXXXXX-X
-      let formatted = digits;
-      if (digits.length > 5)  formatted = digits.slice(0, 5)  + '-' + digits.slice(5);
-      if (digits.length > 12) formatted = formatted.slice(0, 13) + '-' + digits.slice(12);
-      this.value = formatted;
+  let cnicTimer = null;
 
-      const valid = /^\d{5}-\d{7}-\d{1}$/.test(this.value);
-      if (!this.value) {
-        setDrField('dr-cnic-wrap', 'dr-cnic-msg', false, 'CNIC is required.');
-      } else if (!valid) {
-        const filled = digits.length;
-        setDrField('dr-cnic-wrap', 'dr-cnic-msg', false, `${filled}/13 digits — format: 35202-1234567-1`);
-      } else {
-        setDrField('dr-cnic-wrap', 'dr-cnic-msg', true, '✓ Valid CNIC format!');
+  drCnic.addEventListener('input', function () {
+    // Auto-format: strip non-digits, insert dashes
+    let digits = this.value.replace(/\D/g, '').slice(0, 13);
+    let fmt = digits;
+    if (digits.length > 5)  fmt = digits.slice(0, 5)  + '-' + digits.slice(5);
+    if (digits.length > 12) fmt = fmt.slice(0, 13)    + '-' + digits.slice(12);
+    this.value = fmt;
+
+    const complete = /^\d{5}-\d{7}-\d{1}$/.test(this.value);
+
+    if (!this.value) {
+      showFieldError('dr-cnic-wrap', 'dr-cnic-msg', 'CNIC is required.');
+      return;
+    }
+    if (!complete) {
+      showFieldError('dr-cnic-wrap', 'dr-cnic-msg', `${digits.length}/13 digits — format: 35202-1234567-1`);
+      return;
+    }
+
+    // Format valid — now check uniqueness via AJAX (debounced 600ms)
+    clearField('dr-cnic-wrap', 'dr-cnic-msg');
+    const msgEl = document.getElementById('dr-cnic-msg');
+    msgEl.className = 'field-hint-msg';
+    msgEl.textContent = 'Checking...';
+
+    clearTimeout(cnicTimer);
+    cnicTimer = setTimeout(async () => {
+      try {
+        const resp = await fetch(`/check-cnic/?cnic=${encodeURIComponent(drCnic.value)}`);
+        const data = await resp.json();
+        if (data.exists) {
+          showFieldError('dr-cnic-wrap', 'dr-cnic-msg', 'A dealer with this CNIC already exists.');
+        } else {
+          showFieldSuccess('dr-cnic-wrap', 'dr-cnic-msg', '✓ CNIC is valid and available!');
+        }
+      } catch {
+        showFieldSuccess('dr-cnic-wrap', 'dr-cnic-msg', '✓ Valid CNIC format!');
       }
-    });
-  }
+    }, 600);
+  });
 
   // ── Phone ──
   const drPhone = document.getElementById('drPhone');
-  if (drPhone) {
-    drPhone.addEventListener('input', () => {
-      const digits = drPhone.value.replace(/\D/g, '');
-      if (!drPhone.value.trim()) {
-        setDrField('dr-phone-wrap', 'dr-phone-msg', false, 'Phone number is required.');
-      } else if (digits.length < 10) {
-        setDrField('dr-phone-wrap', 'dr-phone-msg', false, `${digits.length}/10 digits entered.`);
-      } else {
-        setDrField('dr-phone-wrap', 'dr-phone-msg', true, '✓ Valid phone number!');
-      }
-    });
-  }
+  drPhone.addEventListener('input', () => {
+    const digits = drPhone.value.replace(/\D/g, '');
+    if (!drPhone.value.trim()) {
+      showFieldError('dr-phone-wrap', 'dr-phone-msg', 'Phone number is required.');
+    } else if (digits.length < 10) {
+      showFieldError('dr-phone-wrap', 'dr-phone-msg', `${digits.length}/10 digits entered.`);
+    } else {
+      showFieldSuccess('dr-phone-wrap', 'dr-phone-msg', '✓ Valid phone number!');
+    }
+  });
 
   // ── Address ──
   const drAddress = document.getElementById('drAddress');
-  if (drAddress) {
-    drAddress.addEventListener('input', () => {
-      const val = drAddress.value.trim();
-      if (!val) {
-        setDrField('dr-address-wrap', 'dr-address-msg', false, 'Address is required.');
-      } else if (val.length < 10) {
-        setDrField('dr-address-wrap', 'dr-address-msg', false, 'Please enter a more complete address.');
-      } else {
-        setDrField('dr-address-wrap', 'dr-address-msg', true, '✓ Address entered.');
-      }
-    });
-  }
+  drAddress.addEventListener('input', () => {
+    const val = drAddress.value.trim();
+    if (!val) {
+      showFieldError('dr-address-wrap', 'dr-address-msg', 'Address is required.');
+    } else if (val.length < 10) {
+      showFieldError('dr-address-wrap', 'dr-address-msg', 'Please enter a more complete address.');
+    } else {
+      showFieldSuccess('dr-address-wrap', 'dr-address-msg', '✓ Address entered.');
+    }
+  });
+
+  // ── Block submit if any invalid fields remain ──
+  document.getElementById('dealerForm').addEventListener('submit', function (e) {
+    let hasError = false;
+
+    // Name
+    if (drName.value.trim().length < 3) {
+      showFieldError('dr-name-wrap', 'dr-name-msg', 'Full name must be at least 3 characters.');
+      hasError = true;
+    }
+    // CNIC
+    if (!/^\d{5}-\d{7}-\d{1}$/.test(drCnic.value)) {
+      showFieldError('dr-cnic-wrap', 'dr-cnic-msg', 'Enter a valid CNIC: 35202-1234567-1');
+      hasError = true;
+    }
+    // Phone
+    if (drPhone.value.replace(/\D/g,'').length < 10) {
+      showFieldError('dr-phone-wrap', 'dr-phone-msg', 'Enter a valid phone number (10+ digits).');
+      hasError = true;
+    }
+    // Address
+    if (drAddress.value.trim().length < 10) {
+      showFieldError('dr-address-wrap', 'dr-address-msg', 'Please enter a complete address.');
+      hasError = true;
+    }
+    // Picture
+    if (!pictureInput.files || !pictureInput.files[0]) {
+      showFieldError('fileDrop', 'dr-pic-msg', 'Please upload a profile picture.', true);
+      hasError = true;
+    }
+
+    if (hasError) {
+      e.preventDefault();
+      // Scroll to first error
+      const firstErr = document.querySelector('.field-invalid, .file-drop-error');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
 
 })();
 </script>

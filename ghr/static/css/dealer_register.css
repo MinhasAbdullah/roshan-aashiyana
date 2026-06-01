@@ -268,3 +268,67 @@
   .dr-stats-row { flex-direction: column; gap: 14px; }
   .dr-stat-div { width: 60px; height: 1px; }
 }
+
+/* ═══════ REAL-TIME VALIDATION STYLES ═══════ */
+
+/* Field hint messages */
+.field-hint-msg {
+  font-size: 12px; font-weight: 600;
+  margin-top: 5px; min-height: 18px;
+  display: flex; align-items: center; gap: 5px;
+  transition: color .2s;
+}
+.msg-valid { color: #16a34a; }
+.msg-error { color: #e53935; }
+
+/* Valid input wrap */
+.dr-field.field-valid {
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
+}
+/* Invalid input wrap */
+.dr-field.field-invalid {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229,57,53,0.1) !important;
+}
+
+/* File drop error state */
+.file-drop.file-drop-error {
+  border-color: #e53935 !important;
+  background: #fff5f5 !important;
+}
+
+/* ═══════ REAL-TIME VALIDATION — field states ═══════ */
+
+/* Valid state — green border */
+.input-wrap.field-valid {
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
+}
+
+/* Invalid state — red border */
+.input-wrap.field-invalid {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229,57,53,0.1) !important;
+}
+
+/* File drop error */
+.file-drop.file-drop-error {
+  border-color: #e53935 !important;
+  background: #fff5f5;
+}
+
+/* Hint messages shown under each field */
+.field-hint-msg {
+  font-size: 12.5px;
+  font-weight: 600;
+  min-height: 18px;
+  padding-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+  transition: color .2s;
+}
+.msg-valid { color: #16a34a; }
+.msg-error { color: #e53935; }
