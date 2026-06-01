@@ -33,13 +33,11 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'roshanaashiyana.xyz',
-    'www.roshanaashiyana.xyz',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-26dcb.up.railway.app',
     'https://roshanaashiyana.xyz',
-    'https://www.roshanaashiyana.xyz',
 ]
 
 
@@ -166,4 +164,4 @@ EMAIL_USE_SSL = True
 EMAIL_USE_TLS = False
 EMAIL_HOST_USER = 'resend'
 RESEND_API_KEY = config('RESEND_API_KEY')
-DEFAULT_FROM_EMAIL = 'onboarding@resend.dev'
+DEFAULT_FROM_EMAIL = 'support@roshanaashiyana.xyz'

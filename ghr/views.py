@@ -36,7 +36,7 @@ def send_email(to, subject, message):
     try:
         resend.api_key = settings.RESEND_API_KEY
         resend.Emails.send({
-            "from": "onboarding@resend.dev",
+            "from": "Roshan Aashiyana <support@roshanaashiyana.xyz>",
             "to": to,
             "subject": subject,
             "text": message,
