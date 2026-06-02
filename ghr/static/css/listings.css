@@ -15,9 +15,11 @@
 .listings-hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url('https://t3.ftcdn.net/jpg/03/22/06/68/360_F_322066808_CANrp7u5Cdiz7700TJReqKD299d2AZtD.jpg');
+  background-image: url('../images/main.jpg');
   background-size: cover;
   background-position: center;
+  /* clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); */
+  z-index: 1;
   opacity: .12;
 }
 
@@ -103,7 +105,7 @@
   display: flex;
   align-items: center;
   box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .sb-field {
@@ -123,6 +125,7 @@
 
 .sb-inner {
   display: flex;
+  position: relative;
   flex-direction: column;
   flex: 1;
   min-width: 0;
@@ -176,6 +179,46 @@
 }
 .sb-btn:hover { background: var(--green-dark); }
 
+/* suggestion */
+#suggestions{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--navy);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-top: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
+    display: none;
+    z-index: 9999;
+    overflow: hidden;
+    width: 250px;
+}
+
+.suggestion-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.suggestion-item:hover{
+    background: var(--green);
+    color: var(--white);
+}
+
+.suggestion-item i{
+    color: var(--white);
+    width: 16px;
+}
+
+.suggestion-item span{
+    font-size: 11px;
+    color: var(--white);
+}
 /* ═══════ MAIN BODY ═══════ */
 .listings-body {
   background: var(--light-gray);

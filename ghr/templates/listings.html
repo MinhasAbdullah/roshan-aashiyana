@@ -20,9 +20,9 @@
       <p class="lh-sub">Explore houses, apartments, plots and commercial properties across Pakistan.</p>
     </div>
     <div class="lh-stats">
-      <div class="lh-stat"><span class="lh-num">1500+</span><span class="lh-name">Listings</span></div>
+      <div class="lh-stat"><span class="lh-num">150+</span><span class="lh-name">Listings</span></div>
       <div class="lh-stat-div"></div>
-      <div class="lh-stat"><span class="lh-num">25+</span><span class="lh-name">Cities</span></div>
+      <div class="lh-stat"><span class="lh-num">10+</span><span class="lh-name">Cities</span></div>
       <div class="lh-stat-div"></div>
       <div class="lh-stat"><span class="lh-num">100%</span><span class="lh-name">Verified</span></div>
     </div>
@@ -38,7 +38,8 @@
           <i class="fa-solid fa-magnifying-glass"></i>
           <div class="sb-inner">
             <label>Search</label>
-            <input type="text" name="keyword" placeholder="City, area or keyword" value="{{ request.GET.keyword }}">
+            <input type="text" id="searchInput" name="keyword" placeholder="City, area or keyword" value="{{ request.GET.keyword }}" autocomplete="off">
+            <div id="suggestions"></div>
           </div>
         </div>
         <div class="sb-div"></div>
@@ -51,7 +52,7 @@
               <option value="House"      {% if request.GET.property_type == "House"      %}selected{% endif %}>House</option>
               <option value="Apartment"  {% if request.GET.property_type == "Apartment"  %}selected{% endif %}>Apartment</option>
               <option value="Plot"       {% if request.GET.property_type == "Plot"       %}selected{% endif %}>Plot</option>
-              <option value="Commercial" {% if request.GET.property_type == "Commercial" %}selected{% endif %}>Commercial</option>
+              <option value="Shop" {% if request.GET.property_type == "Shop" %}selected{% endif %}>Shop</option>
             </select>
           </div>
         </div>
@@ -139,6 +140,12 @@
                 <option value="Lahore"     {% if request.GET.city == "Lahore"     %}selected{% endif %}>Lahore</option>
                 <option value="Karachi"    {% if request.GET.city == "Karachi"    %}selected{% endif %}>Karachi</option>
                 <option value="Rawalpindi" {% if request.GET.city == "Rawalpindi" %}selected{% endif %}>Rawalpindi</option>
+                <option value="Multan" {% if request.GET.city == "Multan" %}selected{% endif %}>Multan</option>
+                <option value="Sialkot" {% if request.GET.city == "Sialkot" %}selected{% endif %}>Sialkot</option>
+                <option value="Faisalabad" {% if request.GET.city == "Faisalabad" %}selected{% endif %}>Faisalabad</option>
+                <option value="Peshawar" {% if request.GET.city == "Peshawar" %}selected{% endif %}>Peshawar</option>
+                <option value="Quetta" {% if request.GET.city == "Quetta" %}selected{% endif %}>Quetta</option>
+                <option value="Hyderabad" {% if request.GET.city == "Hyderabad" %}selected{% endif %}>Hyderabad</option>
               </select>
             </div>
           </div>
@@ -241,19 +248,7 @@
   </div>
 </div>
 
-<script>
-  // Auto-submit on sort change
-  document.getElementById('sortSelect').addEventListener('change', function() {
-    document.getElementById('searchForm').submit();
-  });
-
-  // Pill radio — highlight on click
-  document.querySelectorAll('.radio-pills .pill input').forEach(input => {
-    input.addEventListener('change', () => {
-      input.closest('.radio-pills').querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-      input.closest('.pill').classList.add('active');
-    });
-  });
-</script>
+<!-- javascript -->
+<script src="{% static 'js/listings.js' %}"></script>
 
 {% endblock content %}

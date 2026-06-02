@@ -188,3 +188,34 @@ tbody td { padding: 16px 20px; font-size: 13.5px; color: var(--text); vertical-a
   .ptc-header { flex-direction: column; }
   .sc-body h2 { font-size: 26px; }
 }
+/* ══ DELETE MODAL ══ */
+.delete-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  z-index: 9999; align-items: center; justify-content: center; padding: 20px;
+}
+.delete-modal.active { display: flex; }
+.dm-box {
+  background: #fff; border-radius: 20px; padding: 36px 32px;
+  max-width: 440px; width: 100%; text-align: center;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+  animation: dmSlideIn .25s ease;
+}
+@keyframes dmSlideIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.dm-icon { width: 72px; height: 72px; border-radius: 50%; background: #fef2f2; border: 2px solid #fecaca; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.dm-icon i { font-size: 32px; color: #e53935; }
+.dm-box h2 { font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 10px; }
+.dm-box p  { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+.dm-prop-preview { display: flex; align-items: center; gap: 14px; background: var(--light-gray); border-radius: 12px; padding: 14px 16px; margin-bottom: 24px; text-align: left; }
+.dm-prop-preview img { width: 56px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.dm-prop-preview span { display: block; font-size: 14px; font-weight: 700; color: var(--text); }
+.dm-prop-preview small { font-size: 12px; color: var(--text-muted); }
+.dm-actions { display: flex; gap: 12px; }
+.dm-cancel { flex: 1; padding: 13px; background: var(--light-gray); border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 700; color: var(--text); cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background .2s; }
+.dm-cancel:hover { background: #e5e7eb; }
+.dm-confirm { flex: 1; padding: 13px; background: #e53935; color: #fff; border-radius: 10px; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background .2s; text-decoration: none; }
+.dm-confirm:hover { background: #c62828; }
+@media (max-width: 480px) { .dm-box { padding: 24px 20px; } .dm-actions { flex-direction: column; } }

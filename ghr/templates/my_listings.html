@@ -1,5 +1,6 @@
 {% extends 'dealer_base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}My Listings | Roshan Aashiyana{% endblock title %}
 
@@ -9,7 +10,6 @@
 
 {% block dashboard_content %}
 
-<!-- ══ PAGE HEADER ══ -->
 <div class="dash-header">
   <div>
     <p class="dash-greeting"><i class="fa-solid fa-building"></i> Property Management</p>
@@ -21,89 +21,53 @@
   </a>
 </div>
 
-<!-- ══ TOOLBAR ══ -->
 <div class="ml-toolbar">
   <div class="ml-count">
     <span class="ml-count-num">{{ prop|length }}</span>
     <span class="ml-count-lbl">Total Properties</span>
   </div>
   <div class="ml-view-toggle">
-    <button class="vt-btn active" id="gridViewBtn" title="Grid view">
-      <i class="fa-solid fa-grip"></i>
-    </button>
-    <button class="vt-btn" id="listViewBtn" title="List view">
-      <i class="fa-solid fa-list"></i>
-    </button>
+    <button class="vt-btn active" id="gridViewBtn" title="Grid view"><i class="fa-solid fa-grip"></i></button>
+    <button class="vt-btn" id="listViewBtn" title="List view"><i class="fa-solid fa-list"></i></button>
   </div>
 </div>
 
-<!-- ══ GRID ══ -->
 <div class="listing-grid" id="listingGrid">
-
   {% for item in prop %}
   <div class="listing-card">
-
-    <!-- Image -->
     <div class="lc-image">
       <a href="{% url 'property_detail' item.id item.slug %}">
         <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
       </a>
-      <span class="lc-purpose {% if item.purpose == 'rent' %}lc-rent{% endif %}">
-        For {{ item.purpose|title }}
-      </span>
+      <span class="lc-purpose {% if item.purpose == 'rent' %}lc-rent{% endif %}">For {{ item.purpose|title }}</span>
       <span class="lc-status {% if item.is_available %}lc-available{% else %}lc-sold{% endif %}">
         {% if item.is_available %}<i class="fa-solid fa-circle"></i> Available
         {% else %}<i class="fa-solid fa-circle"></i> Sold{% endif %}
       </span>
     </div>
-
-    <!-- Content -->
     <div class="lc-body">
-      <a href="{% url 'property_detail' item.id item.slug %}" class="lc-title-link">
-        <h2>{{ item.title }}</h2>
-      </a>
-
-      <div class="lc-location">
-        <i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}
-      </div>
-      {% load humanize %}
-      <div class="lc-price">PKR {{ item.price | intcomma }}</div>
-
+      <a href="{% url 'property_detail' item.id item.slug %}" class="lc-title-link"><h2>{{ item.title }}</h2></a>
+      <div class="lc-location"><i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}</div>
+      <div class="lc-price">PKR {{ item.price|intcomma }}</div>
       <div class="lc-specs">
-        {% if item.bedrooms %}
-        <span><i class="fa-solid fa-bed"></i> {{ item.bedrooms }} Beds</span>
-        {% endif %}
-        {% if item.bathrooms %}
-        <span><i class="fa-solid fa-shower"></i> {{ item.bathrooms }} Baths</span>
-        {% endif %}
-        {% if item.property_size %}
-        <span><i class="fa-solid fa-expand"></i> {{ item.property_size }}</span>
-        {% endif %}
+        {% if item.bedrooms %}<span><i class="fa-solid fa-bed"></i> {{ item.bedrooms }} Beds</span>{% endif %}
+        {% if item.bathrooms %}<span><i class="fa-solid fa-shower"></i> {{ item.bathrooms }} Baths</span>{% endif %}
+        {% if item.property_size %}<span><i class="fa-solid fa-expand"></i> {{ item.property_size }}</span>{% endif %}
       </div>
-
       <div class="lc-footer">
-        <span class="lc-views">
-          <i class="fa-solid fa-eye"></i> {{ item.views }} Views
-        </span>
+        <span class="lc-views"><i class="fa-solid fa-eye"></i> {{ item.views }} Views</span>
         <div class="lc-actions">
-          <a href="{% url 'property_detail' item.id item.slug %}" class="act-btn act-view" title="View">
-            <i class="fa-solid fa-eye"></i>
-          </a>
-          <a href="{% url 'edit_property' item.id item.slug %}" class="act-btn act-edit" title="Edit">
-            <i class="fa-solid fa-pen"></i>
-          </a>
-          <a href="{% url 'delete_property' item.id item.slug %}" class="act-btn act-delete" title="Delete"
-             onclick="return confirm('Are you sure you want to delete this property?')">
+          <a href="{% url 'property_detail' item.id item.slug %}" class="act-btn act-view" title="View"><i class="fa-solid fa-eye"></i></a>
+          <a href="{% url 'edit_property' item.id item.slug %}" class="act-btn act-edit" title="Edit"><i class="fa-solid fa-pen"></i></a>
+          <button class="act-btn act-delete" title="Delete"
+            onclick="openDeleteModal('{% url 'delete_property' item.id item.slug %}', '{{ item.title|escapejs }}', '{{ item.featured_image.url }}', '{{ item.city }}, {{ item.area }}')">
             <i class="fa-solid fa-trash"></i>
-          </a>
+          </button>
         </div>
       </div>
     </div>
-
   </div>
   {% empty %}
-
-  <!-- EMPTY STATE -->
   <div class="empty-state">
     <div class="es-icon"><i class="fa-solid fa-building-circle-xmark"></i></div>
     <h2>No Properties Listed Yet</h2>
@@ -112,36 +76,61 @@
       <i class="fa-solid fa-plus"></i> Add Your First Property
     </a>
   </div>
-
   {% endfor %}
+</div>
 
+<!-- DELETE MODAL -->
+<div class="delete-modal" id="deleteModal">
+  <div class="dm-box">
+    <div class="dm-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h2>Delete Property?</h2>
+    <p>You are about to permanently delete <strong id="dmTitle"></strong>. This cannot be undone.</p>
+    <div class="dm-prop-preview">
+      <img id="dmImg" src="" alt="">
+      <div><span id="dmTitle2"></span><small id="dmLoc"></small></div>
+    </div>
+    <div class="dm-actions">
+      <button class="dm-cancel" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+      <a href="#" id="dmConfirmBtn" class="dm-confirm"><i class="fa-solid fa-trash"></i> Yes, Delete It</a>
+    </div>
+  </div>
 </div>
 
 <script>
+  // View toggle
   const grid    = document.getElementById('listingGrid');
   const gridBtn = document.getElementById('gridViewBtn');
   const listBtn = document.getElementById('listViewBtn');
-
   gridBtn.addEventListener('click', () => {
     grid.classList.remove('list-view');
-    gridBtn.classList.add('active');
-    listBtn.classList.remove('active');
+    gridBtn.classList.add('active'); listBtn.classList.remove('active');
     localStorage.setItem('mlView', 'grid');
   });
-
   listBtn.addEventListener('click', () => {
     grid.classList.add('list-view');
-    listBtn.classList.add('active');
-    gridBtn.classList.remove('active');
+    listBtn.classList.add('active'); gridBtn.classList.remove('active');
     localStorage.setItem('mlView', 'list');
   });
-
-  // Restore view preference
   if (localStorage.getItem('mlView') === 'list') {
     grid.classList.add('list-view');
-    listBtn.classList.add('active');
-    gridBtn.classList.remove('active');
+    listBtn.classList.add('active'); gridBtn.classList.remove('active');
   }
+
+  // Delete modal
+  function openDeleteModal(url, title, img, loc) {
+    document.getElementById('dmTitle').textContent = title;
+    document.getElementById('dmTitle2').textContent = title;
+    document.getElementById('dmImg').src = img;
+    document.getElementById('dmLoc').textContent = loc;
+    document.getElementById('dmConfirmBtn').href = url;
+    document.getElementById('deleteModal').classList.add('active');
+  }
+  function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('active');
+  }
+  document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+  });
 </script>
 
 {% endblock dashboard_content %}

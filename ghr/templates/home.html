@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Roshan Aashiyana — Sapno ka ghar, ab hoga haqeeqat{% endblock title %}
+{% block title %}Roshan Aashiyana — Smart real-estate Marketplace{% endblock title %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -11,7 +11,6 @@
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <section class="hero">
-  <!-- Right-side background image with diagonal clip -->
   <div class="hero-bg"></div>
 
   <div class="container hero-content">
@@ -46,7 +45,9 @@
           <i class="fa-solid fa-location-dot"></i>
           <div class="field-content">
             <label>Search Location</label>
-            <input type="text" name="keyword" placeholder="Enter city or locality">
+            <input type="text" id="searchInput" name="keyword"placeholder="Enter city or locality" autocomplete="off">
+
+            <div id="suggestions"></div>
           </div>
         </div>
 
@@ -143,42 +144,6 @@
     </div>
   </div>
 </section>
-
-<!-- ═══════════════ STATS ═══════════════ -->
-<!-- <section class="stats-section">
-  <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fa fa-home"></i></div>
-        <div>
-          <div class="stat-num" data-target="1500">0+</div>
-          <div class="stat-label">Properties</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fa fa-users"></i></div>
-        <div>
-          <div class="stat-num" data-target="2500">0+</div>
-          <div class="stat-label">Happy Customers</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fa fa-map-marker-alt"></i></div>
-        <div>
-          <div class="stat-num" data-target="25">0+</div>
-          <div class="stat-label">Cities</div>
-        </div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon"><i class="fa fa-check-circle"></i></div>
-        <div>
-          <div class="stat-num" data-target="100" data-suffix="%">0%</div>
-          <div class="stat-label">Trusted</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
 
 <!-- ═══════════════ CATEGORIES ═══════════════ -->
 <section class="categories-section">
@@ -291,41 +256,7 @@
   </div>
 </section>
 
-<script>
-  // Stat counter animation
-  const statNums = document.querySelectorAll('.stat-num');
-  let statsAnimated = false;
-  function animateStats() {
-    if (statsAnimated) return;
-    const section = document.querySelector('.stats-section');
-    if (!section) return;
-    const rect = section.getBoundingClientRect();
-    if (rect.top < window.innerHeight - 60) {
-      statsAnimated = true;
-      statNums.forEach(el => {
-        const target = parseInt(el.dataset.target);
-        const suffix = el.dataset.suffix || '+';
-        let current = 0;
-        const step = target / 60;
-        const timer = setInterval(() => {
-          current = Math.min(current + step, target);
-          el.textContent = Math.floor(current) + suffix;
-          if (current >= target) clearInterval(timer);
-        }, 25);
-      });
-    }
-  }
-  window.addEventListener('scroll', animateStats);
-  animateStats();
-
-  // CTA post btn opens modal
-  const ctaPostBtn = document.getElementById('ctaPostBtn');
-  if (ctaPostBtn) {
-    ctaPostBtn.addEventListener('click', () => {
-      document.getElementById('modal').classList.add('active');
-      document.getElementById('authBox').classList.remove('signup-mode');
-    });
-  }
-</script>
+<!-- javascript -->
+<script src="{% static 'js/home.js' %}"></script>
 
 {% endblock content %}

@@ -238,13 +238,22 @@ def listings(request):
 
 def autocomplete(request):
     q = request.GET.get('q', '').strip()
+
     if len(q) < 2:
         return JsonResponse([], safe=False)
 
-    titles = Property.objects.filter(title__icontains=q).values_list('title', flat=True)[:5]
-    cities = Property.objects.filter(city__icontains=q).values_list('city', flat=True).distinct()[:3]
+    titles = Property.objects.filter(
+        title__icontains=q
+    ).values_list('title', flat=True)[:5]
 
-    suggestions = list(dict.fromkeys(list(cities) + list(titles)))[:8]
+    cities = Property.objects.filter(
+        city__icontains=q
+    ).values_list('city', flat=True).distinct()[:3]
+
+    suggestions = list(dict.fromkeys(
+        list(cities) + list(titles)
+    ))[:8]
+
     return JsonResponse(suggestions, safe=False)
 
 

@@ -1,7 +1,5 @@
-/* ═══════════════════════════════════════
-   ROSHAN AASHIYANA — base.css
-   Global: reset, navbar, footer, modal, messages
-═══════════════════════════════════════ */
+/* ROSHAN AASHIYANA — base.css
+reset, navbar, footer, modal, messages */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -156,21 +154,23 @@ ul { list-style: none; }
 }
 
 .profile-avatar {
-  width: 38px;
+  width: 40px;
   height: 38px;
   border-radius: 50%;
-  background: var(--green);
-  color: #fff;
-  font-size: 15px;
+  background: var(--navy);
+  color: var(--green);
+  font-size: 18px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(255,255,255,0.2);
+  border: 2px solid var(--green);
   transition: border-color .2s;
 }
 .profile-trigger:hover .profile-avatar {
-  border-color: var(--green);
+  border-color: var(--navy);
+  background: var(--green);
+  color: var(--white);
 }
 
 .dropdown-menu {
@@ -178,9 +178,9 @@ ul { list-style: none; }
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
-  background: var(--navy);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 14px;
+  background: var(--navy-light);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
   width: 290px;
   box-shadow: 0 16px 48px rgba(0,0,0,0.4);
   z-index: 999;
@@ -199,25 +199,26 @@ ul { list-style: none; }
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: var(--navy-light);
+  background: var(--navy);
 }
 .dropdown-avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--green);
-  color: #fff;
+  background: var(--navy);
+  color: var(--green);
   font-size: 18px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border: 2px solid var(--green);
 }
 .dropdown-name {
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: var(--green);
 }
 .dropdown-email {
   font-size: 12px;
@@ -248,11 +249,13 @@ ul { list-style: none; }
 .dropdown-item i {
   font-size: 14px;
   width: 18px;
-  color: rgba(255,255,255,0.45);
+  color: var(--green);
+  
 }
 .dropdown-item:hover i { color: var(--green); }
 
 .dropdown-logout {
+  background-color: var(--navy);
   color: #ef5350;
 }
 .dropdown-logout i { color: #ef5350; }
