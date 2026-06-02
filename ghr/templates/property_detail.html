@@ -227,7 +227,7 @@
             </div>
           </div>
           {% if user.is_authenticated %}
-            <a href="" class="side-btn btn-green">
+            <a href="{% url 'dealer_profile' dealer.id %}" class="side-btn btn-green">
             <i class="fa-solid fa-eye"></i> View Profile
             </a>
           {% else %}

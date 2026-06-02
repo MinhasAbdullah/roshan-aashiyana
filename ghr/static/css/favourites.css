@@ -11,9 +11,11 @@
 }
 .fav-hero-bg {
   position: absolute; inset: 0;
-  background-image: url('https://t3.ftcdn.net/jpg/03/22/06/68/360_F_322066808_CANrp7u5Cdiz7700TJReqKD299d2AZtD.jpg');
+  background-image: url('../images/main.jpg');
   background-size: cover; background-position: center;
-  opacity: .07;
+  /* clip-path: polygon(60% 0, 100% 0, 100% 100%, 0% 100%); */
+  z-index: 1;
+  opacity: .12;
 }
 .fav-hero-overlay {
   position: absolute; inset: 0;

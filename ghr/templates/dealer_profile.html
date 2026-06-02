@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ dealer.full_name }} | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dealer_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ PROFILE HERO ═══════ -->
+<section class="profile-hero">
+  <div class="ph-bg"></div>
+  <div class="ph-overlay"></div>
+  <div class="container ph-content">
+
+    <!-- Avatar + name -->
+    <div class="ph-left">
+      <div class="ph-avatar">
+        <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+        <div class="ph-verified"><i class="fa-solid fa-circle-check"></i></div>
+      </div>
+      <div class="ph-info">
+        <div class="ph-badge">Verified Dealer</div>
+        <h1>{{ dealer.full_name }}</h1>
+        {% if dealer.address %}
+        <p class="ph-loc"><i class="fa-solid fa-location-dot"></i> {{ dealer.address }}</p>
+        {% endif %}
+        <div class="ph-actions">
+          {% if dealer.phone %}
+          <a href="tel:{{ dealer.phone }}" class="pha-btn pha-call">
+            <i class="fa-solid fa-phone"></i> {{ dealer.phone }}
+          </a>
+          <a href="https://wa.me/{{ dealer.phone }}" target="_blank" class="pha-btn pha-wa">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick stats -->
+    <div class="ph-stats">
+      <div class="phs-item">
+        <div class="phs-icon"><i class="fa-solid fa-building"></i></div>
+        <div>
+          <span class="phs-num">{{ properties.count }}</span>
+          <span class="phs-lbl">Listings</span>
+        </div>
+      </div>
+      <div class="phs-div"></div>
+      <div class="phs-item">
+        <div class="phs-icon"><i class="fa-solid fa-star"></i></div>
+        <div>
+          <span class="phs-num">{{ reviews.count }}</span>
+          <span class="phs-lbl">Reviews</span>
+        </div>
+      </div>
+      <div class="phs-div"></div>
+      <div class="phs-item">
+        <div class="phs-icon"><i class="fa-solid fa-eye"></i></div>
+        <div>
+          <span class="phs-num">{{ total_views }}</span>
+          <span class="phs-lbl">Total Views</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════ MAIN BODY ═══════ -->
+<section class="profile-body">
+  <div class="container">
+    <div class="profile-layout">
+
+      <!-- ══ LEFT: Properties ══ -->
+      <div class="profile-main">
+
+        <div class="pm-header">
+          <h2><i class="fa-solid fa-building"></i> Properties by {{ dealer.full_name }}</h2>
+          <span class="pm-count">{{ properties.count }} listing{{ properties.count|pluralize }}</span>
+        </div>
+
+        {% if properties %}
+        <div class="profile-prop-grid">
+          {% for item in properties %}
+          <a href="{% url 'property_detail' item.id item.slug %}" class="pp-card">
+            <div class="pp-img">
+              <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+              <span class="pp-badge {% if item.purpose == 'rent' %}pp-rent{% endif %}">
+                For {{ item.purpose|title }}
+              </span>
+              {% if item.is_available %}
+              <span class="pp-avail pp-green">Available</span>
+              {% else %}
+              <span class="pp-avail pp-sold">Sold</span>
+              {% endif %}
+            </div>
+            <div class="pp-body">
+              <h3>{{ item.title }}</h3>
+              <p class="pp-loc"><i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}</p>
+              <div class="pp-price">PKR {{ item.price }}</div>
+              <div class="pp-specs">
+                {% if item.bedrooms  %}<span><i class="fa-solid fa-bed"></i> {{ item.bedrooms }} Beds</span>{% endif %}
+                {% if item.bathrooms %}<span><i class="fa-solid fa-shower"></i> {{ item.bathrooms }} Baths</span>{% endif %}
+                {% if item.property_size %}<span><i class="fa-solid fa-expand"></i> {{ item.property_size }}</span>{% endif %}
+              </div>
+              <div class="pp-views"><i class="fa-solid fa-eye"></i> {{ item.views }} views</div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="profile-empty">
+          <i class="fa-solid fa-building-circle-xmark"></i>
+          <p>This dealer hasn't listed any properties yet.</p>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- ══ RIGHT: Sidebar ══ -->
+      <aside class="profile-sidebar">
+
+        <!-- About card -->
+        <div class="ps-card">
+          <h3><i class="fa-solid fa-circle-info"></i> About This Dealer</h3>
+          <div class="ps-row">
+            <span><i class="fa-solid fa-user"></i> Name</span>
+            <strong>{{ dealer.full_name }}</strong>
+          </div>
+          <div class="ps-row">
+            <span><i class="fa-solid fa-venus-mars"></i> Gender</span>
+            <strong>{{ dealer.gender|title }}</strong>
+          </div>
+          {% if dealer.address %}
+          <div class="ps-row">
+            <span><i class="fa-solid fa-location-dot"></i> Address</span>
+            <strong>{{ dealer.address }}</strong>
+          </div>
+          {% endif %}
+          <div class="ps-row">
+            <span><i class="fa-solid fa-building"></i> Listings</span>
+            <strong>{{ properties.count }}</strong>
+          </div>
+        </div>
+
+        <!-- Contact card -->
+        <div class="ps-card ps-contact">
+          <h3><i class="fa-solid fa-paper-plane"></i> Contact Dealer</h3>
+          {% if dealer.phone %}
+          <a href="tel:{{ dealer.phone }}" class="ps-btn ps-btn-call">
+            <i class="fa-solid fa-phone"></i> Call Now
+          </a>
+          <a href="https://wa.me/{{ dealer.phone }}" target="_blank" class="ps-btn ps-btn-wa">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+          </a>
+          {% endif %}
+          <a href="{% url 'about' %}#contact" class="ps-btn ps-btn-msg">
+            <i class="fa-solid fa-envelope"></i> Send Message
+          </a>
+        </div>
+
+        <!-- Reviews card -->
+        {% if reviews %}
+        <div class="ps-card">
+          <h3><i class="fa-solid fa-star"></i> Reviews
+            <span class="ps-rev-count">{{ reviews.count }}</span>
+          </h3>
+          <div class="ps-reviews">
+            {% for review in reviews|slice:":3" %}
+            <div class="ps-review">
+              <div class="psr-top">
+                <img src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff&size=60"
+                     alt="{{ review.user.username }}">
+                <div>
+                  <strong>{{ review.user.username }}</strong>
+                  <div class="psr-stars">
+                    {% for i in "12345" %}
+                    <i class="fa-{% if forloop.counter <= review.rating %}solid{% else %}regular{% endif %} fa-star"></i>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              <p>{{ review.comment|truncatechars:100 }}</p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </aside>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -21,63 +21,86 @@
   </a>
 </div>
 
+<!-- ══ GLOBAL ERROR BANNER ══ -->
+{% if errors %}
+<div class="ap-error-banner">
+  <i class="fa-solid fa-circle-xmark"></i>
+  <div>
+    <strong>Please fix the following errors:</strong>
+    <ul>
+      {% for field, msg in errors.items %}
+      <li>{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endif %}
+
 <!-- ══ LAYOUT ══ -->
 <div class="ap-layout">
 
   <!-- ════ LEFT — FORM ════ -->
   <div class="ap-form-col">
-    <form method="POST" enctype="multipart/form-data" id="addPropertyForm">
+    <form method="POST" enctype="multipart/form-data" id="addPropertyForm" novalidate>
       {% csrf_token %}
 
       <!-- ── SECTION 1: Basic Info ── -->
       <div class="form-card">
         <div class="fc-head">
           <div class="fc-head-icon"><i class="fa-solid fa-circle-info"></i></div>
-          <div>
-            <h2>Basic Information</h2>
-            <p>Property title, type and pricing</p>
-          </div>
+          <div><h2>Basic Information</h2><p>Property title, type and pricing</p></div>
           <div class="fc-step">1</div>
         </div>
 
-        <div class="form-group">
-          <label><i class="fa-solid fa-heading"></i> Property Title</label>
-          <div class="input-wrap">
-            <input type="text" name="title" placeholder="e.g. Modern 5-Bedroom Villa in DHA">
+        <!-- Title -->
+        <div class="form-group {% if errors.title %}fg-error{% endif %}">
+          <label><i class="fa-solid fa-heading"></i> Property Title <span class="req">*</span></label>
+          <div class="input-wrap {% if errors.title %}input-invalid{% endif %}">
+            <input type="text" name="title" value="{{ old.title|default:'' }}"
+                   placeholder="e.g. Modern 5-Bedroom Villa in DHA">
           </div>
+          {% if errors.title %}<p class="field-err">{{ errors.title }}</p>{% endif %}
         </div>
 
         <div class="double-grid">
-          <div class="form-group">
-            <label><i class="fa-solid fa-home"></i> Property Type</label>
-            <div class="input-wrap select-wrap">
+          <!-- Property Type -->
+          <div class="form-group {% if errors.property_type %}fg-error{% endif %}">
+            <label><i class="fa-solid fa-home"></i> Property Type <span class="req">*</span></label>
+            <div class="input-wrap select-wrap {% if errors.property_type %}input-invalid{% endif %}">
               <select name="property_type">
                 <option value="">Select Type</option>
                 {% for item in propertytype %}
-                <option value="{{ item.id }}">{{ item.name }}</option>
+                <option value="{{ item.id }}" {% if old.property_type == item.id|stringformat:"s" %}selected{% endif %}>
+                  {{ item.name }}
+                </option>
                 {% endfor %}
               </select>
               <i class="fa-solid fa-chevron-down sel-arr"></i>
             </div>
+            {% if errors.property_type %}<p class="field-err">{{ errors.property_type }}</p>{% endif %}
           </div>
+
+          <!-- Purpose -->
           <div class="form-group">
-            <label><i class="fa-solid fa-tag"></i> Purpose</label>
+            <label><i class="fa-solid fa-tag"></i> Purpose <span class="req">*</span></label>
             <div class="input-wrap select-wrap">
               <select name="purpose">
-                <option value="sale">For Sale</option>
-                <option value="rent">For Rent</option>
+                <option value="sale" {% if old.purpose == 'sale' %}selected{% endif %}>For Sale</option>
+                <option value="rent" {% if old.purpose == 'rent' %}selected{% endif %}>For Rent</option>
               </select>
               <i class="fa-solid fa-chevron-down sel-arr"></i>
             </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label><i class="fa-solid fa-Pakistani-rupee-sign"></i> Price (PKR)</label>
-          <div class="input-wrap input-prefix">
+        <!-- Price -->
+        <div class="form-group {% if errors.price %}fg-error{% endif %}">
+          <label><i class="fa-solid fa-money-bill"></i> Price (PKR) <span class="req">*</span></label>
+          <div class="input-wrap input-prefix {% if errors.price %}input-invalid{% endif %}">
             <span class="prefix">PKR</span>
-            <input type="number" name="price" placeholder="e.g. 1500000">
+            <input type="number" name="price" value="{{ old.price|default:'' }}" placeholder="e.g. 1500000" min="0">
           </div>
+          {% if errors.price %}<p class="field-err">{{ errors.price }}</p>{% endif %}
         </div>
       </div>
 
@@ -85,32 +108,48 @@
       <div class="form-card">
         <div class="fc-head">
           <div class="fc-head-icon fc-orange"><i class="fa-solid fa-location-dot"></i></div>
-          <div>
-            <h2>Location</h2>
-            <p>City, area and full address</p>
-          </div>
+          <div><h2>Location</h2><p>City, area and full address</p></div>
           <div class="fc-step fc-step-orange">2</div>
         </div>
 
         <div class="double-grid">
-          <div class="form-group">
-            <label><i class="fa-solid fa-city"></i> City</label>
-            <div class="input-wrap">
-              <input type="text" name="city" placeholder="e.g. Islamabad">
+          <!-- City dropdown -->
+          <div class="form-group {% if errors.city %}fg-error{% endif %}">
+            <label><i class="fa-solid fa-city"></i> City <span class="req">*</span></label>
+            <div class="input-wrap select-wrap {% if errors.city %}input-invalid{% endif %}">
+              <select name="city">
+                <option value="">Select City</option>
+                <option value="Islamabad"  {% if old.city == 'Islamabad'  %}selected{% endif %}>Islamabad</option>
+                <option value="Rawalpindi" {% if old.city == 'Rawalpindi' %}selected{% endif %}>Rawalpindi</option>
+                <option value="Lahore"     {% if old.city == 'Lahore'     %}selected{% endif %}>Lahore</option>
+                <option value="Karachi"    {% if old.city == 'Karachi'    %}selected{% endif %}>Karachi</option>
+                <option value="Faisalabad" {% if old.city == 'Faisalabad' %}selected{% endif %}>Faisalabad</option>
+                <option value="Peshawar"   {% if old.city == 'Peshawar'   %}selected{% endif %}>Peshawar</option>
+                <option value="Quetta"     {% if old.city == 'Quetta'     %}selected{% endif %}>Quetta</option>
+                <option value="Multan"     {% if old.city == 'Multan'     %}selected{% endif %}>Multan</option>
+                <option value="Sialkot"    {% if old.city == 'Sialkot'    %}selected{% endif %}>Sialkot</option>
+                <option value="Gujranwala" {% if old.city == 'Gujranwala' %}selected{% endif %}>Gujranwala</option>
+              </select>
+              <i class="fa-solid fa-chevron-down sel-arr"></i>
             </div>
+            {% if errors.city %}<p class="field-err">{{ errors.city }}</p>{% endif %}
           </div>
-          <div class="form-group">
-            <label><i class="fa-solid fa-map-pin"></i> Area / Locality</label>
-            <div class="input-wrap">
-              <input type="text" name="area" placeholder="e.g. DHA Phase 2">
+
+          <!-- Area -->
+          <div class="form-group {% if errors.area %}fg-error{% endif %}">
+            <label><i class="fa-solid fa-map-pin"></i> Area / Locality <span class="req">*</span></label>
+            <div class="input-wrap {% if errors.area %}input-invalid{% endif %}">
+              <input type="text" name="area" value="{{ old.area|default:'' }}" placeholder="e.g. DHA Phase 2">
             </div>
+            {% if errors.area %}<p class="field-err">{{ errors.area }}</p>{% endif %}
           </div>
         </div>
 
+        <!-- Address -->
         <div class="form-group">
           <label><i class="fa-solid fa-map"></i> Full Address</label>
           <div class="input-wrap">
-            <textarea name="address" rows="3" placeholder="Street number, block, sector..."></textarea>
+            <textarea name="address" rows="3" placeholder="Street number, block, sector...">{{ old.address|default:'' }}</textarea>
           </div>
         </div>
       </div>
@@ -119,10 +158,7 @@
       <div class="form-card">
         <div class="fc-head">
           <div class="fc-head-icon fc-purple"><i class="fa-solid fa-list-check"></i></div>
-          <div>
-            <h2>Property Details</h2>
-            <p>Rooms, size and condition</p>
-          </div>
+          <div><h2>Property Details</h2><p>Rooms, size and condition</p></div>
           <div class="fc-step fc-step-purple">3</div>
         </div>
 
@@ -131,7 +167,7 @@
             <label><i class="fa-solid fa-bed"></i> Bedrooms</label>
             <div class="input-wrap num-wrap">
               <button type="button" class="num-btn" data-action="dec" data-target="bedrooms">−</button>
-              <input type="number" name="bedrooms" id="bedrooms" value="0" min="0">
+              <input type="number" name="bedrooms" id="bedrooms" value="{{ old.bedrooms|default:'0' }}" min="0">
               <button type="button" class="num-btn" data-action="inc" data-target="bedrooms">+</button>
             </div>
           </div>
@@ -139,7 +175,7 @@
             <label><i class="fa-solid fa-shower"></i> Bathrooms</label>
             <div class="input-wrap num-wrap">
               <button type="button" class="num-btn" data-action="dec" data-target="bathrooms">−</button>
-              <input type="number" name="bathrooms" id="bathrooms" value="0" min="0">
+              <input type="number" name="bathrooms" id="bathrooms" value="{{ old.bathrooms|default:'0' }}" min="0">
               <button type="button" class="num-btn" data-action="inc" data-target="bathrooms">+</button>
             </div>
           </div>
@@ -147,7 +183,7 @@
             <label><i class="fa-solid fa-kitchen-set"></i> Kitchens</label>
             <div class="input-wrap num-wrap">
               <button type="button" class="num-btn" data-action="dec" data-target="kitchens">−</button>
-              <input type="number" name="kitchens" id="kitchens" value="0" min="0">
+              <input type="number" name="kitchens" id="kitchens" value="{{ old.kitchens|default:'0' }}" min="0">
               <button type="button" class="num-btn" data-action="inc" data-target="kitchens">+</button>
             </div>
           </div>
@@ -155,7 +191,7 @@
             <label><i class="fa-solid fa-car"></i> Garages</label>
             <div class="input-wrap num-wrap">
               <button type="button" class="num-btn" data-action="dec" data-target="garages">−</button>
-              <input type="number" name="garages" id="garages" value="0" min="0">
+              <input type="number" name="garages" id="garages" value="{{ old.garages|default:'0' }}" min="0">
               <button type="button" class="num-btn" data-action="inc" data-target="garages">+</button>
             </div>
           </div>
@@ -165,13 +201,13 @@
           <div class="form-group">
             <label><i class="fa-solid fa-expand"></i> Property Size</label>
             <div class="input-wrap">
-              <input type="text" name="property_size" placeholder="e.g. 10 Marla, 1 Kanal">
+              <input type="text" name="property_size" value="{{ old.property_size|default:'' }}" placeholder="e.g. 10 Marla, 1 Kanal">
             </div>
           </div>
           <div class="form-group">
             <label><i class="fa-solid fa-calendar"></i> Year Built</label>
             <div class="input-wrap">
-              <input type="number" name="year_built" placeholder="e.g. 2020">
+              <input type="number" name="year_built" value="{{ old.year_built|default:'' }}" placeholder="e.g. 2020" min="1900" max="2030">
             </div>
           </div>
         </div>
@@ -179,24 +215,25 @@
         <div class="form-group">
           <label><i class="fa-solid fa-couch"></i> Furnishing</label>
           <div class="furnish-pills">
-            <label class="fpill">
-              <input type="radio" name="furnishing" value="furnished"> Furnished
+            <label class="fpill {% if old.furnishing == 'furnished' %}active{% endif %}">
+              <input type="radio" name="furnishing" value="furnished" {% if old.furnishing == 'furnished' %}checked{% endif %}> Furnished
             </label>
-            <label class="fpill">
-              <input type="radio" name="furnishing" value="semi_furnished" checked> Semi Furnished
+            <label class="fpill {% if not old.furnishing or old.furnishing == 'semi_furnished' %}active{% endif %}">
+              <input type="radio" name="furnishing" value="semi_furnished" {% if not old.furnishing or old.furnishing == 'semi_furnished' %}checked{% endif %}> Semi Furnished
             </label>
-            <label class="fpill">
-              <input type="radio" name="furnishing" value="unfurnished"> Unfurnished
+            <label class="fpill {% if old.furnishing == 'unfurnished' %}active{% endif %}">
+              <input type="radio" name="furnishing" value="unfurnished" {% if old.furnishing == 'unfurnished' %}checked{% endif %}> Unfurnished
             </label>
           </div>
         </div>
 
-        <div class="form-group">
-          <label><i class="fa-solid fa-align-left"></i> Description</label>
-          <div class="input-wrap">
+        <div class="form-group {% if errors.description %}fg-error{% endif %}">
+          <label><i class="fa-solid fa-align-left"></i> Description <span class="req">*</span></label>
+          <div class="input-wrap {% if errors.description %}input-invalid{% endif %}">
             <textarea name="description" rows="6"
-              placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc."></textarea>
+              placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc.">{{ old.description|default:'' }}</textarea>
           </div>
+          {% if errors.description %}<p class="field-err">{{ errors.description }}</p>{% endif %}
         </div>
       </div>
 
@@ -204,17 +241,14 @@
       <div class="form-card">
         <div class="fc-head">
           <div class="fc-head-icon fc-yellow"><i class="fa-solid fa-star"></i></div>
-          <div>
-            <h2>Amenities & Features</h2>
-            <p>Select all that apply</p>
-          </div>
+          <div><h2>Amenities & Features</h2><p>Select all that apply</p></div>
           <div class="fc-step fc-step-yellow">4</div>
         </div>
-
         <div class="features-grid">
           {% for item in features %}
-          <label class="feature-item">
-            <input type="checkbox" name="features" value="{{ item.id }}">
+          <label class="feature-item {% if item.id|stringformat:'s' in old_features %}selected{% endif %}">
+            <input type="checkbox" name="features" value="{{ item.id }}"
+                   {% if item.id|stringformat:'s' in old_features %}checked{% endif %}>
             <span class="fi-box"><i class="fa-solid fa-check"></i></span>
             <span class="fi-name">{{ item.name }}</span>
           </label>
@@ -226,30 +260,30 @@
       <div class="form-card">
         <div class="fc-head">
           <div class="fc-head-icon fc-pink"><i class="fa-solid fa-images"></i></div>
-          <div>
-            <h2>Upload Images</h2>
-            <p>Featured image + additional gallery photos</p>
-          </div>
+          <div><h2>Upload Images</h2><p>Featured image + additional gallery photos</p></div>
           <div class="fc-step fc-step-pink">5</div>
         </div>
 
         <!-- Featured Image -->
-        <div class="form-group">
+        <div class="form-group {% if errors.featured_image %}fg-error{% endif %}">
           <label><i class="fa-solid fa-star"></i> Featured Image <span class="req">*</span></label>
-          <div class="file-zone" id="featuredZone">
+          <div class="file-zone {% if errors.featured_image %}file-zone-error{% endif %}" id="featuredZone">
             <input type="file" name="featured_image" id="featuredInput" accept="image/*">
             <div class="fz-inner" id="featuredInner">
               <i class="fa-solid fa-cloud-arrow-up"></i>
               <p>Click or drag & drop featured image</p>
-              <span>This will be shown as the main property photo</span>
+              <span>JPG or PNG — this is the main photo shown in listings</span>
             </div>
             <img id="featuredPreview" class="fz-preview" src="" alt="">
           </div>
+          {% if errors.featured_image %}
+          <p class="field-err"><i class="fa-solid fa-circle-xmark"></i> {{ errors.featured_image }}</p>
+          {% endif %}
         </div>
 
         <!-- Additional Images -->
         <div class="form-group">
-          <label><i class="fa-solid fa-images"></i> Additional Gallery Images</label>
+          <label><i class="fa-solid fa-images"></i> Additional Gallery Images <span class="opt">(optional)</span></label>
           <div class="multi-upload">
             <div class="file-zone file-zone-sm">
               <input type="file" name="images" accept="image/*" class="extra-img-input">
@@ -280,8 +314,6 @@
 
   <!-- ════ RIGHT — TIPS ════ -->
   <aside class="ap-tips-col">
-
-    <!-- Progress tracker -->
     <div class="tips-card progress-card">
       <h3><i class="fa-solid fa-chart-simple"></i> Form Progress</h3>
       <div class="progress-bar-wrap">
@@ -289,56 +321,35 @@
       </div>
       <p class="progress-label" id="progressLabel">0% Complete</p>
     </div>
-
-    <!-- Tips -->
     <div class="tips-card">
       <h3><i class="fa-solid fa-lightbulb"></i> Listing Tips</h3>
       <ul class="tip-list">
-        <li>
-          <div class="tip-icon"><i class="fa-solid fa-camera"></i></div>
-          <div><strong>Use high quality images</strong><span>Clear, well-lit photos get 3× more views.</span></div>
-        </li>
-        <li>
-          <div class="tip-icon"><i class="fa-solid fa-location-dot"></i></div>
-          <div><strong>Add complete address</strong><span>Buyers prefer exact location details.</span></div>
-        </li>
-        <li>
-          <div class="tip-icon"><i class="fa-solid fa-tag"></i></div>
-          <div><strong>Set accurate price</strong><span>Competitive pricing gets more inquiries.</span></div>
-        </li>
-        <li>
-          <div class="tip-icon"><i class="fa-solid fa-list"></i></div>
-          <div><strong>Fill all details</strong><span>Complete listings rank higher in search.</span></div>
-        </li>
-        <li>
-          <div class="tip-icon"><i class="fa-solid fa-star"></i></div>
-          <div><strong>Select amenities</strong><span>Highlight features that add value.</span></div>
-        </li>
+        <li><div class="tip-icon"><i class="fa-solid fa-camera"></i></div>
+            <div><strong>Use high quality images</strong><span>Clear, well-lit photos get 3× more views.</span></div></li>
+        <li><div class="tip-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div><strong>Add complete address</strong><span>Buyers prefer exact location details.</span></div></li>
+        <li><div class="tip-icon"><i class="fa-solid fa-tag"></i></div>
+            <div><strong>Set accurate price</strong><span>Competitive pricing gets more inquiries.</span></div></li>
+        <li><div class="tip-icon"><i class="fa-solid fa-list"></i></div>
+            <div><strong>Fill all details</strong><span>Complete listings rank higher in search.</span></div></li>
+        <li><div class="tip-icon"><i class="fa-solid fa-star"></i></div>
+            <div><strong>Select amenities</strong><span>Highlight features that add value.</span></div></li>
       </ul>
     </div>
-
-    <!-- Quick stats -->
     <div class="tips-card stat-reminder">
-      <div class="sr-row">
-        <i class="fa-solid fa-eye"></i>
-        <div><strong>1500+</strong><span>Active browsers daily</span></div>
-      </div>
-      <div class="sr-row">
-        <i class="fa-solid fa-envelope"></i>
-        <div><strong>Get leads</strong><span>Buyers contact you directly</span></div>
-      </div>
-      <div class="sr-row">
-        <i class="fa-solid fa-shield-halved"></i>
-        <div><strong>Verified badge</strong><span>Builds buyer confidence</span></div>
-      </div>
+      <div class="sr-row"><i class="fa-solid fa-eye"></i>
+        <div><strong>1500+</strong><span>Active browsers daily</span></div></div>
+      <div class="sr-row"><i class="fa-solid fa-envelope"></i>
+        <div><strong>Get leads</strong><span>Buyers contact you directly</span></div></div>
+      <div class="sr-row"><i class="fa-solid fa-shield-halved"></i>
+        <div><strong>Verified badge</strong><span>Builds buyer confidence</span></div></div>
     </div>
-
   </aside>
 
 </div>
 
 <script>
-  // ── Number stepper buttons ──
+  // Number steppers
   document.querySelectorAll('.num-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const input = document.getElementById(btn.dataset.target);
@@ -350,7 +361,7 @@
     });
   });
 
-  // ── Furnishing pills ──
+  // Furnishing pills
   document.querySelectorAll('.fpill input').forEach(r => {
     r.addEventListener('change', () => {
       document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
@@ -359,17 +370,18 @@
     if (r.checked) r.closest('.fpill').classList.add('active');
   });
 
-  // ── Feature checkboxes toggle ──
+  // Feature checkboxes
   document.querySelectorAll('.feature-item input').forEach(cb => {
     cb.addEventListener('change', () => {
       cb.closest('.feature-item').classList.toggle('selected', cb.checked);
     });
   });
 
-  // ── Featured image preview ──
+  // Featured image preview
   const featuredInput   = document.getElementById('featuredInput');
   const featuredPreview = document.getElementById('featuredPreview');
   const featuredInner   = document.getElementById('featuredInner');
+  const featuredZone    = document.getElementById('featuredZone');
 
   featuredInput.addEventListener('change', function () {
     if (this.files[0]) {
@@ -378,17 +390,18 @@
         featuredPreview.src = e.target.result;
         featuredPreview.style.display = 'block';
         featuredInner.style.display = 'none';
+        featuredZone.classList.remove('file-zone-error');
       };
       reader.readAsDataURL(this.files[0]);
     }
     updateProgress();
   });
 
-  // ── Extra image previews ──
+  // Extra image previews
   document.querySelectorAll('.extra-img-input').forEach(input => {
     input.addEventListener('change', function () {
-      const zone   = this.closest('.file-zone-sm');
-      const inner  = zone.querySelector('.fz-inner-sm');
+      const zone    = this.closest('.file-zone-sm');
+      const inner   = zone.querySelector('.fz-inner-sm');
       const preview = zone.querySelector('.fz-preview-sm');
       if (this.files[0]) {
         const reader = new FileReader();
@@ -402,8 +415,7 @@
     });
   });
 
-  // ── Drag & drop featured zone ──
-  const featuredZone = document.getElementById('featuredZone');
+  // Drag & drop
   featuredZone.addEventListener('dragover', e => { e.preventDefault(); featuredZone.classList.add('drag-over'); });
   featuredZone.addEventListener('dragleave', () => featuredZone.classList.remove('drag-over'));
   featuredZone.addEventListener('drop', e => {
@@ -412,7 +424,7 @@
     featuredInput.dispatchEvent(new Event('change'));
   });
 
-  // ── Progress bar ──
+  // Progress bar
   function updateProgress() {
     const fields = ['title', 'price', 'city', 'area', 'description'];
     let filled = 0;

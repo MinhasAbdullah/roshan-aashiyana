@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Count
 from django.http import JsonResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -431,66 +431,128 @@ def dashboard(request):
     })
 
 
-@login_required
 def add_property(request):
-    dealer = Dealer.objects.get(user=request.user)
-
+    try:
+        dealer = Dealer.objects.get(user=request.user)
+    except Dealer.DoesNotExist:
+        return redirect('dealer_register')
+ 
+    errors   = {}
+    old      = {}
+    old_features = []
+ 
     if request.method == "POST":
-        title = request.POST.get("title")
-        price = request.POST.get("price")
-        description = request.POST.get("description")
-        property_type_id = request.POST.get("property_type")
-        purpose = request.POST.get("purpose")
-        city = request.POST.get("city")
-        area = request.POST.get("area")
-        address = request.POST.get("address")
-        bedrooms = request.POST.get("bedrooms")
-        bathrooms = request.POST.get("bathrooms")
-        kitchens = request.POST.get("kitchens")
-        garages = request.POST.get("garages")
-        property_size = request.POST.get("property_size")
-        furnishing = request.POST.get("furnishing")
-        year_built = request.POST.get("year_built")
-        featured_image = request.FILES.get("featured_image")
-        property_type = PropertyType.objects.get(id=property_type_id)
-
-        property = Property.objects.create(
-            dealer=dealer,
-            title=title,
-            price=price,
-            property_type=property_type,
-            purpose=purpose,
-            city=city,
-            area=area,
-            description=description,
-            address=address,
-            bedrooms=bedrooms,
-            bathrooms=bathrooms,
-            kitchens=kitchens,
-            garages=garages,
-            property_size=property_size,
-            furnishing=furnishing,
-            year_built=year_built,
-            featured_image=featured_image,
-        )
-
-        features_id = request.POST.getlist("features")
-        property.features.set(features_id)
-
-        images = request.FILES.getlist("images")
-        for img in images:
-            PropertyImage.objects.create(property=property, image=img)
-
-        messages.success(request, "Property added successfully")
-        return redirect("dashboard")
-
+        title            = request.POST.get("title", "").strip()
+        price            = request.POST.get("price", "").strip()
+        description      = request.POST.get("description", "").strip()
+        property_type_id = request.POST.get("property_type", "").strip()
+        purpose          = request.POST.get("purpose", "sale")
+        city             = request.POST.get("city", "").strip()
+        area             = request.POST.get("area", "").strip()
+        address          = request.POST.get("address", "").strip()
+        bedrooms         = request.POST.get("bedrooms", "0")
+        bathrooms        = request.POST.get("bathrooms", "0")
+        kitchens         = request.POST.get("kitchens", "0")
+        garages          = request.POST.get("garages", "0")
+        property_size    = request.POST.get("property_size", "").strip()
+        furnishing       = request.POST.get("furnishing", "semi_furnished")
+        year_built       = request.POST.get("year_built", "").strip()
+        featured_image   = request.FILES.get("featured_image")
+        features_ids     = request.POST.getlist("features")
+ 
+        old = {
+            'title': title, 'price': price, 'description': description,
+            'property_type': property_type_id, 'purpose': purpose,
+            'city': city, 'area': area, 'address': address,
+            'bedrooms': bedrooms, 'bathrooms': bathrooms,
+            'kitchens': kitchens, 'garages': garages,
+            'property_size': property_size, 'furnishing': furnishing,
+            'year_built': year_built,
+        }
+        old_features = features_ids
+ 
+        if not title:
+            errors['title'] = "Property title is required."
+        elif len(title) < 5:
+            errors['title'] = "Title must be at least 5 characters."
+ 
+        if not property_type_id:
+            errors['property_type'] = "Please select a property type."
+ 
+        if not price:
+            errors['price'] = "Price is required."
+        else:
+            try:
+                p = float(price)
+                if p <= 0:
+                    errors['price'] = "Price must be greater than 0."
+            except ValueError:
+                errors['price'] = "Enter a valid price."
+ 
+        if not city:
+            errors['city'] = "Please select a city."
+ 
+        if not area:
+            errors['area'] = "Area / locality is required."
+ 
+        if not description:
+            errors['description'] = "Description is required."
+ 
+        # ── Featured image is REQUIRED ──
+        if not featured_image:
+            errors['featured_image'] = "A featured image is required. Please upload a photo."
+        else:
+            # Check file type
+            allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+            if hasattr(featured_image, 'content_type') and featured_image.content_type not in allowed:
+                errors['featured_image'] = "Only JPG, PNG or WebP images are allowed."
+            # Check file size (5MB)
+            elif featured_image.size > 3 * 1024 * 1024:
+                errors['featured_image'] = "Image too large. Maximum size is 3MB."
+ 
+        # ── If no errors — save ──
+        if not errors:
+            property_type = PropertyType.objects.get(id=property_type_id)
+ 
+            prop = Property.objects.create(
+                dealer=dealer,
+                title=title,
+                price=price,
+                property_type=property_type,
+                purpose=purpose,
+                city=city,
+                area=area,
+                description=description,
+                address=address,
+                bedrooms=bedrooms   or 0,
+                bathrooms=bathrooms or 0,
+                kitchens=kitchens   or 0,
+                garages=garages     or 0,
+                property_size=property_size,
+                furnishing=furnishing,
+                year_built=year_built or None,
+                featured_image=featured_image,
+            )
+ 
+            prop.features.set(features_ids)
+ 
+            images = request.FILES.getlist("images")
+            for img in images:
+                if img:
+                    PropertyImage.objects.create(property=prop, image=img)
+ 
+            messages.success(request, "Property added successfully.")
+            return redirect("dashboard")
+ 
     property_types = PropertyType.objects.all()
-    features = Features.objects.all()
-
+    features       = Features.objects.all()
     return render(request, "add_property.html", {
-        "propertytype": property_types,
-        "features": features,
-        "dealer": dealer,
+        "propertytype":  property_types,
+        "features":      features,
+        "dealer":        dealer,
+        "errors":        errors,
+        "old":           old,
+        "old_features":  old_features,
     })
 
 
@@ -596,3 +658,25 @@ def check_cnic(request):
     cnic = request.GET.get("cnic", "").strip()
     exists = Dealer.objects.filter(cnic=cnic).exists()
     return JsonResponse({"exists": exists})
+
+
+def dealers(request):
+    dealers = Dealer.objects.annotate(
+        listing_count=Count('properties'),
+        total_views=Sum('properties__views'),
+        total_reviews = Sum('properties__reviews')
+    ).order_by('full_name')
+    return render(request, 'dealers.html', {'dealers': dealers})
+
+def dealer_profile(request, id):
+    dealer     = get_object_or_404(Dealer, id=id)
+    properties = Property.objects.filter(dealer=dealer).order_by('-created_at')
+    reviews    = DealerReview.objects.filter(property__dealer=dealer).order_by('-created_at')
+    total_views = properties.aggregate(Sum('views'))['views__sum'] or 0
+ 
+    return render(request, 'dealer_profile.html', {
+        'dealer':      dealer,
+        'properties':  properties,
+        'reviews':     reviews,
+        'total_views': total_views,
+    })

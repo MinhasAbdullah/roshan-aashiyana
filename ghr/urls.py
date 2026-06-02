@@ -22,5 +22,7 @@ urlpatterns = [
     path('dealer_reviews/', views.dealer_reviews, name='dealer_reviews'),
     path('verify-email/<uidb64>/<token>/',views.verify_email,name='verify_email'),
     path("autocomplete/", views.autocomplete, name="autocomplete"),
+    path('dealers/', views.dealers, name='dealers'),
+    path('dealer_profile/<int:id>/', views.dealer_profile, name='dealer_profile'),
 ]
 

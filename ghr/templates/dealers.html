@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dealers | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dealers.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════ HERO ═══════ -->
+<section class="dealers-hero">
+  <div class="dh-bg"></div>
+  <div class="dh-overlay"></div>
+  <div class="container dh-content">
+    <div class="dh-text">
+      <p class="dh-label"><i class="fa-solid fa-circle-check"></i> Verified Professionals</p>
+      <h1>Meet Our <span>Dealers</span></h1>
+      <p class="dh-sub">Connect with Pakistan's most trusted and verified real estate dealers.
+        Browse profiles, view listings and get in touch directly.</p>
+    </div>
+    <div class="dh-stats">
+      <div class="dh-stat">
+        <span class="dhs-num">{{ dealers|length }}+</span>
+        <span class="dhs-lbl">Verified Dealers</span>
+      </div>
+      <div class="dhs-div"></div>
+      <div class="dh-stat">
+        <span class="dhs-num">150+</span>
+        <span class="dhs-lbl">Active Listings</span>
+      </div>
+      <div class="dhs-div"></div>
+      <div class="dh-stat">
+        <span class="dhs-num">10+</span>
+        <span class="dhs-lbl">Cities</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ DEALERS GRID ═══════ -->
+<section class="dealers-section">
+  <div class="container">
+
+    <!-- Search / filter bar -->
+    <div class="dealers-toolbar">
+      <div class="dt-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="dealerSearch" placeholder="Search dealer by name or city...">
+      </div>
+      <div class="dt-count">
+        <span id="dealerCount">{{ dealers|length }}</span> dealer{{ dealers|length|pluralize }} found
+      </div>
+    </div>
+
+   {% if dealers %}
+  <div class="dealers-grid" id="dealersGrid">
+    {% for dealer in dealers %}
+    
+      {% if user.is_authenticated %}
+      <a href="{% url 'dealer_profile' dealer.id %}" class="dealer-card" data-name="{{ dealer.full_name|lower }}" data-city="{{ dealer.city|default:''|lower }}">
+      
+      {% else %}
+      <div style="cursor: pointer;" onclick="document.getElementById('openModal').click()" class="dealer-card" data-name="{{ dealer.full_name|lower }}" data-city="{{ dealer.city|default:''|lower }}">
+      {% endif %}
+
+        <div class="dc-top">
+          <div class="dc-avatar">
+            <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+            <div class="dc-verified"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+          <div class="dc-info">
+            <h3>{{ dealer.full_name }}</h3>
+            <span class="dc-badge">Verified Dealer</span>
+            {% if dealer.user.email %}
+            <p class="dc-phone"><i class="fa-solid fa-envelope"></i> {{ dealer.user.email }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="dc-stats">
+          <div class="dc-stat">
+            <span class="dcs-num">{{ dealer.listing_count }}</span>
+            <span class="dcs-lbl">Listings</span>
+          </div>
+          <div class="dcs-div"></div>
+          <div class="dc-stat">
+            <span class="dcs-num">{{ dealer.total_views|default:"0" }}</span>
+            <span class="dcs-lbl">Views</span>
+          </div>
+          <div class="dcs-div"></div>
+          <div class="dc-stat">
+            <span class="dcs-num">{{ dealer.total_reviews|default:"0" }}</span>
+            <span class="dcs-lbl">Reviews</span>
+          </div>
+        </div>
+
+        {% if dealer.address %}
+        <div class="dc-location">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>{{ dealer.address|truncatechars:45 }}</span>
+        </div>
+        {% endif %}
+
+        <div class="dc-footer">
+          <span class="dc-view-btn">View Profile <i class="fa-solid fa-arrow-right"></i></span>
+        </div>
+
+      {% if user.is_authenticated %}
+      </a>
+      {% else %}
+      </div>
+      {% endif %}
+
+    {% endfor %}
+  </div>
+
+    {% else %}
+    <div class="dealers-empty">
+      <div class="de-icon"><i class="fa-solid fa-user-tie"></i></div>
+      <h2>No Dealers Yet</h2>
+      <p>Be the first to register as a verified dealer on Roshan Aashiyana.</p>
+      <a href="{% url 'dealer_register' %}" class="de-btn">
+        <i class="fa-solid fa-plus"></i> Become a Dealer
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- ═══════ CTA ═══════ -->
+<section class="dealers-cta">
+  <div class="container">
+    <div class="cta-banner">
+      <div class="cta-icon-wrap"><i class="fa-solid fa-handshake"></i></div>
+      <div class="cta-text">
+        <h3>Want to List Your Properties?</h3>
+        <p>Register as a verified dealer and reach thousands of active buyers across Pakistan.</p>
+      </div>
+      <a href="{% url 'dealer_register' %}" class="cta-btn">
+        <i class="fa-solid fa-user-plus"></i> Become a Dealer
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- javascript -->
+<script src="{% static 'js/dealers.js' %}"></script>
+
+{% endblock %}
