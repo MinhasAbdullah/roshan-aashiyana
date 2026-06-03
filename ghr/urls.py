@@ -28,5 +28,6 @@ urlpatterns = [
     path('dealer/payment/success/', views.payment_success, name='payment_success'),
     path('dealer/settings/', views.dealer_settings, name='dealer_settings'),
     path('dealer/delete-account/', views.delete_dealer_account, name='delete_dealer_account'),
+    path('api/generate-description/', views.generate_description_api, name='generate_description_api'),
 ]
 

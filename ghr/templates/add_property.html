@@ -226,15 +226,6 @@
             </label>
           </div>
         </div>
-
-        <div class="form-group {% if errors.description %}fg-error{% endif %}">
-          <label><i class="fa-solid fa-align-left"></i> Description <span class="req">*</span></label>
-          <div class="input-wrap {% if errors.description %}input-invalid{% endif %}">
-            <textarea name="description" rows="6"
-              placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc.">{{ old.description|default:'' }}</textarea>
-          </div>
-          {% if errors.description %}<p class="field-err">{{ errors.description }}</p>{% endif %}
-        </div>
       </div>
 
       <!-- ── SECTION 4: Features ── -->
@@ -256,12 +247,42 @@
         </div>
       </div>
 
-      <!-- ── SECTION 5: Images ── -->
+      <!-- ── SECTION 5: Description ── -->
       <div class="form-card">
         <div class="fc-head">
-          <div class="fc-head-icon fc-pink"><i class="fa-solid fa-images"></i></div>
-          <div><h2>Upload Images</h2><p>Featured image + additional gallery photos</p></div>
+          <div class="fc-head-icon fc-pink"><i class="fa-solid fa-align-left"></i></div>
+          <div><h2>Description</h2><p>Write manually or generate with AI</p></div>
           <div class="fc-step fc-step-pink">5</div>
+        </div>
+
+        <div class="form-group {% if errors.description %}fg-error{% endif %}">
+          <label><i class="fa-solid fa-align-left"></i> Property Description <span class="req">*</span></label>
+
+          <button type="button" id="generateDescBtn" onclick="generateDescription()" style="
+              display:inline-flex;align-items:center;gap:8px;
+              margin-bottom:10px;padding:9px 18px;
+              background:linear-gradient(135deg,var(--green),var(--green-dark));
+              color:#fff;border:none;border-radius:8px;
+              font-size:13px;font-weight:600;cursor:pointer;
+              transition:opacity .2s;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate with AI
+          </button>
+          <p id="generateStatus" style="font-size:12px;margin-bottom:6px;min-height:16px;"></p>
+
+          <div class="input-wrap {% if errors.description %}input-invalid{% endif %}">
+            <textarea name="description" id="descriptionField" rows="6"
+              placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc.">{{ old.description|default:'' }}</textarea>
+          </div>
+          {% if errors.description %}<p class="field-err">{{ errors.description }}</p>{% endif %}
+        </div>
+      </div>
+
+      <!-- ── SECTION 6: Images ── -->
+      <div class="form-card">
+        <div class="fc-head">
+          <div class="fc-head-icon fc-orange"><i class="fa-solid fa-images"></i></div>
+          <div><h2>Upload Images</h2><p>Featured image + additional gallery photos</p></div>
+          <div class="fc-step fc-step-orange">6</div>
         </div>
 
         <!-- Featured Image -->
@@ -349,7 +370,7 @@
 </div>
 
 <script>
-  // Number steppers
+  // ── Number steppers ──
   document.querySelectorAll('.num-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const input = document.getElementById(btn.dataset.target);
@@ -361,7 +382,7 @@
     });
   });
 
-  // Furnishing pills
+  // ── Furnishing pills ──
   document.querySelectorAll('.fpill input').forEach(r => {
     r.addEventListener('change', () => {
       document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
@@ -370,14 +391,14 @@
     if (r.checked) r.closest('.fpill').classList.add('active');
   });
 
-  // Feature checkboxes
+  // ── Feature checkboxes ──
   document.querySelectorAll('.feature-item input').forEach(cb => {
     cb.addEventListener('change', () => {
       cb.closest('.feature-item').classList.toggle('selected', cb.checked);
     });
   });
 
-  // Featured image preview
+  // ── Featured image preview ──
   const featuredInput   = document.getElementById('featuredInput');
   const featuredPreview = document.getElementById('featuredPreview');
   const featuredInner   = document.getElementById('featuredInner');
@@ -397,7 +418,7 @@
     updateProgress();
   });
 
-  // Extra image previews
+  // ── Extra image previews ──
   document.querySelectorAll('.extra-img-input').forEach(input => {
     input.addEventListener('change', function () {
       const zone    = this.closest('.file-zone-sm');
@@ -415,16 +436,16 @@
     });
   });
 
-  // Drag & drop
-  featuredZone.addEventListener('dragover', e => { e.preventDefault(); featuredZone.classList.add('drag-over'); });
-  featuredZone.addEventListener('dragleave', () => featuredZone.classList.remove('drag-over'));
+  // ── Drag & drop ──
+  featuredZone.addEventListener('dragover',  e => { e.preventDefault(); featuredZone.classList.add('drag-over'); });
+  featuredZone.addEventListener('dragleave', ()  => featuredZone.classList.remove('drag-over'));
   featuredZone.addEventListener('drop', e => {
     e.preventDefault(); featuredZone.classList.remove('drag-over');
     featuredInput.files = e.dataTransfer.files;
     featuredInput.dispatchEvent(new Event('change'));
   });
 
-  // Progress bar
+  // ── Progress bar ──
   function updateProgress() {
     const fields = ['title', 'price', 'city', 'area', 'description'];
     let filled = 0;
@@ -444,6 +465,93 @@
   });
 
   updateProgress();
+
+  // ── AI Description Generator ──
+  async function generateDescription() {
+    const btn    = document.getElementById('generateDescBtn');
+    const status = document.getElementById('generateStatus');
+    const field  = document.getElementById('descriptionField');
+
+    const getVal = name => document.querySelector(`[name="${name}"]`)?.value?.trim() || '';
+
+    // Format price with commas
+    const rawPrice = getVal('price');
+    const formattedPrice = rawPrice
+      ? parseInt(rawPrice).toLocaleString('en-PK') + ' PKR'
+      : 'N/A';
+
+    // Get property type text from selected option
+    const propTypeEl = document.querySelector('[name="property_type"]');
+    const propertyTypeText = propTypeEl?.options[propTypeEl.selectedIndex]?.text?.trim() || '';
+
+    // Get furnishing from checked radio
+    const furnishingEl = document.querySelector('[name="furnishing"]:checked');
+    const furnishingVal = furnishingEl?.value || '';
+
+    // Get selected features text from fi-name spans
+    const featuresText = [...document.querySelectorAll('.feature-item.selected .fi-name')]
+      .map(el => el.textContent.trim())
+      .join(', ');
+
+    const data = {
+      title:         getVal('title'),
+      purpose:       getVal('purpose') === 'sale' ? 'For Sale' : 'For Rent',
+      property_type: propertyTypeText,
+      price:         formattedPrice,
+      city:          getVal('city'),
+      area:          getVal('area'),
+      address:       getVal('address'),
+      bedrooms:      getVal('bedrooms'),
+      bathrooms:     getVal('bathrooms'),
+      kitchens:      getVal('kitchens'),
+      garage:        getVal('garages'),
+      property_size: getVal('property_size'),
+      year_built:    getVal('year_built'),
+      furnished:     furnishingVal,
+      features:      featuresText,
+      description:   field.value || '',
+    };
+
+    if (!data.title) {
+      status.textContent = '⚠ Please enter a property title first.';
+      status.style.color = '#e53e3e';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+    status.style.color = 'var(--text-muted)';
+    status.textContent = 'AI is writing your description...';
+
+    try {
+      const res = await fetch("{% url 'generate_description_api' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (result.description) {
+        field.value = result.description;
+        status.textContent = '✓ Description generated successfully!';
+        status.style.color = 'var(--green)';
+        updateProgress();
+      } else {
+        status.textContent = '✗ Failed to generate. Try again.';
+        status.style.color = '#e53e3e';
+      }
+    } catch (err) {
+      status.textContent = '✗ Something went wrong. Try again.';
+      status.style.color = '#e53e3e';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate with AI';
+    }
+  }
 </script>
 
 {% endblock %}

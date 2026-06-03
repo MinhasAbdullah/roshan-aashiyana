@@ -18,6 +18,9 @@ import resend
 import stripe
 import base64
 from django.core.files.base import ContentFile
+import json
+from langchain_mistralai import ChatMistralAI
+from langchain_core.prompts import ChatPromptTemplate
 
 from .models import (
     Property,
@@ -889,3 +892,75 @@ def delete_dealer_account(request):
     except Dealer.DoesNotExist:
         pass
     return redirect('home')
+
+
+@login_required
+def generate_description_api(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST only'}, status=405)
+
+    data = json.loads(request.body)
+
+    llm = ChatMistralAI(
+        api_key=settings.MISTRAL_API_KEY,
+        model='mistral-small-latest',
+        temperature=0
+    )
+
+    prompt = ChatPromptTemplate.from_template("""
+You are a professional real estate listing writer.
+Convert structured property data into a clean, realistic description.
+RULES:
+- Use ONLY provided data
+- Do NOT invent anything
+- Do NOT exaggerate or add fake features
+- 80 - 120 words
+- Clear professional tone
+- Combine features naturally
+- If Extra Notes are provided, use them exactly
+PROPERTY INFO:
+Title: {title}
+Purpose: {purpose}
+Type: {property_type}
+Price: {price}
+LOCATION:
+City: {city}
+Area: {area}
+Address: {address}
+DETAILS:
+Bedrooms: {bedrooms}
+Bathrooms: {bathrooms}
+Kitchens: {kitchens}
+Garage: {garage}
+Size: {property_size}
+Year Built: {year_built}
+Furnished: {furnished}
+FEATURES: {features}
+Extra Notes: {extra_description}
+OUTPUT:
+Return only the final property description.
+""")
+
+    chain = prompt | llm
+
+    response = chain.invoke({
+        "title":             data.get("title", ""),
+        "purpose":           data.get("purpose", ""),
+        "property_type":     data.get("property_type", ""),
+        "price":             data.get("price", ""),
+        "city":              data.get("city", ""),
+        "area":              data.get("area", ""),
+        "address":           data.get("address", ""),
+        "bedrooms":          data.get("bedrooms", ""),
+        "bathrooms":         data.get("bathrooms", ""),
+        "kitchens":          data.get("kitchens", ""),
+        "garage":            data.get("garage", ""),
+        "property_size":     data.get("property_size", ""),
+        "year_built":        data.get("year_built", ""),
+        "furnished":         data.get("furnished", ""),
+        "features":          data.get("features", ""),
+        "extra_description": data.get("description", ""),
+    })
+
+    description = response.content.replace("**", "").strip()
+    return JsonResponse({'description': description})
