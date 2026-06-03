@@ -32,17 +32,14 @@ from .models import (
 )
 
 
-# ─────────────────────────────────────────
-# EMAIL HELPER — Resend HTTP API
-# ─────────────────────────────────────────
-def send_email(to, subject, message):
+def send_email(to, subject, html_message):
     try:
         resend.api_key = settings.RESEND_API_KEY
         resend.Emails.send({
             "from": "Roshan Aashiyana <support@roshanaashiyana.xyz>",
             "to": to,
             "subject": subject,
-            "text": message,
+            "html": html_message,
         })
     except Exception as e:
         print(f"Email error: {e}")
@@ -86,20 +83,30 @@ def SignUp(request):
 
         send_email(
             to=user.email,
-            subject="Verify Your Account — Roshan Aashiyana",
-            message=f"""Hi {user.username},
-
-Thank you for registering on Roshan Aashiyana.
-
-Click the link below to verify your email:
-
-{verification}
-
-If you did not create this account, ignore this email.
-
-Regards,
-Roshan Aashiyana Team"""
-        )
+            subject="Verify Your Email — Roshan Aashiyana",
+            html_message=f"""
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#f7f8fa;padding:32px;border-radius:12px;">
+                <div style="background:#071a34;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;">
+                    <img src="https://roshanaashiyana.xyz/static/images/RA3.png" alt="Roshan Aashiyana" style="height:68px;">
+                </div>
+                <div style="background:#ffffff;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e4e8ee;">
+                    <h2 style="color:#071a34;margin-bottom:8px;">Verify your email address</h2>
+                    <p style="color:#6b7a90;line-height:1.6;">Hi <strong style="color:#1a2535;">{user.username}</strong>,</p>
+                    <p style="color:#6b7a90;line-height:1.6;">Thanks for signing up on <strong style="color:#1a2535;">Roshan Aashiyana</strong>. Click the button below to verify your email and activate your account.</p>
+                    <div style="text-align:center;margin:32px 0;">
+                        <a href="{verification}" style="display:inline-block;padding:14px 32px;background:#3cb648;color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;font-size:15px;">Verify My Email</a>
+                    </div>
+                    <div style="background:#edf8f0;border-left:4px solid #3cb648;padding:12px 16px;border-radius:8px;">
+                        <p style="color:#6b7a90;font-size:13px;margin:0;">Or copy this link into your browser:<br>
+                        <a href="{verification}" style="color:#3cb648;word-break:break-all;">{verification}</a></p>
+                    </div>
+                    <hr style="border:none;border-top:1px solid #e4e8ee;margin:24px 0;">
+                    <p style="color:#6b7a90;font-size:12px;">If you did not create this account, you can safely ignore this email.</p>
+                    <p style="color:#6b7a90;font-size:12px;margin:0;">© Roshan Aashiyana · Pakistan's Trusted Property Platform</p>
+                </div>
+            </div>
+            """
+            )
 
         messages.success(request, "Account created successfully. Please check your email and verify your account.")
         return redirect("home")
@@ -148,18 +155,25 @@ def verify_email(request, uidb64, token):
 
         send_email(
             to=user.email,
-            subject="Welcome to Roshan Aashiyana",
-            message=f"""Hi {user.username},
-
-Your email has been verified successfully.
-
-You can now login and start exploring properties across Pakistan.
-
-Welcome to Roshan Aashiyana!
-
-Regards,
-Roshan Aashiyana Team"""
-        )
+            subject="Welcome to Roshan Aashiyana 🎉",
+            html_message=f"""
+                    <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#f7f8fa;padding:32px;border-radius:12px;">
+                        <div style="background:#071a34;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;">
+                            <img src="https://roshanaashiyana.xyz/static/images/RA3.png" alt="Roshan Aashiyana" style="height:68px;">
+                        </div>
+                        <div style="background:#ffffff;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e4e8ee;">
+                            <h2 style="color:#071a34;">Welcome aboard, {user.username}! 👋</h2>
+                            <p style="color:#6b7a90;line-height:1.6;">Your email has been verified successfully. You're now part of <strong style="color:#1a2535;">Roshan Aashiyana</strong> — Pakistan's trusted property platform.</p>
+                            <p style="color:#6b7a90;line-height:1.6;">Start exploring thousands of properties across Islamabad, Lahore, Rawalpindi and more.</p>
+                            <div style="text-align:center;margin:32px 0;">
+                                <a href="https://roshanaashiyana.xyz" style="display:inline-block;padding:14px 32px;background:#3cb648;color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;font-size:15px;">Browse Properties</a>
+                            </div>
+                            <hr style="border:none;border-top:1px solid #e4e8ee;margin:24px 0;">
+                            <p style="color:#6b7a90;font-size:12px;margin:0;">© Roshan Aashiyana · Pakistan's Trusted Property Platform</p>
+                        </div>
+                    </div>
+                    """
+                    )
         messages.success(request, "Email verified successfully. You can now login.")
     else:
         messages.error(request, "Invalid or expired verification link.")
@@ -260,21 +274,43 @@ def property_detail(request, id, slug):
 
         send_email(
             to=dealer.user.email,
-            subject=f"New Inquiry For {property.title}",
-            message=f"""You have received a new inquiry on Roshan Aashiyana.
-
-Property: {property.title}
-
-Name: {name}
-Email: {email}
-Phone: {phone}
-
-Message:
-{message}
-
-Regards,
-Roshan Aashiyana Team"""
-        )
+            subject=f"New Inquiry — {property.title}",
+            html_message=f"""
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#f7f8fa;padding:32px;border-radius:12px;">
+                    <div style="background:#071a34;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;">
+                        <img src="https://roshanaashiyana.xyz/static/images/RA3.png" alt="Roshan Aashiyana" style="height:68px;">
+                    </div>
+                    <div style="background:#ffffff;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e4e8ee;">
+                        <h2 style="color:#071a34;">You have a new inquiry</h2>
+                        <p style="color:#6b7a90;">Someone is interested in your property:</p>
+                        <div style="background:#edf8f0;border-left:4px solid #3cb648;padding:12px 16px;margin:16px 0;border-radius:8px;">
+                            <strong style="color:#071a34;">{property.title}</strong>
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+                            <tr style="border-bottom:1px solid #e4e8ee;">
+                                <td style="padding:10px 0;color:#6b7a90;width:80px;">Name</td>
+                                <td style="color:#1a2535;"><strong>{name}</strong></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #e4e8ee;">
+                                <td style="padding:10px 0;color:#6b7a90;">Email</td>
+                                <td><a href="mailto:{email}" style="color:#3cb648;">{email}</a></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:10px 0;color:#6b7a90;">Phone</td>
+                                <td><a href="tel:{phone}" style="color:#3cb648;">{phone}</a></td>
+                            </tr>
+                        </table>
+                        <p style="color:#6b7a90;font-size:13px;margin-bottom:6px;">Message:</p>
+                        <div style="background:#f7f8fa;padding:16px;border-radius:8px;border:1px solid #e4e8ee;color:#1a2535;line-height:1.6;">{message}</div>
+                        <div style="text-align:center;margin:32px 0;">
+                            <a href="https://roshanaashiyana.xyz/dealer_inquiries" style="display:inline-block;padding:14px 32px;background:#3cb648;color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;font-size:15px;">View Inquiries</a>
+                        </div>
+                        <hr style="border:none;border-top:1px solid #e4e8ee;margin:24px 0;">
+                        <p style="color:#6b7a90;font-size:12px;margin:0;">© Roshan Aashiyana · Pakistan's Trusted Property Platform</p>
+                    </div>
+                </div>
+                """
+                        )
 
         messages.success(request, "Inquiry sent successfully")
         return redirect("property_detail", slug=property.slug, id=property.id)
@@ -484,20 +520,30 @@ def payment_success(request):
 
     # Clear session
     del request.session['dealer_form']
+    dealer = Dealer.objects.filter(user=request.user)
 
     # Send welcome email
     send_email(
         to=request.user.email,
         subject="Dealer Account Created — Roshan Aashiyana",
-        message=f"""Hi {dealer_data['name']},
-
-Your dealer account has been created successfully on Roshan Aashiyana.
-
-You can now list and manage properties on the platform.
-
-Regards,
-Roshan Aashiyana Team"""
-    )
+        html_message=f"""
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#f7f8fa;padding:32px;border-radius:12px;">
+                    <div style="background:#071a34;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;">
+                        <img src="https://roshanaashiyana.xyz/static/images/RA3.png" alt="Roshan Aashiyana" style="height:68px;">
+                    </div>
+                    <div style="background:#ffffff;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e4e8ee;">
+                        <h2 style="color:#071a34;">Dealer Account Created 🎉</h2>
+                        <p style="color:#6b7a90;line-height:1.6;">Hi <strong style="color:#1a2535;">{dealer.full_name}</strong>,</p>
+                        <p style="color:#6b7a90;line-height:1.6;">Your dealer account has been created successfully on <strong style="color:#1a2535;">Roshan Aashiyana</strong>. You can now list and manage properties on the platform.</p>
+                        <div style="text-align:center;margin:32px 0;">
+                            <a href="https://roshanaashiyana.xyz/dashboard" style="display:inline-block;padding:14px 32px;background:#3cb648;color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;font-size:15px;">Go to Dashboard</a>
+                        </div>
+                        <hr style="border:none;border-top:1px solid #e4e8ee;margin:24px 0;">
+                        <p style="color:#6b7a90;font-size:12px;margin:0;">© Roshan Aashiyana · Pakistan's Trusted Property Platform</p>
+                    </div>
+                </div>
+                """
+                )
 
     messages.success(request, 'Payment successful! Your dealer account is now active.')
     return redirect('dashboard')
