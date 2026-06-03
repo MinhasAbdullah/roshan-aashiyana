@@ -39,9 +39,14 @@
         <a href="{% url 'about' %}">About & Contact</a>
         {% if user.is_authenticated %}
           {% if user.dealer %}
-          <a href="{% url 'dashboard' %}" class="nav-btn-outline">Dashboard</a>
+          <a href="{% url 'dashboard' %}" class="nav-btn-outline">
+          <!-- <i class="fa-solid fa-th-large"></i> -->
+          <span>Dashboard</span>
+          </a>
           {% else %}
-          <a href="{% url 'dealer_payment' %}" class="nav-btn-outline">Post Property</a>
+          <a href="{% url 'dealer_payment' %}" class="nav-btn-outline">
+           <span> Become Dealer</span>
+          </a>
           {% endif %}
           <!-- Profile Dropdown -->
           <div class="profile-dropdown" id="profileDropdown">
@@ -83,7 +88,7 @@
               </div>
             </div>
         {% else %}
-          <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline">Post Property</a>
+          <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline"><span> Become Dealer</span></a>
           <a href="javascript:void(0)" class="btn-login" id="openModal">
             <i class="fa-solid fa-user"></i> Sign In
           </a>

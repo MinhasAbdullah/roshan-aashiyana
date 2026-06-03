@@ -35,10 +35,20 @@
       <a href="{% url 'add_property' %}" class="dtb-add-btn">
         <i class="fa-solid fa-plus"></i> <span>Add Property</span>
       </a>
-      <div class="dtb-avatar">
+    <div class="dtb-avatar-wrapper">
+    <div class="dtb-avatar" onclick="toggleAvatarDropdown()">
         <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
         <span>{{ dealer.full_name|truncatechars:14 }}</span>
-      </div>
+    </div>
+    <div class="avatar-dropdown" id="avatarDropdown">
+        <a href="{% url 'dashboard' %}"><i class="fa-solid fa-th-large"></i> Dashboard</a>
+        <a href="{% url 'my_listings' %}"><i class="fa-solid fa-list"></i> My Listings</a>
+        <a href="{% url 'dealer_inquiries' %}"><i class="fa-solid fa-envelope"></i> Inquiries</a>
+        <a href="{% url 'dealer_settings' %}"><i class="fa-solid fa-user"></i> Account Settings</a>
+        <hr>
+        <a href="{% url 'logout' %}" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+</div>
     </div>
   </header>
 
@@ -59,13 +69,13 @@
       <nav class="sidebar-nav">
         <p class="snav-label">Main Menu</p>
         <a href="{% url 'dashboard' %}" class="snav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-          <span class="snav-icon"><i class="fa-solid fa-gauge"></i></span><span>Dashboard</span>
+          <span class="snav-icon"><i class="fa-solid fa-th-large"></i></span><span>Dashboard</span>
         </a>
         <a href="{% url 'add_property' %}" class="snav-link {% if request.resolver_match.url_name == 'add_property' %}active{% endif %}">
           <span class="snav-icon"><i class="fa-solid fa-circle-plus"></i></span><span>Add Property</span>
         </a>
         <a href="{% url 'my_listings' %}" class="snav-link {% if request.resolver_match.url_name == 'my_listings' %}active{% endif %}">
-          <span class="snav-icon"><i class="fa-solid fa-building"></i></span><span>My Listings</span>
+          <span class="snav-icon"><i class="fa-solid fa-list"></i></span><span>My Listings</span>
         </a>
         <a href="{% url 'dealer_reviews' %}" class="snav-link {% if request.resolver_match.url_name == 'dealer_reviews' %}active{% endif %}">
           <span class="snav-icon"><i class="fa-solid fa-star"></i></span><span>Reviews</span>
@@ -77,6 +87,9 @@
         <p class="snav-label" style="margin-top:20px;">Account</p>
         <a href="{% url 'home' %}" class="snav-link">
           <span class="snav-icon"><i class="fa-solid fa-globe"></i></span><span>View Website</span>
+        </a>
+        <a href="{% url 'dealer_settings' %}" class="snav-link">
+          <span class="snav-icon"><i class="fa-solid fa-gear"></i></span><span>Settings</span>
         </a>
         <a href="{% url 'logout' %}" class="snav-link snav-logout">
           <span class="snav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span>Logout</span>
@@ -126,6 +139,18 @@
     sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
   });
   overlay.addEventListener('click', closeSidebar);
+
+  function toggleAvatarDropdown() {
+    document.getElementById('avatarDropdown').classList.toggle('open');
+}
+
+// Close when clicking outside
+document.addEventListener('click', function(e) {
+    const wrapper = document.querySelector('.dtb-avatar-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('avatarDropdown').classList.remove('open');
+    }
+});
 </script>
 
 {% endblock %}

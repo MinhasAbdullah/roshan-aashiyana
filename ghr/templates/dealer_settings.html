@@ -1,0 +1,579 @@
+{% extends 'dealer_base.html' %}
+{% load static %}
+
+{% block title %}Account Settings | Roshan Aashiyana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dealer_settings.css' %}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="dash-header">
+  <div>
+    <p class="dash-greeting"><i class="fa-solid fa-gear"></i> Account Management</p>
+    <h1 class="dash-title">Account Settings</h1>
+    <p class="dash-sub">Update your dealer profile, contact info and preferences</p>
+  </div>
+  <a href="{% url 'dashboard' %}" class="btn-back-dash">
+    <i class="fa-solid fa-arrow-left"></i> Dashboard
+  </a>
+</div>
+
+<!-- ══ SUCCESS / ERROR MESSAGES ══ -->
+{% if success %}
+<div class="settings-success">
+  <i class="fa-solid fa-circle-check"></i>
+  <span>{{ success }}</span>
+</div>
+{% endif %}
+{% if errors %}
+<div class="settings-error">
+  <i class="fa-solid fa-circle-xmark"></i>
+  <div>
+    <strong>Please fix the following:</strong>
+    <ul>{% for k,v in errors.items %}<li>{{ v }}</li>{% endfor %}</ul>
+  </div>
+</div>
+{% endif %}
+
+<!-- ══ LAYOUT ══ -->
+<div class="settings-layout">
+
+  <!-- ════ LEFT: TABS + FORM ════ -->
+  <div class="settings-main">
+
+    <!-- Tab nav -->
+    <div class="settings-tabs">
+      <button class="stab active" data-tab="profile">
+        <i class="fa-solid fa-user"></i> Profile
+      </button>
+      <button class="stab" data-tab="contact">
+        <i class="fa-solid fa-phone"></i> Contact
+      </button>
+      <button class="stab" data-tab="professional">
+        <i class="fa-solid fa-briefcase"></i> Professional
+      </button>
+      <button class="stab" data-tab="social">
+        <i class="fa-solid fa-share-nodes"></i> Social
+      </button>
+      <button class="stab" data-tab="security">
+        <i class="fa-solid fa-lock"></i> Security
+      </button>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="settingsForm" novalidate>
+      {% csrf_token %}
+
+      <!-- ══════ TAB 1: PROFILE ══════ -->
+      <div class="tab-panel active" id="tab-profile">
+        <div class="settings-card">
+          <div class="sc-head">
+            <div class="sc-icon"><i class="fa-solid fa-user-tie"></i></div>
+            <div><h2>Personal Information</h2><p>Your basic dealer profile details</p></div>
+          </div>
+
+          <!-- Avatar upload -->
+          <div class="avatar-section">
+            <div class="avatar-preview" id="avatarPreview">
+              <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}" id="avatarImg">
+              <div class="avatar-overlay">
+                <i class="fa-solid fa-camera"></i>
+              </div>
+            </div>
+            <div class="avatar-info">
+              <h4>Profile Photo</h4>
+              <p>JPG or PNG, max 5MB. Square photos work best.</p>
+              <label class="avatar-upload-btn">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Change Photo
+                <input type="file" name="profile_picture" id="avatarInput" accept="image/*" style="display:none">
+              </label>
+              <p class="avatar-hint" id="avatarHint"></p>
+            </div>
+          </div>
+
+          <div class="settings-grid-2">
+            <!-- Full Name -->
+            <div class="sg-group">
+              <label><i class="fa-solid fa-user"></i> Full Name <span class="req">*</span></label>
+              <div class="sg-input-wrap">
+                <input type="text" name="full_name" value="{{ dealer.full_name }}" placeholder="Your full name">
+              </div>
+            </div>
+            <!-- Gender -->
+            <div class="sg-group">
+              <label><i class="fa-solid fa-venus-mars"></i> Gender</label>
+              <div class="sg-input-wrap sg-select-wrap">
+                <select name="gender">
+                  <option value="male"              {% if dealer.gender == 'male' %}selected{% endif %}>Male</option>
+                  <option value="female"            {% if dealer.gender == 'female' %}selected{% endif %}>Female</option>
+                  <option value="other"             {% if dealer.gender == 'other' %}selected{% endif %}>Other</option>
+                  <option value="prefer not to say" {% if dealer.gender == 'prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+                </select>
+                <i class="fa-solid fa-chevron-down sg-arr"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bio / Description -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-align-left"></i> About / Bio</label>
+            <div class="sg-input-wrap">
+              <textarea name="description" rows="4"
+                placeholder="Tell buyers about yourself, your experience and specializations...">{{ dealer.description|default:'' }}</textarea>
+            </div>
+            <p class="sg-hint">This appears on your public dealer profile page.</p>
+          </div>
+
+          <!-- CNIC (read only) -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-id-card"></i> CNIC <span class="sg-readonly-tag">Read Only</span></label>
+            <div class="sg-input-wrap sg-readonly">
+              <input type="text" value="{{ dealer.cnic }}" readonly>
+            </div>
+            <p class="sg-hint">CNIC cannot be changed after registration. Contact support if needed.</p>
+          </div>
+
+        </div>
+        <div class="tab-save-row">
+          <button type="submit" name="save_profile" class="btn-save">
+            <i class="fa-solid fa-floppy-disk"></i> Save Profile
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════ TAB 2: CONTACT ══════ -->
+      <div class="tab-panel" id="tab-contact">
+        <div class="settings-card">
+          <div class="sc-head">
+            <div class="sc-icon sc-orange"><i class="fa-solid fa-address-card"></i></div>
+            <div><h2>Contact Information</h2><p>How buyers can reach you</p></div>
+          </div>
+
+          <div class="settings-grid-2">
+            <!-- Phone -->
+            <div class="sg-group">
+              <label><i class="fa-solid fa-phone"></i> Phone Number <span class="req">*</span></label>
+              <div class="sg-input-wrap">
+                <input type="text" name="phone" value="{{ dealer.phone|default:'' }}" placeholder="+92 300 0000000">
+              </div>
+            </div>
+            <!-- WhatsApp -->
+            <div class="sg-group">
+              <label><i class="fa-brands fa-whatsapp"></i> WhatsApp Number</label>
+              <div class="sg-input-wrap">
+                <input type="text" name="whatsapp" value="{{ dealer.whatsapp|default:'' }}" placeholder="+92 300 0000000">
+              </div>
+            </div>
+          </div>
+
+          <!-- Email (from User model, read only) -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-envelope"></i> Email <span class="sg-readonly-tag">Account Email</span></label>
+            <div class="sg-input-wrap sg-readonly">
+              <input type="email" value="{{ dealer.user.email }}" readonly>
+            </div>
+            <p class="sg-hint">This is your login email. It's not shown publicly.</p>
+          </div>
+
+          <!-- City -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-city"></i> City</label>
+            <div class="sg-input-wrap sg-select-wrap">
+              <select name="city">
+                <option value="">Select City</option>
+                {% for c in cities %}
+                <option value="{{ c }}" {% if dealer.city == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+              <i class="fa-solid fa-chevron-down sg-arr"></i>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-location-dot"></i> Office / Home Address</label>
+            <div class="sg-input-wrap">
+              <textarea name="address" rows="3" placeholder="Your full address...">{{ dealer.address|default:'' }}</textarea>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-save-row">
+          <button type="submit" name="save_contact" class="btn-save">
+            <i class="fa-solid fa-floppy-disk"></i> Save Contact Info
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════ TAB 3: PROFESSIONAL ══════ -->
+      <div class="tab-panel" id="tab-professional">
+        <div class="settings-card">
+          <div class="sc-head">
+            <div class="sc-icon sc-purple"><i class="fa-solid fa-briefcase"></i></div>
+            <div><h2>Professional Details</h2><p>Your expertise and business info</p></div>
+          </div>
+
+          <div class="settings-grid-2">
+            <!-- Experience -->
+            <div class="sg-group">
+              <label><i class="fa-solid fa-clock-rotate-left"></i> Years of Experience</label>
+              <div class="sg-input-wrap">
+                <input type="number" name="experience_years" min="0" max="60"
+                       value="{{ dealer.experience_years|default:'' }}" placeholder="e.g. 5">
+              </div>
+            </div>
+            <!-- Agency / Company -->
+            <div class="sg-group">
+              <label><i class="fa-solid fa-building"></i> Agency / Company Name</label>
+              <div class="sg-input-wrap">
+                <input type="text" name="agency_name" value="{{ dealer.agency_name|default:'' }}" placeholder="e.g. Prime Properties">
+              </div>
+            </div>
+          </div>
+
+          <!-- Specialization -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-star"></i> Specialization</label>
+            <div class="sg-input-wrap sg-select-wrap">
+              <select name="specialization">
+                <option value="">Select specialization</option>
+                <option value="Residential" {% if dealer.specialization == 'Residential' %}selected{% endif %}>Residential Properties</option>
+                <option value="Commercial"  {% if dealer.specialization == 'Commercial'  %}selected{% endif %}>Commercial Properties</option>
+                <option value="Plots"       {% if dealer.specialization == 'Plots'       %}selected{% endif %}>Plots & Land</option>
+                <option value="Rental"      {% if dealer.specialization == 'Rental'      %}selected{% endif %}>Rentals</option>
+                <option value="Luxury"      {% if dealer.specialization == 'Luxury'      %}selected{% endif %}>Luxury Homes</option>
+                <option value="All"         {% if dealer.specialization == 'All'         %}selected{% endif %}>All Property Types</option>
+              </select>
+              <i class="fa-solid fa-chevron-down sg-arr"></i>
+            </div>
+          </div>
+
+          <!-- Website -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-globe"></i> Website</label>
+            <div class="sg-input-wrap sg-prefix-wrap">
+              <span class="sg-prefix">https://</span>
+              <input type="text" name="website" value="{{ dealer.website|default:'' }}" placeholder="yourwebsite.com">
+            </div>
+          </div>
+
+          <!-- License number -->
+          <div class="sg-group">
+            <label><i class="fa-solid fa-certificate"></i> License / Registration Number <span class="sg-optional">(optional)</span></label>
+            <div class="sg-input-wrap">
+              <input type="text" name="license_number" value="{{ dealer.license_number|default:'' }}" placeholder="e.g. RERA-2024-12345">
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-save-row">
+          <button type="submit" name="save_professional" class="btn-save">
+            <i class="fa-solid fa-floppy-disk"></i> Save Professional Info
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════ TAB 4: SOCIAL ══════ -->
+      <div class="tab-panel" id="tab-social">
+        <div class="settings-card">
+          <div class="sc-head">
+            <div class="sc-icon sc-blue"><i class="fa-solid fa-share-nodes"></i></div>
+            <div><h2>Social Media Links</h2><p>Connect your social profiles to your dealer page</p></div>
+          </div>
+
+          <!-- Facebook -->
+          <div class="sg-group">
+            <label><i class="fab fa-facebook-f" style="color:#1877f2"></i> Facebook</label>
+            <div class="sg-input-wrap sg-prefix-wrap">
+              <span class="sg-prefix">facebook.com/</span>
+              <input type="text" name="social_facebook" value="{{ dealer.social_facebook|default:'' }}" placeholder="yourpage">
+            </div>
+          </div>
+          <!-- Instagram -->
+          <div class="sg-group">
+            <label><i class="fab fa-instagram" style="color:#e1306c"></i> Instagram</label>
+            <div class="sg-input-wrap sg-prefix-wrap">
+              <span class="sg-prefix">instagram.com/</span>
+              <input type="text" name="social_instagram" value="{{ dealer.social_instagram|default:'' }}" placeholder="yourhandle">
+            </div>
+          </div>
+          <!-- LinkedIn -->
+          <div class="sg-group">
+            <label><i class="fab fa-linkedin-in" style="color:#0077b5"></i> LinkedIn</label>
+            <div class="sg-input-wrap sg-prefix-wrap">
+              <span class="sg-prefix">linkedin.com/in/</span>
+              <input type="text" name="social_linkedin" value="{{ dealer.social_linkedin|default:'' }}" placeholder="yourprofile">
+            </div>
+          </div>
+          <!-- YouTube -->
+          <div class="sg-group">
+            <label><i class="fab fa-youtube" style="color:#ff0000"></i> YouTube</label>
+            <div class="sg-input-wrap sg-prefix-wrap">
+              <span class="sg-prefix">youtube.com/@</span>
+              <input type="text" name="social_youtube" value="{{ dealer.social_youtube|default:'' }}" placeholder="yourchannel">
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-save-row">
+          <button type="submit" name="save_social" class="btn-save">
+            <i class="fa-solid fa-floppy-disk"></i> Save Social Links
+          </button>
+        </div>
+      </div>
+
+      <!-- ══════ TAB 5: SECURITY ══════ -->
+      <div class="tab-panel" id="tab-security">
+        <div class="settings-card">
+          <div class="sc-head">
+            <div class="sc-icon sc-red"><i class="fa-solid fa-lock"></i></div>
+            <div><h2>Security</h2><p>Update your login password</p></div>
+          </div>
+
+          <div class="sg-group">
+            <label><i class="fa-solid fa-lock"></i> Current Password <span class="req">*</span></label>
+            <div class="sg-input-wrap sg-pwd-wrap">
+              <input type="password" name="current_password" id="currentPwd" placeholder="Enter current password">
+              <button type="button" class="sg-eye" data-target="currentPwd"><i class="fa-solid fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="sg-group">
+            <label><i class="fa-solid fa-lock"></i> New Password <span class="req">*</span></label>
+            <div class="sg-input-wrap sg-pwd-wrap">
+              <input type="password" name="new_password" id="newPwd" placeholder="Min 6 characters">
+              <button type="button" class="sg-eye" data-target="newPwd"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <!-- Strength bar -->
+            <div class="sg-strength-wrap" id="strengthWrap">
+              <div class="sg-strength-bar" id="strengthBar"></div>
+            </div>
+            <p class="sg-strength-label" id="strengthLabel"></p>
+          </div>
+          <div class="sg-group">
+            <label><i class="fa-solid fa-lock"></i> Confirm New Password <span class="req">*</span></label>
+            <div class="sg-input-wrap sg-pwd-wrap">
+              <input type="password" name="confirm_password" id="confirmPwd" placeholder="Repeat new password">
+              <button type="button" class="sg-eye" data-target="confirmPwd"><i class="fa-solid fa-eye"></i></button>
+            </div>
+            <p class="sg-match-msg" id="matchMsg"></p>
+          </div>
+
+        </div>
+
+        <!-- Danger zone -->
+        <div class="danger-zone">
+          <div class="dz-head">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+              <h3>Danger Zone</h3>
+              <p>These actions are permanent and cannot be undone.</p>
+            </div>
+          </div>
+          <button type="button" class="dz-btn" id="openDeleteAccount">
+            <i class="fa-solid fa-user-xmark"></i> Delete My Dealer Account
+          </button>
+        </div>
+
+        <div class="tab-save-row">
+          <button type="submit" name="save_password" class="btn-save">
+            <i class="fa-solid fa-key"></i> Update Password
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- ════ RIGHT: PROFILE CARD ════ -->
+  <aside class="settings-sidebar">
+
+    <!-- Live preview card -->
+    <div class="profile-preview-card">
+      <div class="ppc-top">
+        <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}" id="previewAvatar">
+        <div class="ppc-verified"><i class="fa-solid fa-circle-check"></i></div>
+      </div>
+      <div class="ppc-body">
+        <h3 id="previewName">{{ dealer.full_name }}</h3>
+        <span class="ppc-badge">Verified Dealer</span>
+        {% if dealer.specialization %}
+        <p class="ppc-spec" id="previewSpec">{{ dealer.specialization }}</p>
+        {% endif %}
+        {% if dealer.city %}
+        <p class="ppc-loc"><i class="fa-solid fa-location-dot"></i> <span id="previewCity">{{ dealer.city }}</span></p>
+        {% endif %}
+        <div class="ppc-stats">
+          <div class="pps-item">
+            <strong>{{ properties_count }}</strong>
+            <span>Listings</span>
+          </div>
+          <div class="pps-div"></div>
+          <div class="pps-item">
+            <strong>{{ reviews_count }}</strong>
+            <span>Reviews</span>
+          </div>
+        </div>
+      </div>
+      <a href="{% url 'dealer_profile' dealer.user.id %}" class="ppc-view-btn" target="_blank">
+        <i class="fa-solid fa-eye"></i> View Public Profile
+      </a>
+    </div>
+
+    <!-- Quick info -->
+    <div class="settings-info-card">
+      <h4><i class="fa-solid fa-circle-info"></i> Profile Completion</h4>
+      <div class="completion-bar-wrap">
+        <div class="completion-bar" id="completionBar" style="width: {{ completion_pct }}%"></div>
+      </div>
+      <p class="completion-pct">{{ completion_pct }}% Complete</p>
+      <ul class="completion-tips">
+        {% if not dealer.description %}<li class="ct-missing"><i class="fa-solid fa-circle-xmark"></i> Add a bio</li>{% else %}<li class="ct-done"><i class="fa-solid fa-circle-check"></i> Bio added</li>{% endif %}
+        {% if not dealer.phone %}<li class="ct-missing"><i class="fa-solid fa-circle-xmark"></i> Add phone number</li>{% else %}<li class="ct-done"><i class="fa-solid fa-circle-check"></i> Phone added</li>{% endif %}
+        {% if not dealer.city %}<li class="ct-missing"><i class="fa-solid fa-circle-xmark"></i> Add your city</li>{% else %}<li class="ct-done"><i class="fa-solid fa-circle-check"></i> City added</li>{% endif %}
+        {% if not dealer.agency_name %}<li class="ct-missing"><i class="fa-solid fa-circle-xmark"></i> Add agency name</li>{% else %}<li class="ct-done"><i class="fa-solid fa-circle-check"></i> Agency added</li>{% endif %}
+        {% if not dealer.social_linkedin %}<li class="ct-missing"><i class="fa-solid fa-circle-xmark"></i> Add LinkedIn</li>{% else %}<li class="ct-done"><i class="fa-solid fa-circle-check"></i> LinkedIn added</li>{% endif %}
+      </ul>
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- Delete account modal -->
+<div class="delete-acc-modal" id="deleteAccModal">
+  <div class="dam-box">
+    <div class="dam-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <h2>Delete Dealer Account?</h2>
+    <p>This will permanently remove your dealer profile and all <strong>{{ properties_count }} listing(s)</strong>. Your user account will remain active.</p>
+    <div class="dam-actions">
+      <button class="dam-cancel" id="closeDeleteAccount">
+        <i class="fa-solid fa-xmark"></i> Cancel
+      </button>
+      <a href="{% url 'delete_dealer_account' %}" class="dam-confirm">
+        <i class="fa-solid fa-trash"></i> Yes, Delete It
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Tabs ──
+const tabs  = document.querySelectorAll('.stab');
+const panels = document.querySelectorAll('.tab-panel');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── Avatar preview ──
+const avatarInput   = document.getElementById('avatarInput');
+const avatarImg     = document.getElementById('avatarImg');
+const previewAvatar = document.getElementById('previewAvatar');
+const avatarHint    = document.getElementById('avatarHint');
+
+avatarInput.addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    avatarHint.textContent = '✗ File too large (max 5MB)';
+    avatarHint.style.color = '#e53935';
+    this.value = ''; return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    avatarImg.src = e.target.result;
+    previewAvatar.src = e.target.result;
+    avatarHint.textContent = '✓ Photo ready to save';
+    avatarHint.style.color = '#16a34a';
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── Live preview: name ──
+const nameInput = document.querySelector('[name="full_name"]');
+if (nameInput) {
+  nameInput.addEventListener('input', () => {
+    const el = document.getElementById('previewName');
+    if (el) el.textContent = nameInput.value || '{{ dealer.full_name }}';
+  });
+}
+
+// ── Password eye toggle ──
+document.querySelectorAll('.sg-eye').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.target);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fa-solid fa-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'fa-solid fa-eye';
+    }
+  });
+});
+
+// ── Password strength ──
+const newPwd      = document.getElementById('newPwd');
+const strengthBar = document.getElementById('strengthBar');
+const strengthLabel = document.getElementById('strengthLabel');
+const strengthWrap  = document.getElementById('strengthWrap');
+
+if (newPwd) {
+  newPwd.addEventListener('input', () => {
+    const val = newPwd.value;
+    strengthWrap.style.display = val ? 'block' : 'none';
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const levels = [
+      { w: '20%',  c: '#e53935', t: 'Very Weak' },
+      { w: '40%',  c: '#f97316', t: 'Weak' },
+      { w: '60%',  c: '#eab308', t: 'Fair' },
+      { w: '80%',  c: '#22c55e', t: 'Strong' },
+      { w: '100%', c: '#16a34a', t: 'Very Strong' },
+    ];
+    const lv = levels[Math.min(score - 1, 4)] || levels[0];
+    strengthBar.style.width = lv.w;
+    strengthBar.style.background = lv.c;
+    strengthLabel.textContent = lv.t;
+    strengthLabel.style.color  = lv.c;
+    // re-check confirm
+    confirmPwd.dispatchEvent(new Event('input'));
+  });
+}
+
+// ── Confirm password match ──
+const confirmPwd = document.getElementById('confirmPwd');
+const matchMsg   = document.getElementById('matchMsg');
+if (confirmPwd) {
+  confirmPwd.addEventListener('input', () => {
+    if (!confirmPwd.value) { matchMsg.textContent = ''; return; }
+    if (confirmPwd.value === newPwd.value) {
+      matchMsg.textContent = '✓ Passwords match!';
+      matchMsg.className   = 'sg-match-msg match-ok';
+    } else {
+      matchMsg.textContent = '✗ Passwords do not match.';
+      matchMsg.className   = 'sg-match-msg match-err';
+    }
+  });
+}
+
+// ── Delete account modal ──
+const deleteModal = document.getElementById('deleteAccModal');
+document.getElementById('openDeleteAccount').addEventListener('click',  () => deleteModal.classList.add('active'));
+document.getElementById('closeDeleteAccount').addEventListener('click', () => deleteModal.classList.remove('active'));
+deleteModal.addEventListener('click', e => { if (e.target === deleteModal) deleteModal.classList.remove('active'); });
+</script>
+
+{% endblock %}

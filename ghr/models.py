@@ -13,22 +13,28 @@ class Dealer(models.Model):
     )
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="dealer")
-
     full_name = models.CharField(max_length=200)
-
     cnic = models.CharField(max_length=15, unique=True)
-
-    address = models.TextField()
-
+    address = models.TextField(blank=True, default='')
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES)
-
-    phone = models.CharField(max_length=20)
-
-    profile_picture = models.ImageField(upload_to="dealers/")
-
+    phone = models.CharField(max_length=20, blank=True, default='')
+    profile_picture = models.ImageField(max_length=500, blank=True, default='')
     is_verified = models.BooleanField(default=False)
-
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # New fields
+    description = models.TextField(blank=True, default='')
+    whatsapp = models.CharField(max_length=20, blank=True, default='')
+    city = models.CharField(max_length=100, blank=True, default='')
+    agency_name = models.CharField(max_length=200, blank=True, default='')
+    specialization = models.CharField(max_length=100, blank=True, default='')
+    website = models.CharField(max_length=200, blank=True, default='')
+    license_number = models.CharField(max_length=100, blank=True, default='')
+    experience_years = models.PositiveIntegerField(blank=True, null=True)
+    social_facebook = models.CharField(max_length=200, blank=True, default='')
+    social_instagram = models.CharField(max_length=200, blank=True, default='')
+    social_linkedin = models.CharField(max_length=200, blank=True, default='')
+    social_youtube = models.CharField(max_length=200, blank=True, default='')
 
     def __str__(self):
         return self.full_name

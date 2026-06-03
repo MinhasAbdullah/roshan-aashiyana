@@ -54,9 +54,66 @@
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 30px; padding: 4px 12px 4px 4px;
   flex-shrink: 0;
+  cursor: pointer;
+    user-select: none;
 }
 .dtb-avatar img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid var(--green); }
 .dtb-avatar span { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9); }
+.dtb-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.avatar-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    min-width: 180px;
+    z-index: 999;
+    padding: 8px 0;
+    animation: fadeIn .15s ease;
+}
+.avatar-dropdown.open {
+    display: block;
+}
+.avatar-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background .15s;
+}
+.avatar-dropdown a:hover {
+    background: var(--light-gray);
+    color: var(--green);
+}
+.avatar-dropdown hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 6px 0;
+}
+.avatar-dropdown .logout-link:hover {
+    color: #e53e3e;
+}
+.avatar-dropdown i {
+    width: 16px;
+    text-align: center;
+    color: var(--text-muted);
+}
+.avatar-dropdown a:hover i {
+    color: inherit;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ══════ BODY ══════ */
 .dealer-body { display: flex; padding-top: 64px; min-height: 100vh; }

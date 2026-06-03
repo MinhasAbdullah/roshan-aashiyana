@@ -138,6 +138,20 @@ ul { list-style: none; }
   border-radius: 8px !important;
   padding: 8px 16px !important;
   transition: background .2s, color .2s !important;
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 3px !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+}
+.nav-btn-outline i {
+  font-size: 16px !important;
+}
+.nav-btn-outline span {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.3px !important;
 }
 .nav-btn-outline:hover {
   background: var(--green) !important;
