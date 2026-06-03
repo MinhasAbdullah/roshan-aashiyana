@@ -11,8 +11,9 @@
 }
 .dr-hero-bg {
   position: absolute; inset: 0;
-  background-image: url('https://t3.ftcdn.net/jpg/03/22/06/68/360_F_322066808_CANrp7u5Cdiz7700TJReqKD299d2AZtD.jpg');
+  background-image: url('../images/main.jpg') ;
   background-size: cover; background-position: center;
+  z-index: 1;
   opacity: .07;
 }
 .dr-hero-overlay {

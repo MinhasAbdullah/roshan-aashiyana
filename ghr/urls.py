@@ -24,5 +24,7 @@ urlpatterns = [
     path("autocomplete/", views.autocomplete, name="autocomplete"),
     path('dealers/', views.dealers, name='dealers'),
     path('dealer_profile/<int:id>/', views.dealer_profile, name='dealer_profile'),
+    path('dealer/payment/', views.dealer_payment, name='dealer_payment'),
+    path('dealer/payment/success/', views.payment_success, name='payment_success'),
 ]
 

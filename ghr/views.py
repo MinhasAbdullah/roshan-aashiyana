@@ -4,16 +4,20 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.db.models import Sum, Q, Count
+from django.db.models import Sum, Q, Count, Avg
 from django.http import JsonResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.conf import settings
+from django.core.files.storage import default_storage
 from urllib.parse import urlencode
 from django.urls import reverse
 import re
 import resend
+import stripe
+import base64
+from django.core.files.base import ContentFile
 
 from .models import (
     Property,
@@ -29,8 +33,7 @@ from .models import (
 
 
 # ─────────────────────────────────────────
-# EMAIL HELPER — uses Resend HTTP API
-# No SMTP, no timeouts, works on Railway
+# EMAIL HELPER — Resend HTTP API
 # ─────────────────────────────────────────
 def send_email(to, subject, message):
     try:
@@ -50,14 +53,12 @@ def send_email(to, subject, message):
 # ─────────────────────────────────────────
 def SignUp(request):
     if request.method == "POST":
-        uname = request.POST.get("uname", "").strip()
-        email = request.POST.get("email", "").strip()
-        phone = request.POST.get("phone", "").strip()
-        password = request.POST.get("password", "")
+        uname     = request.POST.get("uname", "").strip()
+        email     = request.POST.get("email", "").strip()
+        password  = request.POST.get("password", "")
         cpassword = request.POST.get("cpassword", "")
 
         error = None
-
         if len(uname) < 6:
             error = "Username must be at least 6 characters."
         elif not re.match(r"^[a-zA-Z0-9_]+$", uname):
@@ -72,19 +73,14 @@ def SignUp(request):
             error = "An account with this email already exists."
 
         if error:
-            params = urlencode({
-                "auth_error": error,
-                "auth_form": "signup",
-                "auth_uname": uname,
-                "auth_email": email,
-            })
+            params = urlencode({"auth_error": error, "auth_form": "signup", "auth_uname": uname, "auth_email": email})
             return redirect(f"{reverse('home')}?{params}")
 
         user = User.objects.create_user(username=uname, email=email, password=password)
         user.is_active = False
         user.save()
 
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        uid   = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
         verification = request.build_absolute_uri(f"/verify-email/{uid}/{token}/")
 
@@ -113,27 +109,21 @@ Roshan Aashiyana Team"""
 
 def SignIn(request):
     if request.method == "POST":
-        uname = request.POST.get("uname", "").strip()
+        uname    = request.POST.get("uname", "").strip()
         password = request.POST.get("password", "")
 
         user_obj = User.objects.filter(username=uname).first()
-
         if user_obj and user_obj.check_password(password) and not user_obj.is_active:
             messages.error(request, "Please verify your email first.")
             return redirect("home")
 
         user = authenticate(request, username=uname, password=password)
-
         if user is not None:
             login(request, user)
             messages.success(request, "Login Successfully")
             return redirect("home")
 
-        params = urlencode({
-            "auth_error": "Invalid username or password. Please try again",
-            "auth_form": "login",
-            "auth_uname": uname,
-        })
+        params = urlencode({"auth_error": "Invalid username or password. Please try again", "auth_form": "login", "auth_uname": uname})
         return redirect(f"{reverse('home')}?{params}")
 
     return redirect("home")
@@ -147,7 +137,7 @@ def logout_user(request):
 
 def verify_email(request, uidb64, token):
     try:
-        uid = urlsafe_base64_decode(uidb64).decode()
+        uid  = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
     except Exception:
         user = None
@@ -170,7 +160,6 @@ Welcome to Roshan Aashiyana!
 Regards,
 Roshan Aashiyana Team"""
         )
-
         messages.success(request, "Email verified successfully. You can now login.")
     else:
         messages.error(request, "Invalid or expired verification link.")
@@ -223,65 +212,51 @@ def listings(request):
         properties = properties.filter(bedrooms__gte=bedrooms)
 
     if request.user.is_authenticated:
-        favourite_ids = list(
-            Favorite.objects.filter(user=request.user).values_list("property_id", flat=True)
-        )
+        favourite_ids = list(Favorite.objects.filter(user=request.user).values_list("property_id", flat=True))
     else:
         favourite_ids = []
 
     paginator = Paginator(properties, 12)
-    page = request.GET.get("page")
-    page_obj = paginator.get_page(page)
+    page_obj  = paginator.get_page(request.GET.get("page"))
 
     return render(request, "listings.html", {"prop": page_obj, "favourite_ids": favourite_ids})
 
 
 def autocomplete(request):
     q = request.GET.get('q', '').strip()
-
     if len(q) < 2:
         return JsonResponse([], safe=False)
 
-    titles = Property.objects.filter(
-        title__icontains=q
-    ).values_list('title', flat=True)[:5]
-
-    cities = Property.objects.filter(
-        city__icontains=q
-    ).values_list('city', flat=True).distinct()[:3]
-
-    suggestions = list(dict.fromkeys(
-        list(cities) + list(titles)
-    ))[:8]
-
+    titles = Property.objects.filter(title__icontains=q).values_list('title', flat=True)[:5]
+    cities = Property.objects.filter(city__icontains=q).values_list('city', flat=True).distinct()[:3]
+    suggestions = list(dict.fromkeys(list(cities) + list(titles)))[:8]
     return JsonResponse(suggestions, safe=False)
 
 
 def property_detail(request, id, slug):
     property = get_object_or_404(Property, id=id)
-    dealer = property.dealer
-    reviews = DealerReview.objects.filter(property=property)
+    dealer   = property.dealer
+    reviews  = DealerReview.objects.filter(property=property)
 
     property.views += 1
     property.save()
 
     if request.method == "POST" and "send_review" in request.POST:
-        rating = request.POST.get("rating")
-        comment = request.POST.get("comment")
         DealerReview.objects.create(
-            property=property, user=request.user, rating=rating, comment=comment
+            property=property,
+            user=request.user,
+            rating=request.POST.get("rating"),
+            comment=request.POST.get("comment"),
         )
         return redirect("property_detail", id=property.id, slug=property.slug)
 
     if request.method == "POST" and "send_inquiry" in request.POST:
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
+        name    = request.POST.get("name")
+        email   = request.POST.get("email")
+        phone   = request.POST.get("phone")
         message = request.POST.get("message")
 
-        Inquiry.objects.create(
-            property=property, name=name, email=email, phone=phone, message=message
-        )
+        Inquiry.objects.create(property=property, name=name, email=email, phone=phone, message=message)
 
         send_email(
             to=dealer.user.email,
@@ -318,9 +293,8 @@ Roshan Aashiyana Team"""
 
 def house(request):
     properties = Property.objects.filter(property_type__name="House").order_by("-created_at")
-    paginator = Paginator(properties, 9)
-    page = request.GET.get("page")
-    page_obj = paginator.get_page(page)
+    paginator  = Paginator(properties, 9)
+    page_obj   = paginator.get_page(request.GET.get("page"))
     return render(request, "house.html", {"prop": page_obj})
 
 
@@ -338,27 +312,64 @@ def about(request):
     return render(request, "about.html")
 
 
+def dealers(request):
+    all_dealers = Dealer.objects.annotate(
+        listing_count=Count('properties'),
+        total_views=Sum('properties__views'),
+    ).order_by('full_name')
+    return render(request, 'dealers.html', {'dealers': all_dealers})
+
+
+def dealer_profile(request, id):
+    dealer      = get_object_or_404(Dealer, id=id)
+    properties  = Property.objects.filter(dealer=dealer).order_by('-created_at')
+    reviews     = DealerReview.objects.filter(property__dealer=dealer).order_by('-created_at')
+    total_views = properties.aggregate(Sum('views'))['views__sum'] or 0
+    avg_rating  = reviews.aggregate(Avg('rating'))['rating__avg']
+
+    return render(request, 'dealer_profile.html', {
+        'dealer':      dealer,
+        'properties':  properties,
+        'reviews':     reviews,
+        'total_views': total_views,
+        'avg_rating':  round(avg_rating, 1) if avg_rating else None,
+    })
+
+
+def check_cnic(request):
+    cnic   = request.GET.get("cnic", "").strip()
+    exists = Dealer.objects.filter(cnic=cnic).exists()
+    return JsonResponse({"exists": exists})
+
+
 # ─────────────────────────────────────────
-# DEALER VIEWS
+# DEALER REGISTRATION + PAYMENT FLOW
+#
+# Flow:
+#   1. dealer_register  → validate form → save to session → redirect to dealer_payment
+#   2. dealer_payment   → show payment page with Stripe link
+#   3. payment_success  → create Dealer from session → redirect to dashboard
 # ─────────────────────────────────────────
 @login_required
 def dealer_register(request):
+    # Already a dealer — go to dashboard
     if Dealer.objects.filter(user=request.user).exists():
         return redirect("dashboard")
 
     errors = {}
-    old = {}
+    old    = {}
 
     if request.method == "POST":
-        name = request.POST.get("name", "").strip()
-        cnic = request.POST.get("cnic", "").strip()
+        name    = request.POST.get("name", "").strip()
+        cnic    = request.POST.get("cnic", "").strip()
         address = request.POST.get("address", "").strip()
-        gender = request.POST.get("gender", "")
-        phone = request.POST.get("phone", "").strip()
+        gender  = request.POST.get("gender", "")
+        phone   = request.POST.get("phone", "").strip()
         picture = request.FILES.get("picture")
 
         old = {"name": name, "cnic": cnic, "phone": phone, "gender": gender, "address": address}
 
+        # ── Validations ──
         if len(name) < 3:
             errors["name"] = "Full name must be at least 3 characters."
 
@@ -375,6 +386,7 @@ def dealer_register(request):
             errors["phone"] = "Phone number is required."
         elif not re.match(phone_pattern, phone):
             errors["phone"] = "Enter phone in +92XXXXXXXXXX format (e.g. +923001234567)"
+
         if not address:
             errors["address"] = "Address is required."
 
@@ -382,34 +394,118 @@ def dealer_register(request):
             errors["picture"] = "Please upload a profile picture."
 
         if not errors:
-            dealer = Dealer.objects.create(
-                user=request.user,
-                full_name=name,
-                cnic=cnic,
-                address=address,
-                gender=gender,
-                phone=phone,
-                profile_picture=picture,
-            )
+            pic_data = base64.b64encode(picture.read()).decode('utf-8')
 
-            send_email(
-                to=request.user.email,
-                subject="Dealer Account Created — Roshan Aashiyana",
-                message=f"""Hi {dealer.full_name},
+            # Save all form data in session
+            request.session['dealer_form'] = {
+                'name':     name,
+                'cnic':     cnic,
+                'address':  address,
+                'gender':   gender,
+                'phone':    phone,
+                'pic_base64': pic_data,
+                'pic_name': picture.name,
+                'pic_type': picture.content_type,
+            }
+            # Go to payment
+            return redirect('dealer_payment')
 
-Your dealer profile has been created successfully on Roshan Aashiyana.
+    return render(request, "dealer_register.html", {"errors": errors, "old": old})
+
+
+@login_required
+def dealer_payment(request):
+    # Already a dealer
+    if Dealer.objects.filter(user=request.user).exists():
+        return redirect('dashboard')
+
+    # No form data in session — send back to register
+    if not request.session.get('dealer_form'):
+        messages.error(request, 'Please fill the registration form first.')
+        return redirect('dealer_register')
+
+    return render(request, 'dealer_payment.html')
+
+
+@login_required
+def payment_success(request):
+    dealer_data = request.session.get('dealer_form')
+
+    # Session expired or missing
+    if not dealer_data:
+        messages.error(request, 'Session expired. Please fill the form again.')
+        return redirect('dealer_register')
+
+    # Already a dealer (e.g. user hit back and paid again)
+    if Dealer.objects.filter(user=request.user).exists():
+        return redirect('dashboard')
+    
+    session_id = request.GET.get('session_id')
+    if not session_id:
+        messages.error(request, 'Invalid payment. Please try again.')
+        return redirect('dealer_payment')
+
+
+    try:
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        checkout_session = stripe.checkout.Session.retrieve(session_id)
+
+        # Verify payment was actually paid
+        if checkout_session.payment_status != 'paid':
+            messages.error(request, 'Payment not completed. Please try again.')
+            return redirect('dealer_payment')
+
+        # Verify the user id matches
+        if str(checkout_session.client_reference_id) != str(request.user.id):
+            messages.error(request, 'Payment verification failed.')
+            return redirect('dealer_payment')
+
+    except stripe.error.StripeError:
+        messages.error(request, 'Could not verify payment. Please contact support.')
+        return redirect('dealer_payment')
+    
+    pic_bytes = base64.b64decode(dealer_data['pic_base64'])
+    pic_file  = ContentFile(pic_bytes, name=dealer_data['pic_name'])
+    pic_path  = default_storage.save(f'dealers/{dealer_data["pic_name"]}', pic_file)
+
+
+
+
+    # Create dealer account from session data
+    Dealer.objects.create(
+        user=request.user,
+        full_name=dealer_data['name'],
+        cnic=dealer_data['cnic'],
+        address=dealer_data['address'],
+        gender=dealer_data['gender'],
+        phone=dealer_data['phone'],
+        profile_picture=pic_path,
+    )
+
+    # Clear session
+    del request.session['dealer_form']
+
+    # Send welcome email
+    send_email(
+        to=request.user.email,
+        subject="Dealer Account Created — Roshan Aashiyana",
+        message=f"""Hi {dealer_data['name']},
+
+Your dealer account has been created successfully on Roshan Aashiyana.
 
 You can now list and manage properties on the platform.
 
 Regards,
 Roshan Aashiyana Team"""
-            )
+    )
 
-            return redirect("dashboard")
+    messages.success(request, 'Payment successful! Your dealer account is now active.')
+    return redirect('dashboard')
 
-    return render(request, "dealer_register.html", {"errors": errors, "old": old})
 
-
+# ─────────────────────────────────────────
+# DEALER DASHBOARD VIEWS
+# ─────────────────────────────────────────
 @login_required
 def dashboard(request):
     try:
@@ -417,30 +513,31 @@ def dashboard(request):
     except Dealer.DoesNotExist:
         return redirect("dealer_register")
 
-    properties = Property.objects.filter(dealer=dealer)
-    inquiries = Inquiry.objects.filter(property__in=properties)
+    properties      = Property.objects.filter(dealer=dealer)
+    inquiries       = Inquiry.objects.filter(property__in=properties)
     total_inquiries = inquiries.count()
-    total_views = properties.aggregate(Sum("views"))["views__sum"] or 0
+    total_views     = properties.aggregate(Sum("views"))["views__sum"] or 0
 
     return render(request, "dashboard.html", {
-        "dealer": dealer,
-        "prop": properties,
-        "views": total_views,
-        "inquiries": inquiries,
+        "dealer":          dealer,
+        "prop":            properties,
+        "views":           total_views,
+        "inquiries":       inquiries,
         "inquiries_total": total_inquiries,
     })
 
 
+@login_required
 def add_property(request):
     try:
         dealer = Dealer.objects.get(user=request.user)
     except Dealer.DoesNotExist:
         return redirect('dealer_register')
- 
-    errors   = {}
-    old      = {}
+
+    errors       = {}
+    old          = {}
     old_features = []
- 
+
     if request.method == "POST":
         title            = request.POST.get("title", "").strip()
         price            = request.POST.get("price", "").strip()
@@ -459,7 +556,7 @@ def add_property(request):
         year_built       = request.POST.get("year_built", "").strip()
         featured_image   = request.FILES.get("featured_image")
         features_ids     = request.POST.getlist("features")
- 
+
         old = {
             'title': title, 'price': price, 'description': description,
             'property_type': property_type_id, 'purpose': purpose,
@@ -470,50 +567,34 @@ def add_property(request):
             'year_built': year_built,
         }
         old_features = features_ids
- 
-        if not title:
-            errors['title'] = "Property title is required."
-        elif len(title) < 5:
+
+        if not title or len(title) < 5:
             errors['title'] = "Title must be at least 5 characters."
- 
         if not property_type_id:
             errors['property_type'] = "Please select a property type."
- 
         if not price:
             errors['price'] = "Price is required."
         else:
             try:
-                p = float(price)
-                if p <= 0:
+                if float(price) <= 0:
                     errors['price'] = "Price must be greater than 0."
             except ValueError:
                 errors['price'] = "Enter a valid price."
- 
         if not city:
-            errors['city'] = "Please select a city."
- 
+            errors['city'] = "City is required."
         if not area:
             errors['area'] = "Area / locality is required."
- 
         if not description:
             errors['description'] = "Description is required."
- 
-        # ── Featured image is REQUIRED ──
         if not featured_image:
-            errors['featured_image'] = "A featured image is required. Please upload a photo."
-        else:
-            # Check file type
-            allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-            if hasattr(featured_image, 'content_type') and featured_image.content_type not in allowed:
-                errors['featured_image'] = "Only JPG, PNG or WebP images are allowed."
-            # Check file size (5MB)
-            elif featured_image.size > 3 * 1024 * 1024:
-                errors['featured_image'] = "Image too large. Maximum size is 3MB."
- 
-        # ── If no errors — save ──
+            errors['featured_image'] = "A featured image is required."
+        elif hasattr(featured_image, 'content_type') and featured_image.content_type not in ['image/jpeg', 'image/png', 'image/webp']:
+            errors['featured_image'] = "Only JPG, PNG or WebP images are allowed."
+        elif featured_image.size > 3 * 1024 * 1024:
+            errors['featured_image'] = "Image too large. Maximum size is 3MB."
+
         if not errors:
             property_type = PropertyType.objects.get(id=property_type_id)
- 
             prop = Property.objects.create(
                 dealer=dealer,
                 title=title,
@@ -524,111 +605,102 @@ def add_property(request):
                 area=area,
                 description=description,
                 address=address,
-                bedrooms=bedrooms   or 0,
+                bedrooms=bedrooms or 0,
                 bathrooms=bathrooms or 0,
-                kitchens=kitchens   or 0,
-                garages=garages     or 0,
+                kitchens=kitchens or 0,
+                garages=garages or 0,
                 property_size=property_size,
                 furnishing=furnishing,
                 year_built=year_built or None,
                 featured_image=featured_image,
             )
- 
             prop.features.set(features_ids)
- 
-            images = request.FILES.getlist("images")
-            for img in images:
+
+            for img in request.FILES.getlist("images"):
                 if img:
                     PropertyImage.objects.create(property=prop, image=img)
- 
+
             messages.success(request, "Property added successfully.")
             return redirect("dashboard")
- 
+
     property_types = PropertyType.objects.all()
     features       = Features.objects.all()
     return render(request, "add_property.html", {
-        "propertytype":  property_types,
-        "features":      features,
-        "dealer":        dealer,
-        "errors":        errors,
-        "old":           old,
-        "old_features":  old_features,
+        "propertytype": property_types,
+        "features":     features,
+        "dealer":       dealer,
+        "errors":       errors,
+        "old":          old,
+        "old_features": old_features,
     })
 
 
 @login_required
 def my_listings(request):
-    dealer = Dealer.objects.get(user=request.user)
+    dealer     = Dealer.objects.get(user=request.user)
     properties = Property.objects.filter(dealer=dealer).order_by("-created_at")
     return render(request, "my_listings.html", {"prop": properties, "dealer": dealer})
 
 
 @login_required
 def edit_property(request, id, slug):
-    dealer = Dealer.objects.get(user=request.user)
+    dealer   = Dealer.objects.get(user=request.user)
     property = get_object_or_404(Property, id=id, slug=slug, dealer=dealer)
 
     if request.method == "POST":
-        property.title = request.POST.get("title")
-        property.price = request.POST.get("price")
-        property.description = request.POST.get("description")
-        property_type_id = request.POST.get("property_type")
-        property.purpose = request.POST.get("purpose")
-        property.city = request.POST.get("city")
-        property.area = request.POST.get("area")
-        property.address = request.POST.get("address")
-        property.bedrooms = request.POST.get("bedrooms")
-        property.bathrooms = request.POST.get("bathrooms")
-        property.kitchens = request.POST.get("kitchens")
-        property.garages = request.POST.get("garages")
+        property.title         = request.POST.get("title")
+        property.price         = request.POST.get("price")
+        property.description   = request.POST.get("description")
+        property.purpose       = request.POST.get("purpose")
+        property.city          = request.POST.get("city")
+        property.area          = request.POST.get("area")
+        property.address       = request.POST.get("address")
+        property.bedrooms      = request.POST.get("bedrooms")
+        property.bathrooms     = request.POST.get("bathrooms")
+        property.kitchens      = request.POST.get("kitchens")
+        property.garages       = request.POST.get("garages")
         property.property_size = request.POST.get("property_size")
-        property.furnishing = request.POST.get("furnishing")
-        property.year_built = request.POST.get("year_built")
-        property.property_type = PropertyType.objects.get(id=property_type_id)
+        property.furnishing    = request.POST.get("furnishing")
+        property.year_built    = request.POST.get("year_built")
+        property.property_type = PropertyType.objects.get(id=request.POST.get("property_type"))
 
         if request.FILES.get("featured_image"):
             property.featured_image = request.FILES.get("featured_image")
 
         property.save()
+        property.features.set(request.POST.getlist("features"))
 
-        features = request.POST.getlist("features")
-        property.features.set(features)
-
-        images = request.FILES.getlist("images")
-        for img in images:
+        for img in request.FILES.getlist("images"):
             PropertyImage.objects.create(property=property, image=img)
 
         messages.success(request, "Property updated successfully")
         return redirect("my_listings")
 
-    property_type = PropertyType.objects.all()
-    features = Features.objects.all()
-
     return render(request, "edit_property.html", {
-        "prop": property,
-        "prop_types": property_type,
-        "features": features,
-        "dealer": dealer,
+        "prop":       property,
+        "prop_types": PropertyType.objects.all(),
+        "features":   Features.objects.all(),
+        "dealer":     dealer,
     })
 
 
 @login_required
 def dealer_inquiries(request):
-    dealer = Dealer.objects.get(user=request.user)
+    dealer    = Dealer.objects.get(user=request.user)
     inquiries = Inquiry.objects.filter(property__dealer=dealer).order_by("-created_at")
     return render(request, "dealer_inquiries.html", {"inquiries": inquiries, "dealer": dealer})
 
 
 @login_required
 def dealer_reviews(request):
-    dealer = Dealer.objects.get(user=request.user)
+    dealer  = Dealer.objects.get(user=request.user)
     reviews = DealerReview.objects.filter(property__dealer=dealer).order_by("-created_at")
     return render(request, "dealer_reviews.html", {"dealer": dealer, "reviews": reviews})
 
 
 @login_required
 def add_favourite(request, id, slug):
-    property = get_object_or_404(Property, id=id, slug=slug)
+    property  = get_object_or_404(Property, id=id, slug=slug)
     favourite = Favorite.objects.filter(user=request.user, property=property)
 
     if favourite.exists():
@@ -647,36 +719,8 @@ def favourites(request):
 
 @login_required
 def delete_property(request, id, slug):
-    dealer = Dealer.objects.get(user=request.user)
+    dealer   = Dealer.objects.get(user=request.user)
     property = get_object_or_404(Property, id=id, slug=slug, dealer=dealer)
     property.delete()
     messages.success(request, "Property deleted successfully")
     return redirect("dashboard")
-
-
-def check_cnic(request):
-    cnic = request.GET.get("cnic", "").strip()
-    exists = Dealer.objects.filter(cnic=cnic).exists()
-    return JsonResponse({"exists": exists})
-
-
-def dealers(request):
-    dealers = Dealer.objects.annotate(
-        listing_count=Count('properties'),
-        total_views=Sum('properties__views'),
-        total_reviews = Sum('properties__reviews')
-    ).order_by('full_name')
-    return render(request, 'dealers.html', {'dealers': dealers})
-
-def dealer_profile(request, id):
-    dealer     = get_object_or_404(Dealer, id=id)
-    properties = Property.objects.filter(dealer=dealer).order_by('-created_at')
-    reviews    = DealerReview.objects.filter(property__dealer=dealer).order_by('-created_at')
-    total_views = properties.aggregate(Sum('views'))['views__sum'] or 0
- 
-    return render(request, 'dealer_profile.html', {
-        'dealer':      dealer,
-        'properties':  properties,
-        'reviews':     reviews,
-        'total_views': total_views,
-    })

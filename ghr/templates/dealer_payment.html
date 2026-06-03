@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dealer Registration Payment | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/dealer_payment.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<div class="dp-hero">
+  <div class="dp-hero-bg"></div>
+  <div class="dp-hero-overlay"></div>
+  <div class="container dp-hero-content">
+    <div class="dph-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <div>
+      <p class="dph-label"><i class="fa-solid fa-circle-check"></i> Secure Payment</p>
+      <h1>Complete Your <span>Registration</span></h1>
+      <p class="dph-sub">One-time payment to become a verified dealer on Pakistan's #1 property platform.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<section class="dp-section">
+  <div class="container">
+    <div class="dp-wrapper">
+
+      <!-- LEFT — Benefits -->
+      <div class="dp-left">
+        <div class="dp-left-inner">
+          <h2>What You Get</h2>
+          <p>Your PKR 1,000 unlocks full dealer access on Roshan Aashiyana.</p>
+
+          <ul class="dp-benefit-list">
+            <li>
+              <div class="dpb-icon"><i class="fa-solid fa-building"></i></div>
+              <div><strong>Unlimited Listings</strong><span>Post houses, plots, apartments & commercial properties.</span></div>
+            </li>
+            <li>
+              <div class="dpb-icon"><i class="fa-solid fa-gauge"></i></div>
+              <div><strong>Dealer Dashboard</strong><span>Manage all listings, views and inquiries in one place.</span></div>
+            </li>
+            <li>
+              <div class="dpb-icon"><i class="fa-solid fa-envelope"></i></div>
+              <div><strong>Direct Buyer Leads</strong><span>Receive inquiries directly from serious buyers.</span></div>
+            </li>
+            <li>
+              <div class="dpb-icon"><i class="fa-solid fa-circle-check"></i></div>
+              <div><strong>Verified Badge</strong><span>Build trust with a verified dealer badge on all your listings.</span></div>
+            </li>
+            <li>
+              <div class="dpb-icon"><i class="fa-solid fa-bolt"></i></div>
+              <div><strong>Priority Visibility</strong><span>Your properties appear to thousands of active buyers daily.</span></div>
+            </li>
+          </ul>
+
+          <div class="dp-stats">
+            <div class="dp-stat"><span class="dps-num">1500+</span><span class="dps-lbl">Active Listings</span></div>
+            <div class="dp-stat-div"></div>
+            <div class="dp-stat"><span class="dps-num">25+</span><span class="dps-lbl">Cities</span></div>
+            <div class="dp-stat-div"></div>
+            <div class="dp-stat"><span class="dps-num">100%</span><span class="dps-lbl">Verified</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — Payment Card -->
+      <div class="dp-right">
+        <div class="dp-card">
+
+          <div class="dp-card-header">
+            <div class="dp-card-icon"><i class="fa-solid fa-receipt"></i></div>
+            <div>
+              <h2>Order Summary</h2>
+              <p>One-time dealer registration</p>
+            </div>
+          </div>
+
+          <!-- Order breakdown -->
+          <div class="dp-order">
+            <div class="dp-order-row">
+              <div class="dp-order-item">
+                <i class="fa-solid fa-user-tie"></i>
+                <div>
+                  <span>Dealer Registration Fee</span>
+                  <small>Lifetime access · No recurring charges</small>
+                </div>
+              </div>
+              <span class="dp-order-price">PKR 1,000</span>
+            </div>
+            <div class="dp-order-divider"></div>
+            <div class="dp-order-total">
+              <span>Total Due Today</span>
+              <span class="dp-total-amount">PKR 1,000</span>
+            </div>
+          </div>
+
+          <!-- Pay button -->
+          <a href="https://buy.stripe.com/test_dRm5kC0Y1gsjeYV9jc6AM00?client_reference_id={{ request.user.id }}"
+             class="dp-pay-btn">
+            <i class="fa-solid fa-lock"></i>
+            Pay PKR 1,000 Securely
+            <i class="fa-solid fa-arrow-right dp-arrow"></i>
+          </a>
+
+          <!-- Security badges -->
+          <div class="dp-security">
+            <div class="dp-sec-item">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>SSL Encrypted</span>
+            </div>
+            <div class="dp-sec-item">
+              <i class="fa-brands fa-stripe"></i>
+              <span>Powered by Stripe</span>
+            </div>
+            <div class="dp-sec-item">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Refund Policy</span>
+            </div>
+          </div>
+
+          <p class="dp-note">
+            <i class="fa-solid fa-circle-info"></i>
+            After payment you'll be redirected to complete your dealer profile. Your card details are never stored on our servers.
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
