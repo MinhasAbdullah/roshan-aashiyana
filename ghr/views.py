@@ -520,7 +520,7 @@ def payment_success(request):
 
     # Clear session
     del request.session['dealer_form']
-    dealer = Dealer.objects.filter(user=request.user)
+    dealer = Dealer.objects.get(user=request.user)
 
     # Send welcome email
     send_email(
