@@ -34,7 +34,6 @@ class Dealer(models.Model):
     social_facebook = models.CharField(max_length=200, blank=True, default='')
     social_instagram = models.CharField(max_length=200, blank=True, default='')
     social_linkedin = models.CharField(max_length=200, blank=True, default='')
-    social_youtube = models.CharField(max_length=200, blank=True, default='')
 
     def __str__(self):
         return self.full_name

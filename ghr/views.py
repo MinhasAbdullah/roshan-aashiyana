@@ -834,15 +834,15 @@ def dealer_settings(request):
                 success = 'Contact info updated successfully.'
 
         # ══ SAVE PROFESSIONAL ══
-        elif 'save_professional' in request.POST:
-            dealer.agency_name      = request.POST.get('agency_name', '').strip()
-            dealer.specialization   = request.POST.get('specialization', '').strip()
-            dealer.website          = request.POST.get('website', '').strip()
-            dealer.license_number   = request.POST.get('license_number', '').strip()
-            exp = request.POST.get('experience_years', '').strip()
-            dealer.experience_years = int(exp) if exp.isdigit() else None
-            dealer.save()
-            success = 'Professional info updated successfully.'
+        # elif 'save_professional' in request.POST:
+        #     dealer.agency_name      = request.POST.get('agency_name', '').strip()
+        #     dealer.specialization   = request.POST.get('specialization', '').strip()
+        #     dealer.website          = request.POST.get('website', '').strip()
+        #     dealer.license_number   = request.POST.get('license_number', '').strip()
+        #     exp = request.POST.get('experience_years', '').strip()
+        #     dealer.experience_years = int(exp) if exp.isdigit() else None
+        #     dealer.save()
+        #     success = 'Professional info updated successfully.'
 
         # ══ SAVE SOCIAL ══
         elif 'save_social' in request.POST:

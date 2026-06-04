@@ -258,25 +258,25 @@
         <div class="form-group {% if errors.description %}fg-error{% endif %}">
           <label><i class="fa-solid fa-align-left"></i> Property Description <span class="req">*</span></label>
 
-          <button type="button" id="generateDescBtn" onclick="generateDescription()" style="
-              display:inline-flex;align-items:center;gap:8px;
-              margin-bottom:10px;padding:9px 18px;
-              background:linear-gradient(135deg,var(--green),var(--green-dark));
-              color:#fff;border:none;border-radius:8px;
-              font-size:13px;font-weight:600;cursor:pointer;
-              transition:opacity .2s;">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate with AI
-          </button>
           <p id="generateStatus" style="font-size:12px;margin-bottom:6px;min-height:16px;"></p>
-
+          
           <div class="input-wrap {% if errors.description %}input-invalid{% endif %}">
             <textarea name="description" id="descriptionField" rows="6"
-              placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc.">{{ old.description|default:'' }}</textarea>
+            placeholder="Describe the property — highlight key features, nearby amenities, access roads, etc.">{{ old.description|default:'' }}</textarea>
           </div>
           {% if errors.description %}<p class="field-err">{{ errors.description }}</p>{% endif %}
         </div>
+        <button type="button" id="generateDescBtn" onclick="generateDescription()" style="
+            display:inline-flex;align-items:center;gap:8px;
+            margin-bottom:10px;padding:9px 18px;
+            background:linear-gradient(135deg,var(--green),var(--green-dark));
+            color:#fff;border:none;border-radius:8px;
+            font-size:13px;font-weight:600;cursor:pointer;
+            transition:opacity .2s;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate with AI
+        </button>
       </div>
-
+      
       <!-- ── SECTION 6: Images ── -->
       <div class="form-card">
         <div class="fc-head">
