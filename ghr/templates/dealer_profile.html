@@ -19,12 +19,16 @@
     <div class="ph-left">
       <div class="ph-avatar">
         <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+        {% if dealer.is_verified %}
         <div class="ph-verified"><i class="fa-solid fa-circle-check"></i></div>
+        {% endif %}
       </div>
       <div class="ph-info">
-        <div class="ph-badge">Verified Dealer</div>
+        {% if dealer.is_verified %}<div class="ph-badge"><i class="fa-solid fa-circle-check"></i> Verified Dealer</div>{% endif %}
         <h1>{{ dealer.full_name }}</h1>
-        {% if dealer.address %}
+        {% if dealer.city %}
+        <p class="ph-loc"><i class="fa-solid fa-location-dot"></i> {{ dealer.city }}</p>
+        {% elif dealer.address %}
         <p class="ph-loc"><i class="fa-solid fa-location-dot"></i> {{ dealer.address }}</p>
         {% endif %}
         <div class="ph-actions">
@@ -32,6 +36,12 @@
           <a href="tel:{{ dealer.phone }}" class="pha-btn pha-call">
             <i class="fa-solid fa-phone"></i> {{ dealer.phone }}
           </a>
+          {% endif %}
+          {% if dealer.whatsapp %}
+          <a href="https://wa.me/{{ dealer.whatsapp }}" target="_blank" class="pha-btn pha-wa">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+          </a>
+          {% elif dealer.phone %}
           <a href="https://wa.me/{{ dealer.phone }}" target="_blank" class="pha-btn pha-wa">
             <i class="fa-brands fa-whatsapp"></i> WhatsApp
           </a>
@@ -78,6 +88,14 @@
       <!-- ══ LEFT: Properties ══ -->
       <div class="profile-main">
 
+        <!-- Bio -->
+        {% if dealer.description %}
+        <div class="pm-bio">
+          <h2><i class="fa-solid fa-user"></i> About {{ dealer.full_name }}</h2>
+          <p>{{ dealer.description }}</p>
+        </div>
+        {% endif %}
+
         <div class="pm-header">
           <h2><i class="fa-solid fa-building"></i> Properties by {{ dealer.full_name }}</h2>
           <span class="pm-count">{{ properties.count }} listing{{ properties.count|pluralize }}</span>
@@ -101,7 +119,7 @@
             <div class="pp-body">
               <h3>{{ item.title }}</h3>
               <p class="pp-loc"><i class="fa-solid fa-location-dot"></i> {{ item.area }}, {{ item.city }}</p>
-              <div class="pp-price">PKR {{ item.price }}</div>
+              <div class="pp-price">PKR {{ item.price|floatformat:0 }}</div>
               <div class="pp-specs">
                 {% if item.bedrooms  %}<span><i class="fa-solid fa-bed"></i> {{ item.bedrooms }} Beds</span>{% endif %}
                 {% if item.bathrooms %}<span><i class="fa-solid fa-shower"></i> {{ item.bathrooms }} Baths</span>{% endif %}
@@ -132,19 +150,25 @@
             <span><i class="fa-solid fa-user"></i> Name</span>
             <strong>{{ dealer.full_name }}</strong>
           </div>
+          {% if dealer.city %}
+          <div class="ps-row">
+            <span><i class="fa-solid fa-location-dot"></i> City</span>
+            <strong>{{ dealer.city }}</strong>
+          </div>
+          {% endif %}
+          {% if dealer.gender %}
           <div class="ps-row">
             <span><i class="fa-solid fa-venus-mars"></i> Gender</span>
             <strong>{{ dealer.gender|title }}</strong>
-          </div>
-          {% if dealer.address %}
-          <div class="ps-row">
-            <span><i class="fa-solid fa-location-dot"></i> Address</span>
-            <strong>{{ dealer.address }}</strong>
           </div>
           {% endif %}
           <div class="ps-row">
             <span><i class="fa-solid fa-building"></i> Listings</span>
             <strong>{{ properties.count }}</strong>
+          </div>
+          <div class="ps-row">
+            <span><i class="fa-solid fa-calendar"></i> Member Since</span>
+            <strong>{{ dealer.created_at|date:"M Y" }}</strong>
           </div>
         </div>
 
@@ -155,14 +179,44 @@
           <a href="tel:{{ dealer.phone }}" class="ps-btn ps-btn-call">
             <i class="fa-solid fa-phone"></i> Call Now
           </a>
+          {% endif %}
+          {% if dealer.whatsapp %}
+          <a href="https://wa.me/{{ dealer.whatsapp }}" target="_blank" class="ps-btn ps-btn-wa">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp
+          </a>
+          {% elif dealer.phone %}
           <a href="https://wa.me/{{ dealer.phone }}" target="_blank" class="ps-btn ps-btn-wa">
             <i class="fa-brands fa-whatsapp"></i> WhatsApp
           </a>
           {% endif %}
-          <a href="{% url 'about' %}#contact" class="ps-btn ps-btn-msg">
+          <!-- <a href="{% url 'about' %}#contact" class="ps-btn ps-btn-msg">
             <i class="fa-solid fa-envelope"></i> Send Message
-          </a>
+          </a> -->
         </div>
+
+        <!-- Social links card -->
+        {% if dealer.social_facebook or dealer.social_instagram or dealer.social_linkedin %}
+        <div class="ps-card">
+          <h3><i class="fa-solid fa-share-nodes"></i> Social Media</h3>
+          <div class="ps-socials">
+            {% if dealer.social_facebook %}
+            <a href="https://facebook.com/{{ dealer.social_facebook }}" target="_blank" class="ps-social-btn ps-fb">
+              <i class="fa-brands fa-facebook-f"></i> Facebook
+            </a>
+            {% endif %}
+            {% if dealer.social_instagram %}
+            <a href="https://instagram.com/{{ dealer.social_instagram }}" target="_blank" class="ps-social-btn ps-ig">
+              <i class="fa-brands fa-instagram"></i> Instagram
+            </a>
+            {% endif %}
+            {% if dealer.social_linkedin %}
+            <a href="https://linkedin.com/in/{{ dealer.social_linkedin }}" target="_blank" class="ps-social-btn ps-li">
+              <i class="fa-brands fa-linkedin-in"></i> LinkedIn
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
 
         <!-- Reviews card -->
         {% if reviews %}

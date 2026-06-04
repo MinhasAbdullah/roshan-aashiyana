@@ -773,38 +773,41 @@ def dealer_settings(request):
         dealer = Dealer.objects.get(user=request.user)
     except Dealer.DoesNotExist:
         return redirect('dealer_register')
-
-    errors = {}
+ 
+    errors  = {}
     success = None
-
+ 
     CITIES = [
         'Islamabad', 'Rawalpindi', 'Lahore', 'Karachi', 'Faisalabad',
         'Multan', 'Peshawar', 'Quetta', 'Sialkot', 'Gujranwala',
         'Hyderabad', 'Abbottabad', 'Bahawalpur', 'Sargodha', 'Sukkur',
     ]
-
+ 
     properties_count = dealer.properties.count()
     reviews_count    = DealerReview.objects.filter(property__dealer=dealer).count()
-
+ 
     # ── Profile completion % ──
     fields = [
-        dealer.description, dealer.phone, dealer.city,
-        dealer.agency_name, dealer.social_linkedin,
+        dealer.description,
+        dealer.phone,
+        dealer.city,
+        dealer.social_facebook or dealer.social_instagram or dealer.social_linkedin,
+        dealer.profile_picture,
     ]
     completion_pct = int((sum(1 for f in fields if f) / len(fields)) * 100)
-
+ 
     if request.method == 'POST':
-
+ 
         # ══ SAVE PROFILE ══
         if 'save_profile' in request.POST:
             full_name   = request.POST.get('full_name', '').strip()
             gender      = request.POST.get('gender', '')
             description = request.POST.get('description', '').strip()
             picture_url = request.POST.get('profile_picture_url', '').strip()
-
+ 
             if len(full_name) < 3:
                 errors['full_name'] = 'Full name must be at least 3 characters.'
-
+ 
             if not errors:
                 dealer.full_name   = full_name
                 dealer.gender      = gender
@@ -813,65 +816,55 @@ def dealer_settings(request):
                     dealer.profile_picture = picture_url
                 dealer.save()
                 success = 'Profile updated successfully.'
-
+ 
         # ══ SAVE CONTACT ══
         elif 'save_contact' in request.POST:
             phone    = request.POST.get('phone', '').strip()
             whatsapp = request.POST.get('whatsapp', '').strip()
             city     = request.POST.get('city', '').strip()
             address  = request.POST.get('address', '').strip()
-
+ 
             phone_pattern = r'^\+92[0-9]{10}$'
             if phone and not re.match(phone_pattern, phone):
                 errors['phone'] = 'Enter phone in +92XXXXXXXXXX format.'
-
+ 
             if not errors:
                 dealer.phone    = phone
                 dealer.whatsapp = whatsapp
                 dealer.city     = city
                 dealer.address  = address
                 dealer.save()
+        
                 success = 'Contact info updated successfully.'
-
-        # ══ SAVE PROFESSIONAL ══
-        # elif 'save_professional' in request.POST:
-        #     dealer.agency_name      = request.POST.get('agency_name', '').strip()
-        #     dealer.specialization   = request.POST.get('specialization', '').strip()
-        #     dealer.website          = request.POST.get('website', '').strip()
-        #     dealer.license_number   = request.POST.get('license_number', '').strip()
-        #     exp = request.POST.get('experience_years', '').strip()
-        #     dealer.experience_years = int(exp) if exp.isdigit() else None
-        #     dealer.save()
-        #     success = 'Professional info updated successfully.'
-
+ 
         # ══ SAVE SOCIAL ══
         elif 'save_social' in request.POST:
             dealer.social_facebook  = request.POST.get('social_facebook', '').strip()
             dealer.social_instagram = request.POST.get('social_instagram', '').strip()
             dealer.social_linkedin  = request.POST.get('social_linkedin', '').strip()
-            dealer.social_youtube   = request.POST.get('social_youtube', '').strip()
             dealer.save()
+        
             success = 'Social links updated successfully.'
-
+ 
         # ══ SAVE PASSWORD ══
         elif 'save_password' in request.POST:
-            current_password  = request.POST.get('current_password', '')
-            new_password      = request.POST.get('new_password', '')
-            confirm_password  = request.POST.get('confirm_password', '')
-
+            current_password = request.POST.get('current_password', '')
+            new_password     = request.POST.get('new_password', '')
+            confirm_password = request.POST.get('confirm_password', '')
+ 
             if not request.user.check_password(current_password):
                 errors['current_password'] = 'Current password is incorrect.'
             elif len(new_password) < 6:
                 errors['new_password'] = 'New password must be at least 6 characters.'
             elif new_password != confirm_password:
                 errors['confirm_password'] = 'Passwords do not match.'
-
+ 
             if not errors:
                 request.user.set_password(new_password)
                 request.user.save()
-                login(request, request.user)   # keep user logged in after password change
+                login(request, request.user)
                 success = 'Password updated successfully.'
-
+ 
     return render(request, 'dealer_settings.html', {
         'dealer':           dealer,
         'errors':           errors,
@@ -881,7 +874,6 @@ def dealer_settings(request):
         'reviews_count':    reviews_count,
         'completion_pct':   completion_pct,
     })
-
 
 @login_required
 def delete_dealer_account(request):
