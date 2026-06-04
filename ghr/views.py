@@ -330,13 +330,6 @@ def property_detail(request, id, slug):
     })
 
 
-def house(request):
-    properties = Property.objects.filter(property_type__name="House").order_by("-created_at")
-    paginator  = Paginator(properties, 9)
-    page_obj   = paginator.get_page(request.GET.get("page"))
-    return render(request, "house.html", {"prop": page_obj})
-
-
 def about(request):
     if request.method == "POST":
         ContactMessage.objects.create(
