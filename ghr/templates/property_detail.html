@@ -346,27 +346,6 @@
   </div>
 </div>
 
-<script>
-  // Gallery switcher
-  const galleryImgs = document.querySelectorAll(".gallery-img");
-  const mainPhoto = document.getElementById("mainPhoto");
-
-  galleryImgs.forEach(div => {
-    div.addEventListener("click", () => {
-      mainPhoto.src = div.dataset.src;
-      galleryImgs.forEach(d => d.classList.remove("active"));
-      div.classList.add("active");
-    });
-  });
-
-  // Review modal
-  const reviewModal = document.getElementById("reviewModal");
-  const openReview  = document.getElementById("openReview");
-  const closeReview = document.getElementById("closeReview");
-
-  if (openReview) openReview.onclick  = () => reviewModal.classList.add("active");
-  closeReview.onclick = () => reviewModal.classList.remove("active");
-  reviewModal.addEventListener("click", e => { if (e.target === reviewModal) reviewModal.classList.remove("active"); });
-</script>
+<script src="{% static 'js/property_detail.js' %}"></script>
 
 {% endblock %}

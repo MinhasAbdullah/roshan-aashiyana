@@ -96,41 +96,6 @@
   </div>
 </div>
 
-<script>
-  // View toggle
-  const grid    = document.getElementById('listingGrid');
-  const gridBtn = document.getElementById('gridViewBtn');
-  const listBtn = document.getElementById('listViewBtn');
-  gridBtn.addEventListener('click', () => {
-    grid.classList.remove('list-view');
-    gridBtn.classList.add('active'); listBtn.classList.remove('active');
-    localStorage.setItem('mlView', 'grid');
-  });
-  listBtn.addEventListener('click', () => {
-    grid.classList.add('list-view');
-    listBtn.classList.add('active'); gridBtn.classList.remove('active');
-    localStorage.setItem('mlView', 'list');
-  });
-  if (localStorage.getItem('mlView') === 'list') {
-    grid.classList.add('list-view');
-    listBtn.classList.add('active'); gridBtn.classList.remove('active');
-  }
-
-  // Delete modal
-  function openDeleteModal(url, title, img, loc) {
-    document.getElementById('dmTitle').textContent = title;
-    document.getElementById('dmTitle2').textContent = title;
-    document.getElementById('dmImg').src = img;
-    document.getElementById('dmLoc').textContent = loc;
-    document.getElementById('dmConfirmBtn').href = url;
-    document.getElementById('deleteModal').classList.add('active');
-  }
-  function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.remove('active');
-  }
-  document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) closeDeleteModal();
-  });
-</script>
+<script src="{% static 'js/my_listings.js' %}"></script>
 
 {% endblock dashboard_content %}

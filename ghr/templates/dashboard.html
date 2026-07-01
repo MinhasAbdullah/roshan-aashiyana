@@ -99,7 +99,11 @@
                 <i class="fa-solid fa-eye"></i>
               </a>
               <button class="act-btn act-delete" title="Delete"
-                onclick="openDeleteModal('{% url 'delete_property' item.id item.slug %}', '{{ item.title|escapejs }}', '{{ item.featured_image.url }}', '{{ item.city }}, {{ item.area }}')">
+                type="button"
+                data-delete-url="{% url 'delete_property' item.id item.slug %}"
+                data-delete-title="{{ item.title }}"
+                data-delete-img="{{ item.featured_image.url }}"
+                data-delete-loc="{{ item.city }}, {{ item.area }}">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </div>
@@ -137,7 +141,7 @@
       </div>
     </div>
     <div class="dm-actions">
-      <button class="dm-cancel" onclick="closeDeleteModal()">
+      <button class="dm-cancel" id="closeDeleteModal" type="button">
         <i class="fa-solid fa-xmark"></i> Cancel
       </button>
       <a href="#" id="dmConfirmBtn" class="dm-confirm">
@@ -147,21 +151,6 @@
   </div>
 </div>
 
-<script>
-function openDeleteModal(url, title, img, loc) {
-  document.getElementById('dmTitle').textContent = title;
-  document.getElementById('dmTitle2').textContent = title;
-  document.getElementById('dmImg').src = img;
-  document.getElementById('dmLoc').textContent = loc;
-  document.getElementById('dmConfirmBtn').href = url;
-  document.getElementById('deleteModal').classList.add('active');
-}
-function closeDeleteModal() {
-  document.getElementById('deleteModal').classList.remove('active');
-}
-document.getElementById('deleteModal').addEventListener('click', function(e) {
-  if (e.target === this) closeDeleteModal();
-});
-</script>
+<script src="{% static 'js/dashboard.js' %}"></script>
 
 {% endblock %}

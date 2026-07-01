@@ -119,38 +119,6 @@
   </div>
 </div>
 
-<script>
-  const toggle  = document.getElementById('sidebarToggle');
-  const sidebar = document.getElementById('dealerSidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-
-  function openSidebar() {
-    sidebar.classList.add('open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeSidebar() {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  toggle.addEventListener('click', () => {
-    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
-  });
-  overlay.addEventListener('click', closeSidebar);
-
-  function toggleAvatarDropdown() {
-    document.getElementById('avatarDropdown').classList.toggle('open');
-}
-
-// Close when clicking outside
-document.addEventListener('click', function(e) {
-    const wrapper = document.querySelector('.dtb-avatar-wrapper');
-    if (wrapper && !wrapper.contains(e.target)) {
-        document.getElementById('avatarDropdown').classList.remove('open');
-    }
-});
-</script>
+<script src="{% static 'js/dealer_base.js' %}"></script>
 
 {% endblock %}
