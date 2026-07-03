@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ dealer.full_name }} | Roshan Aashiyana{% endblock %}
+{% block title %}{{ dealer.full_name }}{% if dealer.city %} — {{ dealer.city }}{% endif %} — Dealer Profile | Roshan Aashiyana{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/dealer_profile.css' %}">

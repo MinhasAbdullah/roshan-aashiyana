@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ prop.title }} | Roshan Aashiyana{% endblock %}
+{% block title %}{{ prop.title }}{% if prop.area or prop.city %} — {{ prop.area }}{% if prop.city %}, {{ prop.city }}{% endif %}{% endif %} | Roshan Aashiyana{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/property_detail.css' %}">
