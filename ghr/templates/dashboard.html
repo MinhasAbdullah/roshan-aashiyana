@@ -69,7 +69,7 @@
         <tr>
           <td>
             <div class="prop-cell">
-              <img src="{{ item.featured_image.url }}" alt="{{ item.title }}" class="table-img">
+              <img loading="lazy" src="{{ item.featured_image.url }}" alt="{{ item.title }}" class="table-img">
               <div class="prop-cell-text">
                 <span class="prop-cell-title">{{ item.title|truncatechars:30 }}</span>
                 <span class="prop-cell-area">{{ item.area }}</span>
@@ -134,7 +134,7 @@
     <h2>Delete Property?</h2>
     <p>You are about to permanently delete <strong id="dmTitle"></strong>. This cannot be undone.</p>
     <div class="dm-prop-preview">
-      <img id="dmImg" src="" alt="">
+      <img loading="lazy" id="dmImg" src="" alt="">
       <div>
         <span id="dmTitle2"></span>
         <small id="dmLoc"></small>

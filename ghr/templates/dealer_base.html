@@ -20,7 +20,7 @@
       </button>
       <a href="{% url 'home' %}" class="dtb-brand">
         <div class="dtb-logo">
-          <img src="{% static 'images/RA2.png' %}" alt="RA" width="28px">
+          <img loading="lazy" src="{% static 'images/RA2.png' %}" alt="RA" width="28px">
         </div>
         <div class="dtb-brand-text">
           <span class="dtb-name">ROSHAN AASHIYANA</span>
@@ -37,7 +37,7 @@
       </a>
     <div class="dtb-avatar-wrapper">
     <div class="dtb-avatar" onclick="toggleAvatarDropdown()">
-        <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+        <img loading="lazy" src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
         <span>{{ dealer.full_name|truncatechars:14 }}</span>
     </div>
     <div class="avatar-dropdown" id="avatarDropdown">
@@ -59,7 +59,7 @@
     <aside class="dealer-sidebar" id="dealerSidebar">
       <div class="sidebar-profile">
         <div class="sp-avatar">
-          <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+          <img loading="lazy" src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
           <div class="sp-online"></div>
         </div>
         <h3>{{ dealer.full_name }}</h3>

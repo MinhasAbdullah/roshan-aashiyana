@@ -18,7 +18,7 @@
     <!-- Avatar + name -->
     <div class="ph-left">
       <div class="ph-avatar">
-        <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+        <img loading="lazy" src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
         {% if dealer.is_verified %}
         <div class="ph-verified"><i class="fa-solid fa-circle-check"></i></div>
         {% endif %}
@@ -106,7 +106,7 @@
           {% for item in properties %}
           <a href="{% url 'property_detail' item.id item.slug %}" class="pp-card">
             <div class="pp-img">
-              <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+              <img loading="lazy" src="{{ item.featured_image.url }}" alt="{{ item.title }}">
               <span class="pp-badge {% if item.purpose == 'rent' %}pp-rent{% endif %}">
                 For {{ item.purpose|title }}
               </span>
@@ -228,7 +228,7 @@
             {% for review in reviews|slice:":3" %}
             <div class="ps-review">
               <div class="psr-top">
-                <img src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff&size=60"
+                <img loading="lazy" src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff&size=60"
                      alt="{{ review.user.username }}">
                 <div>
                   <strong>{{ review.user.username }}</strong>

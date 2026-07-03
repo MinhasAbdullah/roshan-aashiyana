@@ -180,7 +180,7 @@
             <div class="card">
               <div class="card-image">
                 <a href="{% url 'property_detail' item.id item.slug %}" class="card-img-link">
-                  <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+                  <img loading="lazy" src="{{ item.featured_image.url }}" alt="{{ item.title }}">
                 </a>
                 <div class="tag {% if item.purpose == 'rent' %}tag-rent{% endif %}">
                   For {{ item.purpose|title }}

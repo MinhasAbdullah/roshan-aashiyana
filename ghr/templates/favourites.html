@@ -37,8 +37,8 @@
 
         <!-- Image -->
         <div class="fav-img-wrap">
-          <a href="{% url 'property_detail' item.property.id item.property.slug %}">
-            <img src="{{ item.property.featured_image.url }}" alt="{{ item.property.title }}">
+            <a href="{% url 'property_detail' item.property.id item.property.slug %}">
+            <img loading="lazy" src="{{ item.property.featured_image.url }}" alt="{{ item.property.title }}">
           </a>
           <div class="fav-badge {% if item.property.purpose == 'rent' %}badge-rent{% endif %}">
             For {{ item.property.purpose|title }}

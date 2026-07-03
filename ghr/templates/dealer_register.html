@@ -152,7 +152,7 @@
                   <p>Click or drag & drop your photo here</p>
                   <span>JPG, PNG up to 5MB</span>
                 </div>
-                <img id="filePreview" class="file-preview" src="" alt="Preview">
+                <img loading="lazy" id="filePreview" class="file-preview" src="" alt="Preview">
               </div>
               <p class="field-hint-msg {% if errors.picture %}msg-error{% endif %}" id="dr-pic-msg">
                 {% if errors.picture %}{{ errors.picture }}{% endif %}

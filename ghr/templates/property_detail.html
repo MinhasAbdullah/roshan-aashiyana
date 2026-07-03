@@ -43,7 +43,7 @@
 
         <!-- MAIN IMAGE -->
         <div class="main-image">
-          <img id="mainPhoto" src="{{ prop.featured_image.url }}" alt="{{ prop.title }}">
+          <img loading="lazy" id="mainPhoto" src="{{ prop.featured_image.url }}" alt="{{ prop.title }}">
           <div class="img-overlay-bar">
             <span class="photo-count"><i class="fa-regular fa-image"></i> {{ prop.images.count|add:1 }} Photos</span>
             {% if user.is_authenticated %}
@@ -160,7 +160,7 @@
             {% for review in reviews %}
             <div class="single-review">
               <div class="review-user">
-                <img src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff" alt="{{ review.user.username }}">
+                <img loading="lazy" src="https://ui-avatars.com/api/?name={{ review.user.username }}&background=3cb648&color=fff" alt="{{ review.user.username }}">
                 <div class="review-user-info">
                   <h4>{{ review.user.username }}</h4>
                   <div class="review-stars">
@@ -220,7 +220,7 @@
         <div class="contact-card dealer-card">
           <p class="card-label">Listed by</p>
           <div class="agent-row">
-            <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
+            <img loading="lazy" src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}">
             <div>
               <h4>{{ dealer.full_name }}</h4>
               <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified Dealer</span>

@@ -16,8 +16,11 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   {% block css %}{% endblock %}
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap&font-display=swap" rel="stylesheet">
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  </noscript>
 </head>
 
 <body>
@@ -27,7 +30,7 @@
     <div class="container nav-container">
       <a href="{% url 'home' %}" class="logo">
         <div class="logo-icon">
-          <img src="{% static 'images/RA2.png' %}" alt="" width="28px">
+          <img loading="lazy" src="{% static 'images/RA2.png' %}" alt="" width="28px">
         </div>
         <div class="logo-text">
           <h1>ROSHAN <span>AASHIYANA</span></h1>
@@ -128,7 +131,7 @@
         <div class="footer-brand">
           <div class="footer-logo-wrap">
             <div class="nav-logo">
-              <img src="{% static 'images/RA3.png' %}" alt="">
+              <img loading="lazy" src="{% static 'images/RA3.png' %}" alt="">
             </div>
             <div class="nav-brand-text">
               <span class="brand-name">ROSHAN AASHIYANA</span>

@@ -192,8 +192,8 @@
       {% for item in prop %}
       <a href="{% url 'property_detail' item.id item.slug %}" class="prop-card-link">
         <div class="prop-card">
-          <div class="prop-img-wrap">
-            <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+            <div class="prop-img-wrap">
+            <img loading="lazy" src="{{ item.featured_image.url }}" alt="{{ item.title }}">
             <div class="prop-badge {% if item.purpose == 'rent' %}badge-rent{% else %}badge-sale{% endif %}">
               For {{ item.purpose|title }}
             </div>

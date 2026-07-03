@@ -245,7 +245,7 @@
         <div class="form-group">
           <label><i class="fa-solid fa-star"></i> Featured Image</label>
           <div class="current-img-preview">
-            <img src="{{ prop.featured_image.url }}" alt="{{ prop.title }}" id="featuredPreview">
+            <img loading="lazy" src="{{ prop.featured_image.url }}" alt="{{ prop.title }}" id="featuredPreview">
             <div class="cip-overlay">
               <i class="fa-solid fa-camera"></i> Change Photo
             </div>
@@ -261,7 +261,7 @@
           <div class="gallery-grid">
             {% for image in prop.images.all %}
             <div class="gallery-thumb">
-              <img src="{{ image.image.url }}" alt="Gallery image">
+              <img loading="lazy" src="{{ image.image.url }}" alt="Gallery image">
               <div class="gt-overlay"><i class="fa-solid fa-expand"></i></div>
             </div>
             {% endfor %}
@@ -297,8 +297,8 @@
 
     <!-- Current property snapshot -->
     <div class="tips-card snapshot-card">
-      <div class="snap-img">
-        <img src="{{ prop.featured_image.url }}" alt="{{ prop.title }}" id="snapImg">
+        <div class="snap-img">
+        <img loading="lazy" src="{{ prop.featured_image.url }}" alt="{{ prop.title }}" id="snapImg">
       </div>
       <div class="snap-body">
         <h4>{{ prop.title }}</h4>
@@ -357,8 +357,8 @@
     <p>You are about to permanently delete <strong>{{ prop.title }}</strong>. This cannot be undone.</p>
 
     <div class="dm-prop-preview">
-      <img src="{{ prop.featured_image.url }}" alt="{{ prop.title }}">
-      <div>
+    <img loading="lazy" src="{{ prop.featured_image.url }}" alt="{{ prop.title }}">
+    <div>
         <span>{{ prop.title }}</span>
         <small>{{ prop.city }}, {{ prop.area }}</small>
       </div>

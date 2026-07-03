@@ -74,7 +74,7 @@
           <!-- Avatar -->
           <div class="avatar-section">
             <div class="avatar-preview">
-              <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}" id="avatarImg">
+              <img loading="lazy" src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}" id="avatarImg">
               <div class="avatar-overlay"><i class="fa-solid fa-camera"></i></div>
             </div>
             <div class="avatar-info">
@@ -312,7 +312,7 @@
     <!-- Live preview -->
     <div class="profile-preview-card">
       <div class="ppc-top">
-        <img src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}" id="previewAvatar">
+        <img loading="lazy" src="{{ dealer.profile_picture.url }}" alt="{{ dealer.full_name }}" id="previewAvatar">
         <div class="ppc-verified"><i class="fa-solid fa-circle-check"></i></div>
       </div>
       <div class="ppc-body">

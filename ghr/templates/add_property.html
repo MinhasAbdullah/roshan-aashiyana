@@ -295,7 +295,7 @@
               <p>Click or drag & drop featured image</p>
               <span>JPG or PNG — this is the main photo shown in listings</span>
             </div>
-            <img id="featuredPreview" class="fz-preview" src="" alt="">
+            <img loading="lazy" id="featuredPreview" class="fz-preview" src="" alt="">
           </div>
           {% if errors.featured_image %}
           <p class="field-err"><i class="fa-solid fa-circle-xmark"></i> {{ errors.featured_image }}</p>
@@ -309,17 +309,17 @@
             <div class="file-zone file-zone-sm">
               <input type="file" name="images" accept="image/*" class="extra-img-input">
               <div class="fz-inner-sm"><i class="fa-solid fa-plus"></i><span>Photo 1</span></div>
-              <img class="fz-preview-sm" src="" alt="">
+              <img loading="lazy" class="fz-preview-sm" src="" alt="">
             </div>
             <div class="file-zone file-zone-sm">
               <input type="file" name="images" accept="image/*" class="extra-img-input">
               <div class="fz-inner-sm"><i class="fa-solid fa-plus"></i><span>Photo 2</span></div>
-              <img class="fz-preview-sm" src="" alt="">
+              <img loading="lazy" class="fz-preview-sm" src="" alt="">
             </div>
             <div class="file-zone file-zone-sm">
               <input type="file" name="images" accept="image/*" class="extra-img-input">
               <div class="fz-inner-sm"><i class="fa-solid fa-plus"></i><span>Photo 3</span></div>
-              <img class="fz-preview-sm" src="" alt="">
+              <img loading="lazy" class="fz-preview-sm" src="" alt="">
             </div>
           </div>
         </div>

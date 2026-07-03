@@ -36,8 +36,8 @@
   {% for item in prop %}
   <div class="listing-card">
     <div class="lc-image">
-      <a href="{% url 'property_detail' item.id item.slug %}">
-        <img src="{{ item.featured_image.url }}" alt="{{ item.title }}">
+        <a href="{% url 'property_detail' item.id item.slug %}">
+        <img loading="lazy" src="{{ item.featured_image.url }}" alt="{{ item.title }}">
       </a>
       <span class="lc-purpose {% if item.purpose == 'rent' %}lc-rent{% endif %}">For {{ item.purpose|title }}</span>
       <span class="lc-status {% if item.is_available %}lc-available{% else %}lc-sold{% endif %}">
@@ -86,8 +86,8 @@
     <h2>Delete Property?</h2>
     <p>You are about to permanently delete <strong id="dmTitle"></strong>. This cannot be undone.</p>
     <div class="dm-prop-preview">
-      <img id="dmImg" src="" alt="">
-      <div><span id="dmTitle2"></span><small id="dmLoc"></small></div>
+    <img loading="lazy" id="dmImg" src="" alt="">
+    <div><span id="dmTitle2"></span><small id="dmLoc"></small></div>
     </div>
     <div class="dm-actions">
       <button class="dm-cancel" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i> Cancel</button>
