@@ -21,6 +21,7 @@ reset, navbar, footer, modal, messages */
 html { scroll-behavior: smooth; }
 
 body {
+  min-height: 100vh;
   font-family: 'Poppins', sans-serif;
   color: var(--text);
   background: #fff;
@@ -523,24 +524,36 @@ footer {
   .nav-links {
     display: none;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     position: absolute;
     top: 70px; left: 0; right: 0;
     background: var(--navy-light);
-    padding: 20px 24px;
-    gap: 16px;
+    padding: 20px 20px;
+    gap: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     z-index: 199;
   }
   .nav-links.open { display: flex; }
   .mobile-menu-icon { display: block; }
-  .auth-left { display: none; }
-  .auth-right { padding: 40px 28px; }
+  .navbar { padding: 12px 0; }
+  .nav-links a { width: 100%; padding: 14px 12px; border-radius: 8px; }
+  .nav-links a:hover { background: rgba(255,255,255,0.03); }
+  .logo-text h1 { font-size: 15px; }
+  .logo-text p { font-size: 11px; }
+  .profile-dropdown { position: static; width: 100%; }
   .footer-grid { grid-template-columns: 1fr; }
+  .messages-container { right: 12px; left: 12px; max-width: calc(100vw - 24px); }
+  .mobile-menu-icon { margin-left: 8px; }
+  .logo { align-items: center; }
 }
 @media (max-width: 480px) {
-  .container { padding: 0 16px; }
+  .container { padding: 0 14px; }
   .logo-text h1 { font-size: 13px; }
+  .logo-text p { font-size: 10px; }
+  .btn-login, .nav-btn-outline { font-size: 13px; padding: 10px 16px; }
+  .mobile-menu-icon { font-size: 22px; }
+  .nav-links a { font-size: 15px; padding: 12px 10px; }
+  .messages-container { top: 74px; }
 }
 
 /* ═══════ MODAL REAL-TIME VALIDATION ═══════ */
