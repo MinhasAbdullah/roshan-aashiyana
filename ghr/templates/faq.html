@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQs | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/legal.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="legal-hero">
+  <div class="container legal-hero-content">
+    <div class="legal-hero-icon">
+      <i class="fa-solid fa-circle-question"></i>
+    </div>
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about Roshan Aashiyana</p>
+  </div>
+</section>
+
+<section class="legal-body">
+  <div class="container legal-container" style="max-width:820px;">
+
+    {% for category in categories %}
+    <div class="faq-category">
+      <h2 class="faq-category-title">
+        <i class="fa-solid {{ category.icon }}"></i> {{ category.title }}
+      </h2>
+      <div class="faq-list">
+        {% for faq in category.faqs %}
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <p>{{ faq.q }}</p>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+          <div class="faq-answer">
+            <p>{{ faq.a }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="faq-cta">
+      <i class="fa-solid fa-headset"></i>
+      <h3>Still have questions?</h3>
+      <p>Our team is happy to help you with anything.</p>
+      <a href="{% url 'about' %}#contact" class="faq-cta-btn">
+        <i class="fa-solid fa-envelope"></i> Contact Us
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script src="{% static 'js/faq.js' %}"></script>
+{% endblock %}
+

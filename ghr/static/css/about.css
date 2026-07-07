@@ -210,6 +210,26 @@
   border: 1.5px solid var(--border);
 }
 .team-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.12); border-color: var(--green); }
+.team-card.featured {
+  width: 320px;
+  padding: 42px 32px;
+  transform: scale(1.03);
+  border-color: var(--green);
+  box-shadow: 0 20px 56px rgba(60, 182, 72, 0.16);
+}
+.team-card.featured h3 { font-size: 20px; font-weight: 900; }
+.team-card.featured .tc-role { font-size: 13px; padding: 5px 16px; }
+.team-card.featured .tc-bio { font-size: 14px; }
+.team-card.secondary {
+  width: 270px;
+  height: 350px;
+  padding: 28px 22px;
+  transform: scale(0.95);
+  opacity: 0.95;
+}
+.team-card.secondary .tc-img { width: 86px; height: 86px; }
+.team-card.secondary h3 { font-size: 16px; }
+.team-card.secondary .tc-bio { font-size: 12.5px; }
 .tc-img {
   width: 100px; height: 100px; border-radius: 50%;
   overflow: hidden; margin: 0 auto 18px;

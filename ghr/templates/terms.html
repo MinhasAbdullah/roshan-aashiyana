@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Terms & Conditions | Roshan Aashiyana{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/legal.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="legal-hero">
+  <div class="container legal-hero-content">
+    <div class="legal-hero-icon">
+      <i class="fa-solid fa-file-contract"></i>
+    </div>
+    <h1>Terms & Conditions</h1>
+    <p>Last updated: June 2026</p>
+  </div>
+</section>
+
+<section class="legal-body">
+  <div class="container legal-container">
+    <div class="legal-card">
+
+      <p class="legal-intro">
+        Welcome to <strong>Roshan Aashiyana</strong>. By accessing or using our platform at
+        <a href="https://roshanaashiyana.xyz">roshanaashiyana.xyz</a>, you agree to be bound by these Terms & Conditions.
+        Please read them carefully before using our services.
+      </p>
+
+      {% for section in sections %}
+      <div class="legal-section">
+        <div class="legal-section-head">
+          <div class="legal-section-icon">
+            <i class="fa-solid {{ section.icon }}"></i>
+          </div>
+          <h2>{{ section.title }}</h2>
+        </div>
+        <p>{{ section.content }}</p>
+      </div>
+      {% endfor %}
+
+      <div class="legal-note">
+        <strong>Questions?</strong> If you have any questions about these Terms & Conditions, please
+        <a href="{% url 'about' %}#contact">contact us</a>.
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1066,3 +1066,206 @@ Return only the final property description.
     return JsonResponse({'description': description})
 
 
+def terms(request):
+    sections = [
+        {
+            'icon': 'fa-circle-check',
+            'title': '1. Acceptance of Terms',
+            'content': 'By accessing or using Roshan Aashiyana, you confirm that you are at least 18 years old and agree to comply with these Terms & Conditions. If you do not agree with any part of these terms, you must not use our platform.',
+        },
+        {
+            'icon': 'fa-house',
+            'title': '2. Platform Use',
+            'content': 'Roshan Aashiyana is an online real estate marketplace that connects property buyers, renters, and verified dealers across Pakistan. We provide a platform for listing and discovering properties — we are not a real estate agency and do not own, sell, or rent any properties ourselves. All listings are posted by independent dealers.',
+        },
+        {
+            'icon': 'fa-user-shield',
+            'title': '3. User Accounts',
+            'content': 'You are responsible for maintaining the confidentiality of your account credentials. You must not share your account with anyone or use another user\'s account. Any activity that occurs under your account is your responsibility. Roshan Aashiyana reserves the right to suspend or terminate accounts that violate these terms.',
+        },
+        {
+            'icon': 'fa-id-card',
+            'title': '4. Dealer Registration',
+            'content': 'To become a verified dealer on Roshan Aashiyana, you must provide accurate personal information including your CNIC, phone number, and profile picture. A one-time registration fee is required, payable via Stripe. Providing false information during registration may result in permanent account termination without refund.',
+        },
+        {
+            'icon': 'fa-list-check',
+            'title': '5. Property Listings',
+            'content': 'Dealers are solely responsible for the accuracy and legality of their property listings. Listings must not contain false, misleading, or fraudulent information. Roshan Aashiyana reserves the right to remove any listing that violates our policies without prior notice. We do not verify the legal ownership of listed properties.',
+        },
+        {
+            'icon': 'fa-credit-card',
+            'title': '6. Payments & Refunds',
+            'content': 'All payments on Roshan Aashiyana are processed securely through Stripe. The dealer registration fee is non-refundable once your account has been successfully created. If payment was charged but the account was not created due to a technical error, please contact our support team within 7 days for assistance.',
+        },
+        {
+            'icon': 'fa-ban',
+            'title': '7. Prohibited Activities',
+            'content': 'You must not use Roshan Aashiyana to post spam, fraudulent listings, or misleading content. You must not attempt to hack, reverse-engineer, or disrupt the platform. You must not collect user data without consent, post duplicate listings, or engage in any activity that violates Pakistani law.',
+        },
+        {
+            'icon': 'fa-copyright',
+            'title': '8. Intellectual Property',
+            'content': 'All content on Roshan Aashiyana — including the logo, design, code, and platform features — is the intellectual property of Roshan Aashiyana. You may not copy, reproduce, or distribute any part of the platform without written permission. Property images uploaded by dealers remain the property of their respective owners.',
+        },
+        {
+            'icon': 'fa-triangle-exclamation',
+            'title': '9. Limitation of Liability',
+            'content': 'Roshan Aashiyana is not liable for any disputes between buyers and dealers, inaccurate property information, financial losses resulting from property transactions, or any indirect, incidental, or consequential damages arising from the use of our platform. Users engage in property transactions at their own risk.',
+        },
+        {
+            'icon': 'fa-pen',
+            'title': '10. Changes to Terms',
+            'content': 'Roshan Aashiyana reserves the right to update these Terms & Conditions at any time. Continued use of the platform after changes are posted constitutes your acceptance of the updated terms. We will notify registered users of significant changes via email.',
+        },
+    ]
+    return render(request, 'terms.html', {'sections': sections})
+
+
+def privacy(request):
+    sections = [
+        {
+            'icon': 'fa-database',
+            'title': '1. Information We Collect',
+            'content': 'We collect information you provide directly: name, email address, username, phone number, CNIC (for dealers), profile picture, and property listing details. We also automatically collect usage data such as pages visited, search queries, and device information to improve our platform.',
+        },
+        {
+            'icon': 'fa-gear',
+            'title': '2. How We Use Your Information',
+            'content': 'We use your information to create and manage your account, process dealer registrations and payments, send email notifications (verification, inquiries, welcome emails), display property listings, match buyers with relevant properties, and improve our platform features and performance.',
+        },
+        {
+            'icon': 'fa-share-nodes',
+            'title': '3. Information Sharing',
+            'content': 'We do not sell your personal information to third parties. We share your information only with trusted service providers that help us operate the platform: Neon (database hosting), Cloudinary (image storage), Stripe (payment processing), and Resend (email delivery). These providers are contractually obligated to protect your data.',
+        },
+        {
+            'icon': 'fa-image',
+            'title': '4. Images & Media',
+            'content': 'Property images and dealer profile pictures are uploaded to and stored on Cloudinary, a secure cloud storage service. These images may be publicly visible on the platform as part of property listings and dealer profiles. Please do not upload images containing sensitive personal information.',
+        },
+        {
+            'icon': 'fa-cookie',
+            'title': '5. Cookies & Sessions',
+            'content': 'Roshan Aashiyana uses session cookies to keep you logged in during your visit. We do not use tracking cookies or third-party advertising cookies. You can disable cookies in your browser settings, but this may affect your ability to log in and use certain features of the platform.',
+        },
+        {
+            'icon': 'fa-lock',
+            'title': '6. Data Security',
+            'content': 'We implement industry-standard security measures including HTTPS encryption, hashed passwords, secure session management, and CSRF protection. However, no method of transmission over the internet is 100% secure. We recommend using a strong, unique password for your account.',
+        },
+        {
+            'icon': 'fa-child',
+            'title': '7. Children\'s Privacy',
+            'content': 'Roshan Aashiyana is not intended for use by anyone under the age of 18. We do not knowingly collect personal information from minors. If you believe a minor has created an account on our platform, please contact us and we will delete the account immediately.',
+        },
+        {
+            'icon': 'fa-user-pen',
+            'title': '8. Your Rights',
+            'content': 'You have the right to access, update, or delete your personal information at any time through your account settings. You may request a copy of your data or ask us to delete your account by contacting support@roshanaashiyana.xyz. We will respond to all requests within 48 hours.',
+        },
+        {
+            'icon': 'fa-pen',
+            'title': '9. Changes to This Policy',
+            'content': 'We may update this Privacy Policy from time to time. When we make significant changes, we will notify you via email and update the "Last updated" date at the top of this page. Continued use of the platform after changes are posted means you accept the updated policy.',
+        },
+    ]
+    return render(request, 'privacy.html', {'sections': sections})
+
+
+def faq(request):
+    categories = [
+        {
+            'icon': 'fa-user',
+            'title': 'General & Accounts',
+            'faqs': [
+                {
+                    'q': 'What is Roshan Aashiyana?',
+                    'a': 'Roshan Aashiyana is Pakistan\'s trusted online real estate marketplace connecting property buyers, renters, and verified dealers across major cities including Islamabad, Lahore, Rawalpindi, Karachi, and Multan.',
+                },
+                {
+                    'q': 'Is Roshan Aashiyana free to use?',
+                    'a': 'Yes! Browsing properties, searching listings, saving favourites, and contacting dealers is completely free for regular users. A one-time registration fee is required only to become a verified dealer and list properties.',
+                },
+                {
+                    'q': 'How do I create an account?',
+                    'a': 'Click the "Sign Up" button on the homepage, enter your username, email, and password, then verify your email address via the link we send you. Once verified, your account is active and ready to use.',
+                },
+                {
+                    'q': 'I didn\'t receive my verification email. What should I do?',
+                    'a': 'Check your spam or junk mail folder first. If it\'s not there, make sure you entered the correct email address during registration. You can contact our support team at support@roshanaashiyana.xyz for further assistance.',
+                },
+                {
+                    'q': 'How do I reset my password?',
+                    'a': 'Click "Forgot password?" on the login form, enter your registered email address, and we\'ll send you a password reset link instantly. The link expires after 1 hour for security purposes.',
+                },
+            ]
+        },
+        {
+            'icon': 'fa-id-card',
+            'title': 'Becoming a Dealer',
+            'faqs': [
+                {
+                    'q': 'How do I become a verified dealer?',
+                    'a': 'Click "Become a Dealer" in the navigation menu, fill in your personal details including your CNIC and phone number, upload a profile picture, and complete the one-time registration payment via Stripe. Your dealer account will be activated immediately after successful payment.',
+                },
+                {
+                    'q': 'What is the dealer registration fee?',
+                    'a': 'There is a one-time dealer registration fee to verify your identity and activate your dealer account. This fee is non-refundable. Please check the dealer registration page for the current fee amount.',
+                },
+                {
+                    'q': 'Can I become a dealer if I\'m an individual, not an agency?',
+                    'a': 'Absolutely. Both individual property owners and real estate agencies can register as dealers on Roshan Aashiyana. All dealers go through the same verification process.',
+                },
+                {
+                    'q': 'How many properties can I list as a dealer?',
+                    'a': 'There is currently no limit on the number of properties a verified dealer can list. You can add, edit, and manage as many listings as you need from your dealer dashboard.',
+                },
+            ]
+        },
+        {
+            'icon': 'fa-building',
+            'title': 'Property Listings',
+            'faqs': [
+                {
+                    'q': 'How do I search for properties?',
+                    'a': 'Use the search bar on the homepage or listings page to search by keyword, city, or area. You can filter results by property type (house, apartment, plot, etc.), purpose (sale or rent), number of bedrooms, and price range.',
+                },
+                {
+                    'q': 'How do I contact a dealer about a property?',
+                    'a': 'Open any property listing and scroll down to the inquiry form. Fill in your name, email, phone, and message, then click "Send Inquiry". The dealer will receive an email notification and can contact you directly.',
+                },
+                {
+                    'q': 'Can I save properties to view later?',
+                    'a': 'Yes! Click the heart icon on any property listing to add it to your favourites. You must be logged in to use this feature. Access all your saved properties from the "My Favourites" section in your account menu.',
+                },
+                {
+                    'q': 'Are the property prices negotiable?',
+                    'a': 'Prices are set by individual dealers. You can discuss pricing directly with the dealer through the inquiry system or by calling them using the contact details on their profile page.',
+                },
+                {
+                    'q': 'How do I know if a property is still available?',
+                    'a': 'Each listing shows an availability badge — "Available" or "Sold". Dealers can update their listing status at any time. We recommend confirming availability directly with the dealer before visiting a property.',
+                },
+            ]
+        },
+        {
+            'icon': 'fa-credit-card',
+            'title': 'Payments & Security',
+            'faqs': [
+                {
+                    'q': 'Is my payment information secure?',
+                    'a': 'Yes. All payments are processed through Stripe, a globally trusted payment processor used by millions of businesses. We never store your credit card details on our servers. All transactions are encrypted with industry-standard SSL.',
+                },
+                {
+                    'q': 'Can I get a refund on the dealer registration fee?',
+                    'a': 'The dealer registration fee is non-refundable once your account has been successfully created. If you were charged but your account was not created due to a technical error, please contact support@roshanaashiyana.xyz within 7 days.',
+                },
+                {
+                    'q': 'Does Roshan Aashiyana handle property transactions?',
+                    'a': 'No. Roshan Aashiyana is purely a listing and discovery platform. All property transactions, negotiations, and payments happen directly between buyers and dealers. We do not mediate or take any commission on property sales or rentals.',
+                },
+            ]
+        },
+    ]
+    return render(request, 'faq.html', {'categories': categories})
