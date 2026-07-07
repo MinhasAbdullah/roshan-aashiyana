@@ -66,37 +66,116 @@
               </div>
             </div>
               
-            <div class="dropdown-menu" id="dropdownMenu">
-                <!-- User Info -->
-              <div class="dropdown-header">
-                <div class="dropdown-avatar">{{ user.username|first|upper }}</div>
-                <div>
-                  <div class="dropdown-name">{{ user.get_full_name|default:user.username }}</div>
-                  <div class="dropdown-email">{{ user.email }}</div>
-                  </div>
-                </div>
+<div class="dropdown-menu" id="dropdownMenu">
+  <!-- User Info -->
+  <div class="dropdown-header">
+    <div class="dropdown-avatar">{{ user.username|first|upper }}</div>
+    <div>
+      <div class="dropdown-name">{{ user.get_full_name|default:user.username }}</div>
+      <div class="dropdown-email">{{ user.email }}</div>
+    </div>
+  </div>
 
-                <div class="dropdown-divider"></div>
+  <div class="dropdown-divider"></div>
 
-                {% if user.dealer %}
-                <a href="{% url 'dashboard' %}" class="dropdown-item">
-                  <i class="fa-solid fa-gauge"></i> Dashboard
-                </a>
-                {% endif %}
-                <a href="{% url 'favourites' %}" class="dropdown-item">
-                  <i class="fa-solid fa-heart"></i> My Favourites
-                </a>
-                <a href="#" class="dropdown-item">
-                  <i class="fa-solid fa-user"></i> Account Settings
-                </a>
+  <!-- Main Menu -->
+  <div id="dropdownMain">
+    {% if user.dealer %}
+    <a href="{% url 'dashboard' %}" class="dropdown-item">
+      <i class="fa-solid fa-gauge"></i> Dashboard
+    </a>
+    {% endif %}
+    <a href="{% url 'favourites' %}" class="dropdown-item">
+      <i class="fa-solid fa-heart"></i> My Favourites
+    </a>
+    <button class="dropdown-item dropdown-item-btn" onclick="showPanel('settings')">
+      <i class="fa-solid fa-user-gear"></i> Account Settings
+      <i class="fa-solid fa-chevron-right" style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.3);"></i>
+    </button>
 
-                <div class="dropdown-divider"></div>
+    <div class="dropdown-divider"></div>
+    <a href="{% url 'logout' %}" class="dropdown-item dropdown-logout">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </div>
 
-                <a href="{% url 'logout' %}" class="dropdown-item dropdown-logout">
-                  <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </a>
-              </div>
-            </div>
+  <!-- Account Settings Panel -->
+  <div id="dropdownSettings" class="dropdown-panel">
+    <button class="dropdown-back" onclick="showPanel('main')">
+      <i class="fa-solid fa-arrow-left"></i> Account Settings
+    </button>
+    <div class="dropdown-divider"></div>
+
+    <button class="dropdown-item dropdown-item-btn" onclick="showPanel('username')">
+      <i class="fa-solid fa-user-pen"></i> Change Username
+      <i class="fa-solid fa-chevron-right" style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.3);"></i>
+    </button>
+    <button class="dropdown-item dropdown-item-btn" onclick="showPanel('password')">
+      <i class="fa-solid fa-lock"></i> Change Password
+      <i class="fa-solid fa-chevron-right" style="margin-left:auto;font-size:11px;color:rgba(255,255,255,0.3);"></i>
+    </button>
+  </div>
+
+  <!-- Change Username Panel -->
+  <div id="dropdownUsername" class="dropdown-panel">
+    <button class="dropdown-back" onclick="showPanel('settings')">
+      <i class="fa-solid fa-arrow-left"></i> Change Username
+    </button>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-form">
+      <div class="df-group">
+        <label>Current Username</label>
+        <input type="text" value="{{ user.username }}" disabled>
+      </div>
+      <div class="df-group">
+        <label>New Username</label>
+        <input type="text" id="newUsername" placeholder="Min 6 characters, a-z 0-9 _">
+        <p class="df-err" id="usernameErr"></p>
+      </div>
+      <button class="df-btn" onclick="changeUsername()">
+        <i class="fa-solid fa-check"></i> Save Username
+      </button>
+      <p class="df-status" id="usernameStatus"></p>
+    </div>
+  </div>
+
+  <!-- Change Password Panel -->
+  <div id="dropdownPassword" class="dropdown-panel">
+    <button class="dropdown-back" onclick="showPanel('settings')">
+      <i class="fa-solid fa-arrow-left"></i> Change Password
+    </button>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-form">
+      <div class="df-group">
+        <label>Current Password</label>
+        <div class="df-pwd-wrap">
+          <input type="password" id="currentPwd" placeholder="Enter current password">
+          <button type="button" onclick="togglePwd('currentPwd', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="df-group">
+        <label>New Password</label>
+        <div class="df-pwd-wrap">
+          <input type="password" id="newPwd" placeholder="Min 6 characters">
+          <button type="button" onclick="togglePwd('newPwd', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="df-group">
+        <label>Confirm New Password</label>
+        <div class="df-pwd-wrap">
+          <input type="password" id="confirmPwd" placeholder="Repeat new password">
+          <button type="button" onclick="togglePwd('confirmPwd', this)"><i class="fa-solid fa-eye"></i></button>
+        </div>
+        <p class="df-err" id="passwordErr"></p>
+      </div>
+      <button class="df-btn" onclick="changePassword()">
+        <i class="fa-solid fa-key"></i> Update Password
+      </button>
+      <p class="df-status" id="passwordStatus"></p>
+    </div>
+  </div>
+
+</div>
         {% else %}
           <a href="javascript:void(0)" id="openModal2" class="nav-btn-outline"><span> Become Dealer</span></a>
           <a href="javascript:void(0)" class="btn-login" id="openModal">
@@ -230,7 +309,6 @@
           <h2>Login</h2>
           <p>Access your Roshan Aashiyana account</p>
 
-          <!-- Error banner (filled by JS from URL param) -->
           <div class="modal-error" id="loginError">
             <i class="fa-solid fa-circle-xmark"></i>
             <span></span>
@@ -238,7 +316,6 @@
 
           <form action="{% url 'SignIn' %}" method="POST" id="loginForm" novalidate>
             {% csrf_token %}
-            <!-- Username -->
             <div class="input-group" id="lg-uname-group">
               <i class="fa fa-user ig-icon"></i>
               <input type="text" placeholder="Username" name="uname" id="lgUname" autocomplete="username">
@@ -246,7 +323,6 @@
             </div>
             <p class="field-hint-msg" id="lg-uname-msg"></p>
 
-            <!-- Password -->
             <div class="input-group" id="lg-pass-group">
               <i class="fa fa-lock ig-icon"></i>
               <input type="password" placeholder="Password" name="password" id="lgPass" autocomplete="current-password">
@@ -261,7 +337,40 @@
             </button>
           </form>
           <div class="bottom-text">
+            <span id="openForgot">Forgot password?</span>
+          </div>
+          <div class="bottom-text">
             Don't have an account? <span id="openSignup">Sign Up</span>
+          </div>
+        </div>
+
+        <div class="form-box forgot-form" id="forgotFormBox">
+          <h2>Forgot Password</h2>
+          <p>Enter your email and we'll send reset instructions.</p>
+
+          <div class="modal-success" id="forgotSuccess" style="display:none;">
+            <i class="fa-solid fa-circle-check"></i>
+            <span></span>
+          </div>
+          <div class="modal-error" id="forgotError" style="display:none;">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span></span>
+          </div>
+
+          <form action="{% url 'forgot_password' %}" method="POST" id="forgotForm" novalidate>
+            {% csrf_token %}
+            <div class="input-group" id="fg-email-group">
+              <i class="fa fa-envelope ig-icon"></i>
+              <input type="email" placeholder="Email Address" name="email" id="fgEmail" autocomplete="email" required>
+            </div>
+            <p class="field-hint-msg" id="fg-email-msg"></p>
+
+            <button class="submit-btn" type="submit">
+              Send Reset Link <i class="fa fa-arrow-right"></i>
+            </button>
+          </form>
+          <div class="bottom-text">
+            <span id="backToLogin">Back to Login</span>
           </div>
         </div>
 

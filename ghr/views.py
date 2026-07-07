@@ -8,7 +8,7 @@ from django.db.models import Sum, Q, Count, Avg
 from django.http import JsonResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 from django.core.files.storage import default_storage
 from urllib.parse import urlencode
@@ -139,6 +139,74 @@ def SignIn(request):
     return redirect("home")
 
 
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+        user = User.objects.filter(email__iexact=email).first()
+
+        if user:
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            reset_url = request.build_absolute_uri(reverse('reset_password', args=[uid, token]))
+            send_email(
+                to=user.email,
+                subject="Reset Your Password — Roshan Aashiyana",
+                html_message=f"""
+                <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;background:#f7f8fa;padding:32px;border-radius:12px;">
+                    <div style="background:#071a34;padding:24px 32px;border-radius:12px 12px 0 0;text-align:center;">
+                        <img src="https://roshanaashiyana.xyz/static/images/RA3.png" alt="Roshan Aashiyana" style="height:68px;">
+                    </div>
+                    <div style="background:#ffffff;padding:32px;border-radius:0 0 12px 12px;border:1px solid #e4e8ee;">
+                        <h2 style="color:#071a34;margin-bottom:8px;">Reset your password</h2>
+                        <p style="color:#6b7a90;line-height:1.6;">Hi <strong style="color:#1a2535;">{user.username}</strong>,</p>
+                        <p style="color:#6b7a90;line-height:1.6;">We received a request to reset your password for Roshan Aashiyana. Click the button below to continue.</p>
+                        <div style="text-align:center;margin:32px 0;">
+                            <a href="{reset_url}" style="display:inline-block;padding:14px 32px;background:#3cb648;color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;font-size:15px;">Reset Password</a>
+                        </div>
+                        <div style="background:#edf8f0;border-left:4px solid #3cb648;padding:12px 16px;border-radius:8px;">
+                            <p style="color:#6b7a90;font-size:13px;margin:0;">If you did not request this, you can safely ignore this email.</p>
+                        </div>
+                    </div>
+                </div>
+                """
+            )
+
+        params = urlencode({"auth_form": "forgot", "auth_success": "If an account exists for that email, we’ve sent reset instructions. Please check your inbox and spam/junk folder."})
+        return redirect(f"{reverse('home')}?{params}")
+
+    return redirect("home")
+
+
+def reset_password(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except Exception:
+        user = None
+
+    if not user or not default_token_generator.check_token(user, token):
+        messages.error(request, "This password reset link is invalid or has expired.")
+        return redirect("home")
+
+    if request.method == "POST":
+        password = request.POST.get("password", "")
+        cpassword = request.POST.get("cpassword", "")
+
+        if len(password) < 6:
+            messages.error(request, "Password must be at least 6 characters.")
+            return render(request, "reset_password.html", {"user": user, "valid": True})
+        if password != cpassword:
+            messages.error(request, "Passwords do not match.")
+            return render(request, "reset_password.html", {"user": user, "valid": True})
+
+        user.set_password(password)
+        user.save()
+        messages.success(request, "Password updated successfully. You can now login with your new password.")
+        return redirect("home")
+
+    return render(request, "reset_password.html", {"user": user, "valid": True})
+
+
 def logout_user(request):
     logout(request)
     messages.success(request, "You're Logged out successfully")
@@ -188,8 +256,55 @@ def verify_email(request, uidb64, token):
 # PUBLIC VIEWS
 # ─────────────────────────────────────────
 def home(request):
-    properties = Property.objects.filter(is_featured="True").order_by("-created_at")
+    properties = Property.objects.filter(is_featured=True).order_by("-created_at")
     return render(request, "home.html", {"prop": properties})
+
+@login_required
+def change_username(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST only'}, status=405)
+
+    try:
+        data     = json.loads(request.body)
+        username = data.get('username', '').strip()
+
+        if len(username) < 6:
+            return JsonResponse({'error': 'Username must be at least 6 characters.'})
+        if not re.match(r'^[a-zA-Z0-9_]+$', username):
+            return JsonResponse({'error': 'Only letters, numbers and underscores allowed.'})
+        if User.objects.filter(username=username).exclude(pk=request.user.pk).exists():
+            return JsonResponse({'error': 'Username already taken.'})
+
+        request.user.username = username
+        request.user.save()
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def change_password(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST only'}, status=405)
+
+    try:
+        data             = json.loads(request.body)
+        current_password = data.get('current_password', '')
+        new_password     = data.get('new_password', '')
+
+        if not request.user.check_password(current_password):
+            return JsonResponse({'error': 'Current password is incorrect.'})
+        if len(new_password) < 6:
+            return JsonResponse({'error': 'New password must be at least 6 characters.'})
+
+        request.user.set_password(new_password)
+        request.user.save()
+        login(request, request.user)   # keep session alive
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 def listings(request):
@@ -949,3 +1064,5 @@ Return only the final property description.
 
     description = response.content.replace("**", "").strip()
     return JsonResponse({'description': description})
+
+

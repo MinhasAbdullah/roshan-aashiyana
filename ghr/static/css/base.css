@@ -278,6 +278,128 @@ ul { list-style: none; }
   background: rgba(239,83,80,0.1);
   color: #ef5350;
 }
+/* ── Dropdown panel system ── */
+.dropdown-panel {
+  display: none;
+}
+.dropdown-panel.active {
+  display: block;
+}
+
+.dropdown-item-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.dropdown-back {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 13px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--green);
+  font-family: inherit;
+  transition: background .15s;
+}
+.dropdown-back:hover { background: rgba(255,255,255,0.05); }
+.dropdown-back i { font-size: 12px; }
+
+/* ── Dropdown form ── */
+.dropdown-form {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.df-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.df-group label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.df-group input {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: #fff;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.df-group input:focus { border-color: var(--green); }
+.df-group input:disabled { opacity: .45; cursor: not-allowed; }
+
+.df-pwd-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.df-pwd-wrap input { padding-right: 38px; }
+.df-pwd-wrap button {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.4);
+  font-size: 13px;
+  padding: 0;
+  transition: color .15s;
+}
+.df-pwd-wrap button:hover { color: var(--green); }
+
+.df-err {
+  font-size: 11.5px;
+  color: #ef5350;
+  min-height: 14px;
+  margin: 0;
+}
+
+.df-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+}
+.df-btn:hover { background: var(--green-dark); }
+.df-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.df-status {
+  font-size: 12px;
+  text-align: center;
+  min-height: 14px;
+  margin: 0;
+}
 
 /* Solid login/logout button */
 .btn-login {
@@ -476,6 +598,8 @@ footer {
 .form-box.login-form { display: block; }
 .auth-box.signup-mode .login-form { display: none; }
 .auth-box.signup-mode .signup-form { display: block; }
+.auth-box.forgot-mode .login-form { display: none; }
+.auth-box.forgot-mode .forgot-form { display: block; }
 
 .form-box h2 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
 .form-box > p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
@@ -568,6 +692,12 @@ footer {
   margin-bottom: 14px;
 }
 .modal-error i { font-size: 14px; flex-shrink: 0; }
+.modal-success {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: #eaf8ee; color: #1f7a3b; border: 1px solid #cfeedd;
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 14px; font-size: 13px;
+}
+.modal-success i { font-size: 14px; flex-shrink: 0; }
 
 /* Input group states */
 .input-group.field-valid {

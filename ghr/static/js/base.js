@@ -7,18 +7,23 @@
     const closeBtn = document.getElementById('closeModal');
     const openSignupLink = document.getElementById('openSignup');
     const openLoginLink  = document.getElementById('openLogin');
+    const openForgotLink = document.getElementById('openForgot');
+    const backToLoginLink = document.getElementById('backToLogin');
 
     function openModal(mode) {
       modal.classList.add('active');
       authBox.classList.toggle('signup-mode', mode === 'signup');
+      authBox.classList.toggle('forgot-mode', mode === 'forgot');
     }
 
     if (openBtn)  openBtn.addEventListener('click',  () => openModal('login'));
     if (openBtn2) openBtn2.addEventListener('click', () => openModal('login'));
     if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
     window.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
-    openSignupLink.addEventListener('click', () => openModal('signup'));
-    openLoginLink.addEventListener('click',  () => openModal('login'));
+    if (openSignupLink) openSignupLink.addEventListener('click', () => openModal('signup'));
+    if (openLoginLink)  openLoginLink.addEventListener('click',  () => openModal('login'));
+    if (openForgotLink) openForgotLink.addEventListener('click', () => openModal('forgot'));
+    if (backToLoginLink) backToLoginLink.addEventListener('click', () => openModal('login'));
 
     // ── Nav active link ──
     document.querySelectorAll('.nav-links a').forEach(link => {
@@ -46,19 +51,28 @@
     const authForm  = params.get('auth_form');
 
     if (authError) {
+      const forgotSuccessEl = document.getElementById('forgotSuccess');
+      const forgotErrorEl = document.getElementById('forgotError');
+      if (forgotSuccessEl) forgotSuccessEl.style.display = 'none';
+      if (forgotErrorEl) forgotErrorEl.style.display = 'none';
+
       openModal(authForm || 'login');
 
       if (authForm === 'signup') {
         const errEl = document.getElementById('signupError');
         errEl.querySelector('span').textContent = authError;
         errEl.style.display = 'flex';
-        // Restore values
         const u = document.getElementById('suUname');
         const e = document.getElementById('suEmail');
         const p = document.getElementById('suPhone');
         if (u && params.get('auth_uname')) u.value = params.get('auth_uname');
         if (e && params.get('auth_email')) e.value = params.get('auth_email');
         if (p && params.get('auth_phone')) p.value = params.get('auth_phone');
+      } else if (authForm === 'forgot') {
+        const errEl = document.getElementById('forgotError');
+        errEl.querySelector('span').textContent = authError;
+        errEl.style.display = 'flex';
+        openModal('forgot');
       } else {
         const errEl = document.getElementById('loginError');
         errEl.querySelector('span').textContent = authError;
@@ -68,6 +82,19 @@
       }
 
       // Clean URL without reload
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    const successMsg = params.get('auth_success');
+    if (successMsg) {
+      const successEl = document.getElementById('forgotSuccess');
+      const errorEl = document.getElementById('forgotError');
+      if (successEl) {
+        successEl.querySelector('span').textContent = successMsg;
+        successEl.style.display = 'flex';
+      }
+      if (errorEl) errorEl.style.display = 'none';
+      openModal('forgot');
       window.history.replaceState({}, '', window.location.pathname);
     }
 
@@ -285,16 +312,120 @@
       });
     }
 
+    const fgEmail = document.getElementById('fgEmail');
+    if (fgEmail) {
+      fgEmail.addEventListener('input', () => {
+        const group = document.getElementById('fg-email-group');
+        const msg = document.getElementById('fg-email-msg');
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!fgEmail.value.trim()) {
+          group.classList.add('field-invalid'); group.classList.remove('field-valid');
+          msg.className = 'field-hint-msg msg-error'; msg.textContent = 'Email is required.';
+        } else if (!emailRe.test(fgEmail.value.trim())) {
+          group.classList.add('field-invalid'); group.classList.remove('field-valid');
+          msg.className = 'field-hint-msg msg-error'; msg.textContent = 'Enter a valid email address.';
+        } else {
+          group.classList.add('field-valid'); group.classList.remove('field-invalid');
+          msg.className = 'field-hint-msg'; msg.textContent = '';
+        }
+      });
+    }
+
   })();
-//  profile dropmenu 
-  const trigger = document.getElementById('profileTrigger');
-  const menu = document.getElementById('dropdownMenu');
+// ── Dropdown ──
+const trigger = document.getElementById('profileTrigger');
+const menu    = document.getElementById('dropdownMenu');
 
-  trigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    menu.classList.toggle('open');
-  });
+trigger.addEventListener('click', e => {
+  e.stopPropagation();
+  menu.classList.toggle('open');
+  if (menu.classList.contains('open')) showPanel('main');
+});
+document.addEventListener('click', e => {
+  if (!menu.contains(e.target)) menu.classList.remove('open');
+});
 
-  document.addEventListener('click', () => {
-    menu.classList.remove('open');
-  });
+// ── Panel navigation ──
+function showPanel(name) {
+  document.getElementById('dropdownMain').style.display     = name === 'main'     ? 'block' : 'none';
+  document.getElementById('dropdownSettings').style.display = name === 'settings' ? 'block' : 'none';
+  document.getElementById('dropdownUsername').style.display = name === 'username' ? 'block' : 'none';
+  document.getElementById('dropdownPassword').style.display = name === 'password' ? 'block' : 'none';
+}
+
+// ── Toggle password visibility ──
+function togglePwd(id, btn) {
+  const input = document.getElementById(id);
+  const icon  = btn.querySelector('i');
+  input.type  = input.type === 'password' ? 'text' : 'password';
+  icon.className = input.type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+}
+
+// ── Change username ──
+async function changeUsername() {
+  const val    = document.getElementById('newUsername').value.trim();
+  const err    = document.getElementById('usernameErr');
+  const status = document.getElementById('usernameStatus');
+
+  err.textContent    = '';
+  status.textContent = '';
+
+  if (val.length < 6) { err.textContent = 'Min 6 characters.'; return; }
+  if (!/^[a-zA-Z0-9_]+$/.test(val)) { err.textContent = 'Only letters, numbers and underscores.'; return; }
+
+  try {
+    const res = await fetch('/account/change-username/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({ username: val }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      status.style.color = '#3cb648';
+      status.textContent = '✓ Username updated! Reloading...';
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      err.textContent = data.error || 'Something went wrong.';
+    }
+  } catch { err.textContent = 'Request failed. Try again.'; }
+}
+
+// ── Change password ──
+async function changePassword() {
+  const current = document.getElementById('currentPwd').value;
+  const newPwd  = document.getElementById('newPwd').value;
+  const confirm = document.getElementById('confirmPwd').value;
+  const err     = document.getElementById('passwordErr');
+  const status  = document.getElementById('passwordStatus');
+
+  err.textContent    = '';
+  status.textContent = '';
+
+  if (!current)           { err.textContent = 'Enter current password.'; return; }
+  if (newPwd.length < 6)  { err.textContent = 'New password must be at least 6 characters.'; return; }
+  if (newPwd !== confirm) { err.textContent = 'Passwords do not match.'; return; }
+
+  try {
+    const res = await fetch('/account/change-password/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({ current_password: current, new_password: newPwd }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      status.style.color = '#3cb648';
+      status.textContent = '✓ Password updated!';
+      document.getElementById('currentPwd').value = '';
+      document.getElementById('newPwd').value      = '';
+      document.getElementById('confirmPwd').value  = '';
+    } else {
+      err.textContent = data.error || 'Something went wrong.';
+    }
+  } catch { err.textContent = 'Request failed. Try again.'; }
+}
+
+function getCookie(name) {
+  return document.cookie.split(';').map(c => c.trim())
+    .find(c => c.startsWith(name + '='))?.split('=')[1] || '';
+}
+
