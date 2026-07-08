@@ -24,9 +24,9 @@ A full-stack web application connecting property buyers, renters, and verified d
 
 | | | |
 |---|---|---|
-| <img src="screenshots/home.png" width="260" alt="Homepage"> | <img src="screenshots/listings.png" width="260" alt="Listings"> | <img src="screenshots/detail.png" width="260" alt="Property Detail"> |
+| <img src="screenshots/home.png" width="220" alt="Homepage"> | <img src="screenshots/listings.png" width="220" alt="Listings"> | <img src="screenshots/detail.png" width="220" alt="Property Detail"> |
 | **Homepage** | **Property Listings** | **Property Detail** |
-| <img src="screenshots/dashboard.png" width="260" alt="Dashboard"> | <img src="screenshots/ai.png" width="260" alt="AI Generator"> | <img src="screenshots/profile.png" width="260" alt="Dealer Profile"> |
+| <img src="screenshots/dashboard.png" width="220" alt="Dashboard"> | <img src="screenshots/ai.png" width="220" alt="AI Generator"> | <img src="screenshots/profile.png" width="220" alt="Dealer Profile"> |
 | **Dealer Dashboard** | **AI Description Generator** | **Dealer Profile** |
 
 ---
