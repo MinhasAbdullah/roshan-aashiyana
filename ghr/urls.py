@@ -36,5 +36,6 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('privacy/', views.privacy, name='privacy'),
     path('faq/', views.faq, name='faq'),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
 ]
 

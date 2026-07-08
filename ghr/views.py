@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Sum, Q, Count, Avg
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -1269,3 +1269,31 @@ def faq(request):
         },
     ]
     return render(request, 'faq.html', {'categories': categories})
+
+
+def robots_txt(request):
+    content = """User-agent: *
+Disallow: /dashboard/
+Disallow: /add-property/
+Disallow: /edit-property/
+Disallow: /my-listings/
+Disallow: /dealer-register/
+Disallow: /dealer-reviews/
+Disallow: /dealer-inquiries/
+Disallow: /dealer-settings/
+Disallow: /favourites/
+Disallow: /check-cnic/
+Disallow: /logout/
+Disallow: /delete-property/
+Disallow: /delete-dealer-account/
+Disallow: /admin/
+
+Allow: /
+Allow: /listings/
+Allow: /property/
+Allow: /about/
+Allow: /dealers/
+
+Sitemap: https://roshanaashiyana.xyz/sitemap.xml
+"""
+    return HttpResponse(content, content_type="text/plain")

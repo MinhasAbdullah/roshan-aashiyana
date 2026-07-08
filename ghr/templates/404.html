@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | Roshan Aashiyana</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f7f8fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .err-nav {
+      background: #0d1b2e;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .err-nav-logo {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: #3cb648;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .err-nav-logo i { color: #fff; font-size: 18px; }
+    .err-brand-name  { font-size: 15px; font-weight: 700; color: #fff; display: block; line-height: 1.2; }
+    .err-brand-tag   { font-size: 9px; color: #3cb648; font-weight: 600; display: block; }
+
+    /* Main */
+    .err-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .err-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 60px 48px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .err-number {
+      font-size: 100px;
+      font-weight: 900;
+      color: #3cb648;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .err-icon {
+      font-size: 52px;
+      color: #e4e8ee;
+      margin-bottom: 24px;
+    }
+
+    .err-box h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1a2535;
+      margin-bottom: 12px;
+    }
+
+    .err-box p {
+      font-size: 15px;
+      color: #6b7a90;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .err-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .err-btn-green {
+      background: #3cb648;
+      color: #fff;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Poppins', sans-serif;
+      transition: background .2s;
+    }
+    .err-btn-green:hover { background: #2a9136; }
+
+    .err-btn-navy {
+      background: #0d1b2e;
+      color: #fff;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .2s;
+    }
+    .err-btn-navy:hover { background: #1a3050; }
+
+    /* Footer */
+    .err-footer {
+      background: #0d1b2e;
+      text-align: center;
+      padding: 18px;
+      font-size: 12px;
+      color: #4a5f78;
+    }
+
+    @media (max-width: 480px) {
+      .err-box { padding: 40px 24px; }
+      .err-number { font-size: 72px; }
+      .err-actions { flex-direction: column; }
+      .err-btn-green, .err-btn-navy { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+
+  <main class="err-main">
+    <div class="err-box">
+      <div class="err-number">404</div>
+      <div class="err-icon"><i class="fa-solid fa-house-circle-xmark"></i></div>
+      <h1>Page Not Found</h1>
+      <p>The page you're looking for doesn't exist or has been moved. Let's get you back on track.</p>
+      <div class="err-actions">
+        <a href="/" class="err-btn-green">
+          <i class="fa-solid fa-house"></i> Go to Homepage
+        </a>
+        <a href="/listings/" class="err-btn-navy">
+          <i class="fa-solid fa-search"></i> Browse Properties
+        </a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

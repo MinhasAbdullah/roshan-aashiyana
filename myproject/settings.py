@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'web-production-26dcb.up.railway.app',
@@ -174,3 +174,5 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 SESSION_COOKIE_AGE = 3600
 
 MISTRAL_API_KEY = config('MISTRAL_API_KEY')
+
+LOGIN_URL = 'home'
